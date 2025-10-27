@@ -1,73 +1,30 @@
-# React + TypeScript + Vite
+🧾 Totem de Autoatendimento — Resulti Sistemas
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Totem interativo desenvolvido pela Resulti Sistemas para uso em restaurantes, lanchonetes e estabelecimentos que utilizam os sistemas ControlChef, ControlStore e demais soluções da Resulti.
+O projeto foi construído com React + Vite + TypeScript, empacotado com Electron para execução em modo desktop kiosk, e estilizado com TailwindCSS para garantir uma interface moderna, fluida e responsiva.
 
-Currently, two official plugins are available:
+🚀 Tecnologias Principais
+Tecnologia	Descrição
+⚛️ React	Framework principal da interface
+⚡ Vite	Bundler rápido para desenvolvimento e build
+🧩 TypeScript	Tipagem estática para maior segurança e escalabilidade
+🖥️ Electron	Empacotamento e execução em modo totem (app desktop)
+🎨 TailwindCSS	Framework de estilização utilitária
+🪄 Lucide Icons	Biblioteca de ícones leves e personalizáveis
+💡 Objetivo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+O Totem Resulti tem como objetivo proporcionar uma experiência de autoatendimento intuitiva e eficiente aos clientes dos estabelecimentos, reduzindo filas e otimizando o atendimento no balcão.
 
-## React Compiler
+Principais funcionalidades:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+📱 Interface touch otimizada para totens e tablets.
 
-## Expanding the ESLint configuration
+🛒 Exibição de produtos organizados por grupos e categorias.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+🧾 Modal de detalhes do produto com personalizações e observações.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+💰 Carrinho dinâmico com valor total atualizado em tempo real.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+🌗 Suporte a modo claro/escuro (Dark Mode).
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+🔒 Execução segura via Electron em modo kiosk (sem acesso ao SO).
