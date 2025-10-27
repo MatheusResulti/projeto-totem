@@ -33,7 +33,7 @@ export default function ProductModal({
   showCloseButton,
   size = "full",
   maxWidthClassName = "max-w-[1200px]",
-  maxHeightClassName = "lg:max-h-[800px]",
+  maxHeightClassName = "max-h-[800px]",
   classNameWrapper,
   classNamePanel,
   classNameTitle,

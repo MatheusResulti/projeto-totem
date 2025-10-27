@@ -16,6 +16,8 @@ export default function ProductInfo({
 }: ProductInfoProps) {
   const [text, setText] = useState("");
   const maxChars = 200;
+  // const [ itemData, setItemData]
+
   return (
     <>
       <div className="flex flex-col md:flex-row items-center px-5 10 gap-6 border-b-1 border-b-gray-200 h-70">

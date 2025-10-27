@@ -3,7 +3,7 @@ export const userMock = {
   cdOperador: 1,
   dsSenha: "123456",
   dsLogin: "admin",
-  nmUsuario: "Usuário de Teste",
+  nmUsuario: "Rock Burger",
   tpCalculoVendaItem: 1,
   prAcrescimoVenda: 0,
   tpVisualizacaoMesa: "MODO_PADRAO",

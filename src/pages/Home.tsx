@@ -1,4 +1,4 @@
-import { userMock } from "../utils/mock";
+import { userMock } from "../utils/mocks/userMock";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TotemConfigModal from "../components/TotemConfigModal";
@@ -26,10 +26,6 @@ export default function Home() {
     setSecretCounter(secretCounter + 1);
   };
 
-  const handleNavigate = () => {
-    navigate("/src/pages/Menu.tsx");
-  };
-
   return (
     <div
       className="flex flex-col h-screen w-screen bg-cover bg-center"
@@ -51,7 +47,7 @@ export default function Home() {
               className="max-w-1/5"
             />
             <button
-              onClick={handleNavigate}
+              onClick={() => navigate("/src/pages/Menu.tsx")}
               className="text-3xl text-white font-bold bg-green-600/95 rounded-md w-9/10 h-20 touchable"
             >
               FAÇA SEU PEDIDO
@@ -88,7 +84,10 @@ export default function Home() {
             closeOnBackdrop
           >
             <div className="w-full flex flex-col gap-3 pt-7">
-              <button className="bg-error rounded-lg flex items-center justify-center h-16 text-white font-bold gap-2 active:opacity-30 transition-opacity duration-200">
+              <button
+                onClick={() => navigate("/src/pages/Splash.tsx")}
+                className="bg-error rounded-lg flex items-center justify-center h-16 text-white font-bold gap-2 active:opacity-30 transition-opacity duration-200"
+              >
                 <RefreshCcw />
                 Sincronizar
               </button>

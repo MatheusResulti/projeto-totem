@@ -9,6 +9,8 @@ import {
 
 const Home = lazy(() => import("./pages/Home"));
 const Menu = lazy(() => import("./pages/Menu"));
+const Cart = lazy(() => import("./pages/Cart"));
+const Splash = lazy(() => import("./pages/Splash"));
 
 function RootLayout() {
   return (
@@ -36,6 +38,8 @@ export default function App() {
           <Route path="/" element={<RootLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/src/pages/Menu.tsx" element={<Menu />} />
+            <Route path="/src/pages/Cart.tsx" element={<Cart />} />
+            <Route path="/src/pages/Splash.tsx" element={<Splash />} />
           </Route>
         </Routes>
       </Suspense>

@@ -1,18 +1,15 @@
 import ProductCard from "../components/ProductCard";
 import ProductModal from "../components/ProductModal";
 import { useNavigate } from "react-router-dom";
-import { groups, products } from "../utils/store";
 import { useEffect, useRef, useState } from "react";
 import MenuSideBar from "../components/MenuSideBar";
 import type { ProductType } from "../types/types";
 import ProductInfo from "../components/ProductInfo";
+import { productMock } from "../utils/mocks/productMock";
+import { groupMock } from "../utils/mocks/groupMock";
 
 export default function Menu() {
   const navigate = useNavigate();
-
-  const handleNavigate = () => {
-    navigate("/");
-  };
 
   const [selectedGroup, setSelectedGroup] = useState<number>(1);
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
@@ -28,7 +25,9 @@ export default function Menu() {
       document.body.style.overflow = previousOverflow;
     };
   }, []);
-  const filteredProducts = products.filter((p) => p.groupId === selectedGroup);
+  const filteredProducts = productMock.filter(
+    (p) => p.groupId === selectedGroup
+  );
 
   const handleToggleProductModal = (isOpen: boolean) => {
     if (isOpen) {
@@ -63,7 +62,7 @@ export default function Menu() {
     <div className="h-dvh flex flex-col text-text-color">
       <div className="bg-[url(/assets/defaultCapa.png)] bg-cover bg-center bg-no-repeat h-40 flex justify-end px-2 py-2">
         <button
-          onClick={handleNavigate}
+          onClick={() => navigate("/")}
           className="bg-error text-sm font-semibold border-2 border-white rounded-lg text-white p-1 h-9 touchable"
         >
           Cancelar
@@ -78,7 +77,7 @@ export default function Menu() {
         </div>
         <div className="bg-gray-200 relative flex-1 p-5 flex flex-col min-h-0">
           <h1 className="font-bold text-xl">
-            {groups.find((g) => g.id === selectedGroup)?.name}
+            {groupMock.find((g) => g.id === selectedGroup)?.name}
           </h1>
           <div className="flex-1 min-h-0 overflow-auto pb-24">
             <div className="grid grid-cols-2 gap-5 pt-2">
@@ -92,10 +91,13 @@ export default function Menu() {
             </div>
           </div>
           <div className="absolute left-0 right-0 bottom-0 bg-white h-20 p-4">
-            <div className="bg-money rounded-lg h-full flex items-center px-4">
-              <button className="cart-text">Carrinho</button>
-              <p className="cart-text absolute right-9">R$6,00</p>
-            </div>
+            <button
+              onClick={() => navigate("/src/pages/Cart.tsx")}
+              className="bg-money rounded-lg flex items-center justify-between overflow-hidden cart-text text-start w-full h-full px-5 touchable"
+            >
+              Carrinho
+              <p className="cart-text">R$6,00</p>
+            </button>
           </div>
         </div>
       </div>
@@ -104,7 +106,9 @@ export default function Menu() {
           openModal={isProductModalOpen}
           setOpenModal={handleToggleProductModal}
           showCloseButton
-          maxWidthClassName="w-full"
+          size="auto"
+          maxWidthClassName="w-full max-w-3xl"
+          maxHeightClassName="max-h-[90vh]"
         >
           <ProductInfo
             product={selectedProduct}

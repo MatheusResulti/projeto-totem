@@ -10,6 +10,7 @@
   --color-error: #e11d48;
   --color-success: #10b981;
   --color-money: #157811;
+  --color-splash-bg: #1f2937;
 }
 
 @layer components {

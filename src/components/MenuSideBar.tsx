@@ -1,6 +1,6 @@
 import GroupItem from "../components/GroupItem";
-import { userMock } from "../utils/mock";
-import { groups } from "../utils/store";
+import { groupMock } from "../utils/mocks/groupMock";
+import { userMock } from "../utils/mocks/userMock";
 
 interface MenuSideBarProps {
   selectedGroup: number;
@@ -20,13 +20,13 @@ export default function MenuSideBar({
               ? userMock.logo
               : "/assets/icon.png"
           }
-          alt="Logo Control Chef"
+          alt="Logo do estabelecimento"
           className="size-32"
         />
         <h1 className="font-bold text-xl pb-3">Menu</h1>
       </div>
       <div className="flex flex-col items-start">
-        {groups.map((group) => {
+        {groupMock.map((group) => {
           return (
             <GroupItem
               key={group.id}
