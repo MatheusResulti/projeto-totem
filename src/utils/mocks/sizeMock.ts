@@ -1,14 +1,20 @@
 export const sizeMock = [
   {
     id: 1,
-    name: "Pequena",
+    name: "Lata",
+    productId: 1,
+    value: 10.0,
   },
   {
     id: 2,
-    name: "Média",
+    name: "600ml",
+    productId: 1,
+    value: 10.0,
   },
   {
     id: 3,
-    name: "Grande",
+    name: "1 Litro",
+    productId: 1,
+    value: 10.0,
   },
 ];

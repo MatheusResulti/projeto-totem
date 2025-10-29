@@ -15,11 +15,11 @@ export default function ProductCard({ item, onSelect }: Props) {
         onClick={handleClick}
         className="bg-white flex flex-col items-center w-full pb-2 rounded-2xl overflow-hidden touchable"
       >
-        <div className="w-full h-37.5 flex items-center justify-center object-contain">
+        <div className="w-full h-37.5 flex items-center justify-center object-contain mt-3">
           <img
             src={item.image}
             alt={item.name}
-            className="w-full h-full object-contain"
+            className="w-fit h-full object-contain rounded-lg"
           />
         </div>
         <div className="mt-2 flex flex-col items-center font-bold">

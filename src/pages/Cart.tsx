@@ -38,7 +38,7 @@ export default function Cart() {
           </div>
         </div>
         <button
-          onClick={() => navigate("/src/pages/Menu.tsx")}
+          onClick={() => navigate("/menu")}
           className="border-3 border-money rounded-full h-11 w-35 text-money font-semibold touchable"
         >
           Ver cardápio
@@ -53,7 +53,7 @@ export default function Cart() {
       </div>
       <div className="absolute left-0 right-0 bottom-0 bg-white h-20 p-4">
         <button
-          onClick={() => navigate("/src/pages/Cart.tsx")}
+          onClick={() => navigate("/payment")}
           className="bg-money rounded-lg flex items-center justify-between overflow-hidden cart-text text-start w-full h-full px-5 touchable"
         >
           Fazer pagamento
