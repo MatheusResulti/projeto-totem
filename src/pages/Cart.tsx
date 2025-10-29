@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useNavigate } from "react-router-dom";
-import { userMock } from "../utils/mocks/userMock.ts";
+import { useUserData } from "../utils/store.ts";
 import CartItem from "../components/CartItem.tsx";
 import { useOrder } from "../utils/store.ts";
 import type { ItemType } from "../types/types.ts";
@@ -8,6 +8,8 @@ import { ShoppingBasket } from "lucide-react";
 
 export default function Cart() {
   const navigate = useNavigate();
+
+  const UserData = useUserData((state) => state.userData);
 
   // const { order } = useOrder((state) => ({
   //   order: state.order,
@@ -19,8 +21,8 @@ export default function Cart() {
         <div className="flex flex-row items-center text-text-color">
           <img
             src={
-              userMock?.logo && userMock.logo.length
-                ? userMock.logo
+              UserData?.logo && UserData.logo.length
+                ? UserData.logo
                 : "/assets/icon.png"
             }
             alt="Logo do estabelecimento"
@@ -29,8 +31,8 @@ export default function Cart() {
           <div className="pl-4">
             <span>Seu pedido em</span>
             <h1 className="font-bold text-2xl">
-              {userMock?.nmUsuario && userMock.nmUsuario.length
-                ? userMock.nmUsuario
+              {UserData?.nmUsuario && UserData.nmUsuario.length
+                ? UserData.nmUsuario
                 : "Restaurante Teste"}
             </h1>
           </div>

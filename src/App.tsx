@@ -1,28 +1,17 @@
+import { Toaster } from "react-hot-toast";
 import { lazy, Suspense } from "react";
-import {
-  HashRouter,
-  Routes,
-  Route,
-  Outlet,
-  // NavLink,
-} from "react-router-dom";
+import { HashRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
 
 const Home = lazy(() => import("./pages/Home"));
 const Menu = lazy(() => import("./pages/Menu"));
 const Cart = lazy(() => import("./pages/Cart"));
 const Splash = lazy(() => import("./pages/Splash"));
+const Login = lazy(() => import("./pages/Login"));
 
 function RootLayout() {
   return (
     <div>
-      {/* <header className="border-b bg-white">
-        <nav className="mx-auto flex max-w-6xl items-center gap-4 p-4">
-          <h1 className="text-lg font-semibold">Projeto Totem</h1>
-          <div className="ml-auto flex gap-3 text-sm">
-            <NavLink to="/" end className={({ isActive }) => (isActive ? "font-semibold" : "")}>Home</NavLink>
-          </div>
-        </nav>
-      </header> */}
+      <Toaster position="top-center" reverseOrder={false} />
       <main>
         <Outlet />
       </main>
@@ -36,11 +25,14 @@ export default function App() {
       <Suspense fallback={<div className="p-6">Carregando…</div>}>
         <Routes>
           <Route path="/" element={<RootLayout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/src/pages/Menu.tsx" element={<Menu />} />
-            <Route path="/src/pages/Cart.tsx" element={<Cart />} />
-            <Route path="/src/pages/Splash.tsx" element={<Splash />} />
+            <Route index element={<Splash />} />
+            <Route path="login" element={<Login />} />
+            <Route path="home" element={<Home />} />
+            <Route path="menu" element={<Menu />} />
+            <Route path="cart" element={<Cart />} />
           </Route>
+
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
     </HashRouter>

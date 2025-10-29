@@ -1,22 +1,22 @@
-import { userMock } from "../utils/mocks/userMock";
+import { useUserData } from "../utils/store";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TotemConfigModal from "../components/TotemConfigModal";
-import { RefreshCcw, LogOut, Lock, Eye } from "lucide-react";
+import { RefreshCcw, LogOut, Lock, Eye, EyeOff } from "lucide-react";
 import PaymentMethodBadge from "../components/PaymentMethodBadge";
+import toast from "react-hot-toast";
 
 export default function Home() {
-  const paymentMethods = userMock.FormasPgto;
   const navigate = useNavigate();
+
+  const userData = useUserData((s) => s.userData);
+  const setUserData = useUserData((s) => s.setUserData);
+  const paymentMethods = userData.FormasPgto;
+  const [modalValidate, setModalValidate] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [password, setPassword] = useState("");
   const [secretCounter, setSecretCounter] = useState(0);
-  // const [modalVisible, setModalVisible] = useState(false)
-  // const [modalValidate, setModalValidate] = useState(false);
-  // const [password, setPassword] = useState("")
   const [modalConf, setModalConf] = useState(false);
-
-  // const validateGoBack = async () => {
-
-  // }
 
   const secretFunction = async () => {
     if (secretCounter >= 10) {
@@ -26,12 +26,41 @@ export default function Home() {
     setSecretCounter(secretCounter + 1);
   };
 
+  const validateGoBack = async () => {
+    if (password !== "1222") {
+      toast.error("Senha incorreta. Tente novamente.");
+      return;
+    }
+    await localStorage.removeItem("user");
+    setUserData({
+      cdUsuario: 0,
+      cdOperador: 0,
+      dsSenha: "",
+      dsLogin: "",
+      nmUsuario: "",
+      cdEmpmobile: 0,
+      tpCalculoVendaItem: 0,
+      prAcrescimoVenda: 0,
+      tpVisualizacaoMesa: "",
+      cdAtendente: 0,
+      inBloqueado: "",
+      tpPapel: 0,
+      modelo: "",
+      FormasPgto: [],
+      logo: "",
+      capa: "",
+      home: "",
+      configMode: false,
+    });
+    navigate("/login");
+  };
+
   return (
     <div
       className="flex flex-col h-screen w-screen bg-cover bg-center"
       style={{
         backgroundImage: `url(${
-          userMock?.home || "/assets/defaultHomeImage.png"
+          userData?.home || "/assets/defaultHomeImage.png"
         })`,
       }}
     >
@@ -40,14 +69,14 @@ export default function Home() {
           <div className="flex flex-col items-center justify-center gap-10 w-full">
             <img
               src={
-                userMock?.logo && userMock.logo.length
-                  ? userMock.logo
+                userData?.logo && userData.logo.length
+                  ? userData.logo
                   : "/assets/logo.png"
               }
               className="max-w-1/5"
             />
             <button
-              onClick={() => navigate("/src/pages/Menu.tsx")}
+              onClick={() => navigate("/menu")}
               className="text-3xl text-white font-bold bg-green-600/95 rounded-md w-9/10 h-20 touchable"
             >
               FAÇA SEU PEDIDO
@@ -85,52 +114,58 @@ export default function Home() {
           >
             <div className="w-full flex flex-col gap-3 pt-7">
               <button
-                onClick={() => navigate("/src/pages/Splash.tsx")}
+                onClick={() => navigate("/")}
                 className="bg-error rounded-lg flex items-center justify-center h-16 text-white font-bold gap-2 active:opacity-30 transition-opacity duration-200"
               >
                 <RefreshCcw />
                 Sincronizar
               </button>
-              <button className="bg-success rounded-lg flex items-center justify-center h-16 text-white font-bold gap-2 active:opacity-30 transition-opacity duration-200">
+              <button
+                onClick={() => setModalValidate(!modalValidate)}
+                className="bg-success rounded-lg flex items-center justify-center h-16 text-white font-bold gap-2 active:opacity-30 transition-opacity duration-200"
+              >
                 <LogOut />
                 Voltar para o login
               </button>
-              <div className="relative flex flex-col items-center w-full mt-2">
-                <span className="self-start mb-2 font-medium">
-                  Informe a contra senha
-                </span>
-                <div className="w-full flex items-center">
-                  <input
-                    type="password"
-                    placeholder="Digite sua senha"
-                    className="w-full border-2 text-sm text-text-color border-gray-300/80 rounded-lg pl-10 pr-10 py-4"
-                  />
-                  <button className="absolute right-3 text-gray-600">
-                    <Eye className="w-5 h-5" />
+              {modalValidate ? (
+                <>
+                  <div className="relative flex flex-col items-center w-full mt-2">
+                    <span className="self-start mb-2 font-medium">
+                      Informe a contra senha
+                    </span>
+                    <div className="w-full flex items-center">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Digite sua senha"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="w-full border-2 text-sm text-text-color border-gray-300/80 rounded-lg pl-10 pr-10 py-4"
+                      />
+                      <button
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 text-gray-600 touchable"
+                      >
+                        {showPassword ? (
+                          <Eye className="w-5 h-5" />
+                        ) : (
+                          <EyeOff className="w-5 h-5" />
+                        )}
+                      </button>
+                      <Lock className="absolute left-3 text-secondary w-5 h-5" />
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => validateGoBack()}
+                    className="bg-secondary rounded-lg py-3 text-white font-bold touchable"
+                  >
+                    Confirmar
                   </button>
-                  <Lock className="absolute left-3 text-secondary w-5 h-5" />
-                </div>
-              </div>
-              <button className="bg-secondary rounded-lg py-3 text-white font-bold touchable">
-                Confirmar
-              </button>
+                </>
+              ) : null}
             </div>
           </TotemConfigModal>
         )}
       </div>
     </div>
   );
-}
-
-// const [isDark, setIsDark] = useState(false)
-{
-  /* <img src="/public/assets/defaultHomeImage.png" className="min-h-screen"/> */
-}
-{
-  /* <button
-          className="p-2 m-4 border rounded"
-          onClick={() => setIsDark(!isDark)}
-        >
-          Trocar fundo
-        </button> */
 }

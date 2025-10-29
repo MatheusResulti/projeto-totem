@@ -33,6 +33,7 @@ export default function Splash() {
 
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
 
@@ -64,27 +65,45 @@ export default function Splash() {
 
   useEffect(() => {
     let isMounted = true;
+    const controller = new AbortController();
 
     const load = async () => {
       const wait = (ms: number) => new Promise((res) => setTimeout(res, ms));
-      await wait(600);
+      setError(null);
 
-      if (!isMounted) return;
+      const timeout = setTimeout(() => {
+        controller.abort();
+        if (isMounted)
+          setError("Tempo limite excedido. Verifique sua conexão.");
+      }, 5000);
 
-      setSizes(sizeMock);
-      setComplements(complementMock);
-      setProductArr(productMock);
-      setGroupArr(groupMock);
-      setUserData(userMock);
+      try {
+        await wait(800);
+        if (!isMounted || controller.signal.aborted) return;
 
-      await wait(400);
-      if (isMounted) navigate("/home");
+        setSizes(sizeMock);
+        setComplements(complementMock);
+        setProductArr(productMock);
+        setGroupArr(groupMock);
+        setUserData(userMock);
+
+        await wait(500);
+        if (isMounted) navigate("/home");
+      } catch (err: any) {
+        if (!isMounted) {
+          console.error("Erro na sincronização:", err);
+          setError("Erro ao sincronizar dados. Tente novamente.");
+        }
+      } finally {
+        clearTimeout(timeout);
+      }
     };
 
     load();
 
     return () => {
       isMounted = false;
+      controller.abort();
     };
   }, [
     navigate,
@@ -94,15 +113,34 @@ export default function Splash() {
     setSizes,
     setUserData,
   ]);
+
+  const handleRetry = () => {
+    window.location.reload();
+  };
   return (
     <div className="bg-splash-bg h-screen w-screen flex flex-col items-center justify-center text-white font-semibold">
-      <img src="/assets/logo.png" className="h-20 object-contain" />
-      <img src="/assets/loading.png" className="h-87.5" />
-      <span> {displayedText}|</span>
-      <div className="flex flex-row items-center gap-2 mt-3">
-        <UseAnimations animation={loading} size={20} strokeColor="white" />
-        <p>Carregando</p>
-      </div>
+      <img src="/assets/logo.png" className="h-20 object-contain mb-4" />
+
+      {!error ? (
+        <>
+          <img src="/assets/loading.png" className="h-24 object-contain" />
+          <span>{displayedText}|</span>
+          <div className="flex flex-row items-center gap-2 mt-3">
+            <UseAnimations animation={loading} size={20} strokeColor="white" />
+            <p>Carregando</p>
+          </div>
+        </>
+      ) : (
+        <div className="mt-4 text-center">
+          <p className="text-red-300 mb-3">{error}</p>
+          <button
+            onClick={handleRetry}
+            className="bg-primary px-5 py-2 rounded-md font-semibold hover:opacity-85 transition"
+          >
+            Tentar novamente
+          </button>
+        </div>
+      )}
     </div>
   );
 }

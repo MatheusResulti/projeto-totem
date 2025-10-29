@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 
 app.disableHardwareAcceleration();
@@ -12,7 +12,10 @@ app.commandLine.appendSwitch("in-process-gpu");
 app.commandLine.appendSwitch("use-gl", "swiftshader");
 app.commandLine.appendSwitch("disable-gpu");
 app.commandLine.appendSwitch("disable-gpu-sandbox");
-app.commandLine.appendSwitch("disable-features", "VaapiVideoDecoder,CanvasOopRasterization");
+app.commandLine.appendSwitch(
+  "disable-features",
+  "VaapiVideoDecoder,CanvasOopRasterization"
+);
 app.commandLine.appendSwitch("disable-dev-shm-usage");
 app.commandLine.appendSwitch("no-sandbox");
 
@@ -24,16 +27,29 @@ function createWindow() {
     width: 1200,
     height: 800,
     autoHideMenuBar: true,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.cjs"), // verifique o nome e caminho
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true,
+    },
   });
+
   if (isDev) win.loadURL(DEV_URL);
   else win.loadFile(path.join(__dirname, "../dist/index.html"));
 }
 
 app.whenReady().then(() => {
   createWindow();
+
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
+});
+
+ipcMain.on("app-quit", () => {
+  console.log("Fechando app via IPC...");
+  app.quit();
 });
 
 app.on("window-all-closed", () => {

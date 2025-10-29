@@ -6,11 +6,14 @@
   --button-color: #50a728;
   --color-text-color: #343434;
   --color-basket: #959595;
+  --color-primary: #017dd7;
   --color-secondary: #00199c;
   --color-error: #e11d48;
   --color-success: #10b981;
   --color-money: #157811;
   --color-splash-bg: #1f2937;
+  --color-border-color: #e5e5e5;
+  --color-placeholder-color: #a3a3a3;
 }
 
 @layer components {

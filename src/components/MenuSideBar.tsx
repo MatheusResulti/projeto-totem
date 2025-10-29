@@ -1,6 +1,5 @@
 import GroupItem from "../components/GroupItem";
-import { groupMock } from "../utils/mocks/groupMock";
-import { userMock } from "../utils/mocks/userMock";
+import { useGroup, useUserData } from "../utils/store";
 
 interface MenuSideBarProps {
   selectedGroup: number;
@@ -11,13 +10,16 @@ export default function MenuSideBar({
   selectedGroup,
   onSelectGroup,
 }: MenuSideBarProps) {
+  const GroupArr = useGroup((state) => state.groupArr);
+  const UserData = useUserData((state) => state.userData);
+
   return (
     <>
       <div className="flex flex-col items-center gap-3">
         <img
           src={
-            userMock?.logo && userMock.logo.length
-              ? userMock.logo
+            UserData?.logo && UserData.logo.length
+              ? UserData.logo
               : "/assets/icon.png"
           }
           alt="Logo do estabelecimento"
@@ -26,7 +28,7 @@ export default function MenuSideBar({
         <h1 className="font-bold text-xl pb-3">Menu</h1>
       </div>
       <div className="flex flex-col items-start">
-        {groupMock.map((group) => {
+        {GroupArr.map((group) => {
           return (
             <GroupItem
               key={group.id}

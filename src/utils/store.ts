@@ -22,19 +22,32 @@ export const useComplements = create<IComplements>((set) => ({
   setComplements: (value: any) => set({ complements: value }),
 }));
 
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  groupId: number;
+}
+
 interface IProduct {
-  productArr: [];
-  setProductArr: (value: any) => void;
+  productArr: Product[];
+  setProductArr: (value: Product[]) => void;
 }
 
 export const useProduct = create<IProduct>((set) => ({
   productArr: [],
-  setProductArr: (value: any) => set({ productArr: value }),
+  setProductArr: (value) => set({ productArr: value }),
 }));
 
+interface Group {
+  id: number;
+  name: string;
+}
+
 interface IGroup {
-  groupArr: [];
-  setGroupArr: (value: any) => void;
+  groupArr: Group[];
+  setGroupArr: (value: Group[]) => void;
 }
 
 export const useGroup = create<IGroup>((set) => ({
