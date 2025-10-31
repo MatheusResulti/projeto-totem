@@ -1,23 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useNavigate } from "react-router-dom";
-import { useUserData } from "../utils/store.ts";
+import { useUserData, useOrder } from "../utils/store.ts";
+import { formatToBRL } from "../utils/helpers.ts";
 import CartItem from "../components/CartItem.tsx";
-import { useOrder } from "../utils/store.ts";
-import type { ItemType } from "../types/types.ts";
-import { ShoppingBasket } from "lucide-react";
+import PaymentMethodSelector from "../components/PaymentMethodSelector.tsx";
+import { useState } from "react";
 
 export default function Cart() {
   const navigate = useNavigate();
-
   const UserData = useUserData((state) => state.userData);
-
-  // const { order } = useOrder((state) => ({
-  //   order: state.order,
-  // }));
+  const { itens, total } = useOrder((s) => s.order);
+  const qtd = itens.reduce((acc, it) => acc + (it.quantidade ?? 1), 0);
+  const [showSelector, setShowSelector] = useState(false);
 
   return (
-    <>
-      <div className="px-4 pt-4 pb-6 flex flex-row items-center justify-between border-b-1 border-gray-300">
+    <div className="flex flex-col h-svh overflow-hidden">
+      <div className="px-4 pt-4 pb-6 flex flex-row items-center justify-between border-b border-gray-300">
         <div className="flex flex-row items-center text-text-color">
           <img
             src={
@@ -44,22 +42,21 @@ export default function Cart() {
           Ver cardápio
         </button>
       </div>
-      <div>
-        {/* {order.itens.length
-          ? order.itens.map((item: any, i: number) => ( */}
-        <CartItem />
-        {/* //   ))
-          // : null} */}
+      <div className="flex-1 overflow-y-auto h-[calc(100vh-12rem)]">
+        {itens.map((item: any, i: number) => (
+          <CartItem key={i} index={i} item={item} />
+        ))}
       </div>
-      <div className="absolute left-0 right-0 bottom-0 bg-white h-20 p-4">
-        <button
-          onClick={() => navigate("/payment")}
-          className="bg-money rounded-lg flex items-center justify-between overflow-hidden cart-text text-start w-full h-full px-5 touchable"
-        >
-          Fazer pagamento
-          <p className="cart-text">R$6,00</p>
-        </button>
-      </div>
-    </>
+      <PaymentMethodSelector
+        open={showSelector}
+        onConfirm={(m) => console.log("Selecionado:", m)}
+      />
+      <button
+        onClick={() => setShowSelector((v) => !v)}
+        className=" rounded-2xl touchable sticky bottom-0 flex justify-center items-center bg-money cart-text text-xl h-20 p-4 mx-5"
+      >
+        Fazer pagamento Total: {formatToBRL(total)}
+      </button>
+    </div>
   );
 }

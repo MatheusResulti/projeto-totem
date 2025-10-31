@@ -6,6 +6,7 @@ export interface ProductType {
   price: number;
   image?: string;
   groupId?: number;
+  type?: string;
 }
 
 export interface GroupType {
@@ -27,22 +28,14 @@ export type ItemType = {
   dsProduto?: string;
   tamanho_id?: string;
   tamanho_nome?: string;
-  value?: number;
+  price: number;
   produto_id: number;
   quantidade: number;
   valor_unitario: number;
   observacao: string;
   tpProduto: string;
-  adicionais?: [
-    {
-      adicional_id: number;
-      name: string;
-    }
-  ];
-  bordas?: [
-    {
-      borda_id: number;
-      name: string;
-    }
-  ];
+  adicionais?: {
+    adicional_id: number;
+    name: string;
+  }[];
 };

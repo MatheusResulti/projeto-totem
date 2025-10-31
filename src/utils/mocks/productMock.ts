@@ -33,7 +33,6 @@ export const productMock = [
   {
     id: 7,
     name: "Coca-Cola",
-    price: 8.0,
     image: "/assets/produtos/coca.png",
     groupId: 2,
   },

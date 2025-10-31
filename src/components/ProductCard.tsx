@@ -24,7 +24,9 @@ export default function ProductCard({ item, onSelect }: Props) {
         </div>
         <div className="mt-2 flex flex-col items-center font-bold">
           <p>{item.name}</p>
-          <p className="text-money">{formatToBRL(item.price)}</p>
+          {item.price && (
+            <p className="text-money">{formatToBRL(item.price)}</p>
+          )}
         </div>
       </button>
     </>

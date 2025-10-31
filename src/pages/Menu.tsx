@@ -5,7 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import MenuSideBar from "../components/MenuSideBar";
 import type { ProductType } from "../types/types";
 import ProductInfo from "../components/ProductInfo";
-import { useGroup, useProduct } from "../utils/store";
+import { useGroup, useOrder, useProduct, useCount } from "../utils/store";
+import { formatToBRL } from "../utils/helpers";
 
 export default function Menu() {
   const navigate = useNavigate();
@@ -17,6 +18,9 @@ export default function Menu() {
   const [selectedProduct, setSelectedProduct] = useState<ProductType | null>(
     null
   );
+  const order = useOrder((s) => s.order);
+  const setOrder = useOrder((s) => s.setOrder);
+  const { setQuantity } = useCount();
   const closeModalTimeoutRef = useRef<number | undefined>(undefined);
 
   useEffect(() => {
@@ -30,22 +34,6 @@ export default function Menu() {
     (p) => p.groupId === selectedGroup
   );
 
-  const handleToggleProductModal = (isOpen: boolean) => {
-    if (isOpen) {
-      if (closeModalTimeoutRef.current) {
-        clearTimeout(closeModalTimeoutRef.current);
-        closeModalTimeoutRef.current = undefined;
-      }
-    } else {
-      closeModalTimeoutRef.current = window.setTimeout(() => {
-        setSelectedProduct(null);
-        closeModalTimeoutRef.current = undefined;
-      }, 250);
-    }
-
-    setIsProductModalOpen(isOpen);
-  };
-
   useEffect(() => {
     return () => {
       if (closeModalTimeoutRef.current) {
@@ -54,17 +42,52 @@ export default function Menu() {
     };
   }, []);
 
+  const handleToggleProductModal = (isOpen: boolean) => {
+    if (!isOpen) {
+      setTimeout(() => setSelectedProduct(null), 250);
+    }
+    setIsProductModalOpen(isOpen);
+  };
+
   const handleSelectProduct = (product: ProductType) => {
     setSelectedProduct(product);
     handleToggleProductModal(true);
   };
 
+  const handleCancel = () => {
+    setOrder({
+      cdEmpresa: 1,
+      tpAtendimento: 2,
+      dsAtendimento: "TOTEM",
+      tpLocal: 1,
+      cdUsuario: 0,
+      dsRotulo: "",
+      total: 0,
+      itens: [],
+    });
+    setQuantity(1);
+    setSelectedProduct(null);
+    setIsProductModalOpen(false);
+    navigate("/home");
+  };
+
+  function CartTotal() {
+    const { itens, total } = useOrder((s) => s.order);
+    const qtd = itens.reduce((acc, it) => acc + (it.quantidade ?? 1), 0);
+    return (
+      <div className="text-xl flex flex-row gap-4">
+        <span>Itens: {qtd} </span>
+        <span>Total: {formatToBRL(total)}</span>
+      </div>
+    );
+  }
+
   return (
     <div className="h-dvh flex flex-col text-text-color">
       <div className="bg-[url(/assets/defaultCapa.png)] bg-cover bg-center bg-no-repeat h-40 flex justify-end px-2 py-2">
         <button
-          onClick={() => navigate("/home")}
-          className="bg-error text-sm font-semibold border-2 border-white rounded-lg text-white p-1 h-9 touchable"
+          onClick={handleCancel}
+          className="bg-error text-2xl font-semibold border-2 border-white rounded-lg text-white p-2 h-15 touchable contain-content"
         >
           Cancelar
         </button>
@@ -91,13 +114,14 @@ export default function Menu() {
               ))}
             </div>
           </div>
-          <div className="absolute left-0 right-0 bottom-0 bg-white h-20 p-4">
+          <div className="absolute left-0 right-0 bottom-0 bg-white h-25 p-4">
             <button
+              disabled={!order.itens.length}
               onClick={() => navigate("/cart")}
-              className="bg-money rounded-lg flex items-center justify-between overflow-hidden cart-text text-start w-full h-full px-5 touchable"
+              className="bg-money rounded-lg flex items-center justify-between overflow-hidden cart-text text-start text-xl w-full h-full px-5 touchable disabled:opacity-50"
             >
               Carrinho
-              <p className="cart-text">R$6,00</p>
+              {order.itens.length > 0 ? <CartTotal /> : null}
             </button>
           </div>
         </div>
@@ -113,7 +137,7 @@ export default function Menu() {
         >
           <ProductInfo
             product={selectedProduct}
-            onClose={() => handleToggleProductModal(false)}
+            setModalVisible={setIsProductModalOpen}
           />
         </ProductModal>
       ) : null}

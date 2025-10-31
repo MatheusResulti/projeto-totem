@@ -131,3 +131,17 @@ export const useOrder = create<IOrder>((set) => ({
   },
   setOrder: (value: any) => set({ order: value }),
 }));
+
+type CountState = {
+  quantity: number;
+  setQuantity: (n: number) => void;
+  inc: () => void;
+  dec: () => void;
+};
+
+export const useCount = create<CountState>((set) => ({
+  quantity: 1,
+  setQuantity: (n) => set({ quantity: n }),
+  inc: () => set((s) => ({ quantity: s.quantity + 1 })),
+  dec: () => set((s) => ({ quantity: Math.max(s.quantity - 1, 1) })),
+}));

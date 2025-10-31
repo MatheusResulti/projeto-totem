@@ -69,7 +69,7 @@ export default function ProductModal({
     setTimeout(() => {
       setOpenModal(false);
       onClose?.();
-    }, 200);
+    }, 300);
   }
 
   const shouldShowCloseButton =
@@ -142,8 +142,12 @@ export default function ProductModal({
     </div>
   );
 
-  if (typeof window !== "undefined" && document?.body) {
+  if (
+    (openModal || showModal) &&
+    typeof window !== "undefined" &&
+    document?.body
+  ) {
     return createPortal(content, document.body);
   }
-  return content;
+  return null;
 }
