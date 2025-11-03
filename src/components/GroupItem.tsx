@@ -14,11 +14,11 @@ export default function GroupItem({
   return (
     <button onClick={() => onSelect(id)}>
       <p
-        className={`h-10 mb-3 w-full flex items-center justify-center transition-all
+        className={`h-15 mb-3 text-2xl flex items-center justify-center transition-all
               ${
                 selected
-                  ? "font-semibold border-b-4 border-green-700"
-                  : "font-medium text-gray-500"
+                  ? "font-bold border-b-5 border-green-700"
+                  : "font-semibold text-gray-500"
               }
           `}
       >

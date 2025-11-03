@@ -11,7 +11,7 @@ export const userMock = {
   inBloqueado: "N",
   tpPapel: 80,
   modelo: "Térmica",
-  FormasPgto: ["Pix", "Dinheiro", "Cartão"],
+  FormasPgto: ["Pix", "Cartão"],
   logo: "/assets/mockLogo.jpg",
   capa: "/assets/mockCapa.webp",
   home: "/assets/mockHome.jpg",

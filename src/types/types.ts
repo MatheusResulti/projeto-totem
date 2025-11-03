@@ -39,3 +39,23 @@ export type ItemType = {
     name: string;
   }[];
 };
+
+export type ResultiPayType = {
+  fmp_idpk: number;
+  fmp_pix_tipo: string;
+  fmp_link_compartilhamento: string;
+  fmp_link_qrcode: string;
+  fmp_hash: string;
+  fmp_descricao: string;
+  fmp_chave: string;
+  fmp_financeiro_conta_idpk: number;
+  status: string;
+};
+
+export type ImpressaoItem = {
+  text?: string;
+  bold?: boolean;
+  line?: boolean;
+  doubleLine?: boolean;
+  emptyLine?: boolean;
+};

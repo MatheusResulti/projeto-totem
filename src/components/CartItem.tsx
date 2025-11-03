@@ -39,7 +39,7 @@ export default function CartItem({ item, index }: CartItemProps) {
   };
 
   return (
-    <div className="w-full flex relative border-b-1 border-gray-300 p-4 items-center">
+    <div className="w-full flex relative border-b border-gray-300 p-4 items-center">
       <img
         src={productData?.image}
         className="w-20 h-20 rounded-lg object-contain"

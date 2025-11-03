@@ -7,9 +7,6 @@ export default function PaymentMethodBadge({ method }: PaymentMethodProps) {
     PIX: {
       icon: "/assets/pixIcon.png",
     },
-    DINHEIRO: {
-      icon: "/assets/moneyIcon.png",
-    },
     CARTÃO: {
       icon: "/assets/cardIcon.png",
     },

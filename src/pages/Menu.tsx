@@ -100,7 +100,7 @@ export default function Menu() {
           />
         </div>
         <div className="bg-gray-200 relative flex-1 p-5 flex flex-col min-h-0">
-          <h1 className="font-bold text-xl">
+          <h1 className="font-bold text-2xl">
             {GroupArr.find((g) => g.id === selectedGroup)?.name}
           </h1>
           <div className="flex-1 min-h-0 overflow-auto pb-24">

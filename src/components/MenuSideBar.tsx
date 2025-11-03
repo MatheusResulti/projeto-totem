@@ -23,9 +23,9 @@ export default function MenuSideBar({
               : "/assets/icon.png"
           }
           alt="Logo do estabelecimento"
-          className="size-32"
+          className="size-32 rounded-xl"
         />
-        <h1 className="font-bold text-xl pb-3">Menu</h1>
+        <h1 className="font-bold text-2xl pb-3">Menu</h1>
       </div>
       <div className="flex flex-col items-start">
         {GroupArr.map((group) => {

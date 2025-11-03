@@ -1,4 +1,4 @@
-type Method = "pix" | "debito" | "credito";
+type Method = "pix" | "cartao";
 
 type Props = {
   open?: boolean;
@@ -20,35 +20,30 @@ export default function PaymentMethodSelector({
     <>
       <div
         className={[
-          "w-2/3 h-1/4 self-center items-center justify-center rounded-xl border border-gray-200 mb-4 shadow-lg overflow-hidden  flex flex-col  text-text-color origin-bottom transition-all duration-300",
+          "w-fit h-fit self-center justify-center rounded-xl border border-secondary mb-4 overflow-hidden flex flex-col text-text-color origin-bottom transition-all duration-300",
           open
             ? "scale-y-100 opacity-100 translate-y-0"
             : "scale-y-0 opacity-0 translate-y-2 pointer-events-none",
         ].join(" ")}
       >
-        <div className="flex flex-col gap-10">
-          <span className="text-3xl font-bold text-gray-700">
-            Escolha o método de pagamento
-          </span>
-
-          <div className="flex justify-between text-2xl font-semibold">
+        <div className="flex flex-col h-full">
+          <div className="bg-secondary w-full p-5">
+            <span className="text-4xl font-extrabold text-white">
+              MÉTODO DE PAGAMENTO
+            </span>
+          </div>
+          <div className="flex justify-between text-4xl text-secondary font-bold gap-3 p-3">
             <button
               onClick={() => selectAndConfirm("pix")}
-              className="p-3 border rounded-xl touchable min-h-20 min-w-40"
+              className="p-3 border-2 border-border-color rounded-xl touchable min-h-25 min-w-50"
             >
               PIX
             </button>
             <button
-              onClick={() => selectAndConfirm("debito")}
-              className="p-3 border rounded-xl touchable min-w-40"
+              onClick={() => selectAndConfirm("cartao")}
+              className="p-3 border-2 border-border-color rounded-xl touchable min-w-50"
             >
-              Débito
-            </button>
-            <button
-              onClick={() => selectAndConfirm("credito")}
-              className="p-3 border rounded-xl touchable min-w-40"
-            >
-              Crédito
+              CARTÃO
             </button>
           </div>
         </div>

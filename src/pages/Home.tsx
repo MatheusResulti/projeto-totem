@@ -73,7 +73,7 @@ export default function Home() {
                   ? userData.logo
                   : "/assets/logo.png"
               }
-              className="max-w-1/5"
+              className="max-w-1/5 rounded-xl"
             />
             <button
               onClick={() => navigate("/menu")}
@@ -88,20 +88,20 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="bg-gray-800 w-full flex items-center justify-center h-14 px-6">
+        <div className="bg-gray-800 w-full flex items-center justify-center h-15 px-6">
           <span className="text-sm font-semibold text-white flex items-center gap-3 mt-1">
             Um produto disponibilizado por
           </span>
           <img
             src="/assets/logo.png"
-            alt="Logo Restaurante"
+            alt="Logo ControlChef"
             className="h-6 w-auto object-contain ml-3"
           />
           <button onClick={() => secretFunction()}>
             <img
               src="/assets/resultiLogo.png"
               alt="Logo Resulti"
-              className="h-8 w-auto object-contain translate-y-[2px] ml-3"
+              className="h-8 w-auto object-contain translate-y-0.5 ml-3"
             />
           </button>
         </div>

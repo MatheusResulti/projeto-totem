@@ -10,7 +10,7 @@ export default function Cart() {
   const navigate = useNavigate();
   const UserData = useUserData((state) => state.userData);
   const { itens, total } = useOrder((s) => s.order);
-  const qtd = itens.reduce((acc, it) => acc + (it.quantidade ?? 1), 0);
+  // const qtd = itens.reduce((acc, it) => acc + (it.quantidade ?? 1), 0);
   const [showSelector, setShowSelector] = useState(false);
 
   return (
@@ -24,7 +24,7 @@ export default function Cart() {
                 : "/assets/icon.png"
             }
             alt="Logo do estabelecimento"
-            className="size-32"
+            className="size-32 rounded-xl"
           />
           <div className="pl-4">
             <span>Seu pedido em</span>
@@ -49,14 +49,16 @@ export default function Cart() {
       </div>
       <PaymentMethodSelector
         open={showSelector}
-        onConfirm={(m) => console.log("Selecionado:", m)}
+        onConfirm={() => navigate("/payment")}
       />
-      <button
-        onClick={() => setShowSelector((v) => !v)}
-        className=" rounded-2xl touchable sticky bottom-0 flex justify-center items-center bg-money cart-text text-xl h-20 p-4 mx-5"
-      >
-        Fazer pagamento Total: {formatToBRL(total)}
-      </button>
+      <div className="sticky bottom-1 flex border-t border-border-color w-full px-4 py-3">
+        <button
+          onClick={() => setShowSelector((v) => !v)}
+          className="rounded-2xl touchable justify-center items-center bg-money cart-text text-xl h-20 w-full p-4"
+        >
+          Fazer pagamento Total: {formatToBRL(total)}
+        </button>
+      </div>
     </div>
   );
 }
