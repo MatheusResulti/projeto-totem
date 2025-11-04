@@ -75,6 +75,18 @@ interface IUserData {
     capa?: string;
     home?: string;
     configMode?: boolean;
+    cfgTotem?: {
+      corPrimaria?: string;
+      corSecundaria?: string;
+      cdEmpresa?: number;
+      cdOperador?: number;
+      cdTotem?: number;
+      dsImgCapa?: string;
+      dsImgInicial?: string;
+      dsImgLogo?: string;
+      dtManutencao?: string;
+      [key: string]: any;
+    };
   };
   setUserData: (value: any) => void;
 }
@@ -100,6 +112,17 @@ export const useUserData = create<IUserData>((set) => ({
     capa: "",
     home: "",
     configMode: false,
+    cfgTotem: {
+      corPrimaria: "#00AEEF",
+      corSecundaria: "#F5F5F5",
+      cdEmpresa: 0,
+      cdOperador: 0,
+      cdTotem: 0,
+      dsImgCapa: "",
+      dsImgInicial: "",
+      dsImgLogo: "",
+      dtManutencao: "",
+    },
   },
   setUserData: (value: any) => set({ userData: value }),
 }));

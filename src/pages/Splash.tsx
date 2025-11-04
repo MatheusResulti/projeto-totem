@@ -9,13 +9,9 @@ import {
   useSizes,
   useUserData,
 } from "../utils/store";
-import { groupMock } from "../utils/mocks/groupMock";
-import { userMock } from "../utils/mocks/userMock";
-import { productMock } from "../utils/mocks/productMock";
-import { complementMock } from "../utils/mocks/complementMock";
-import { sizeMock } from "../utils/mocks/sizeMock";
 import { useNavigate } from "react-router-dom";
 import ProgressBar from "../components/ProgressBar";
+import { Api } from "../api/Api";
 
 const words = [
   "Aguarde um momento",
@@ -79,6 +75,24 @@ export default function Splash() {
     let isMounted = true;
     const controller = new AbortController();
 
+    const userStr = localStorage.getItem("user");
+    const token = localStorage.getItem("token");
+    const route = localStorage.getItem("route");
+    const door = localStorage.getItem("door");
+
+    if (!userStr || !token || !route || !door) {
+      navigate("/");
+      return () => {};
+    }
+
+    try {
+      const user = JSON.parse(userStr);
+      setUserData(user);
+    } catch {
+      navigate("/");
+      return () => {};
+    }
+
     const load = async () => {
       setError(null);
       setProgress(0);
@@ -91,24 +105,182 @@ export default function Splash() {
       }, 5000);
 
       try {
-        await go(20, "Carregando tamanhos...", () => setSizes(sizeMock));
-        if (!isMounted || controller.signal.aborted) return;
+        await go(20, "Carregando tamanhos...", async () => {
+          const ctrl = new AbortController();
+          const to = setTimeout(() => ctrl.abort(), 15000);
+          try {
+            const papel = String(
+              useUserData.getState().userData?.tpPapel ??
+                localStorage.getItem("tpPapel") ??
+                "8"
+            );
 
-        await go(40, "Carregando complementos...", () =>
-          setComplements(complementMock)
-        );
-        if (!isMounted || controller.signal.aborted) return;
+            const res = await Api.get(`tamanhos?tpPapel=${papel}`, {
+              signal: ctrl.signal,
+            });
 
-        await go(60, "Carregando produtos...", () =>
-          setProductArr(productMock)
-        );
-        if (!isMounted || controller.signal.aborted) return;
+            const listRaw = res?.data?.data ?? res?.data ?? [];
+            if (!Array.isArray(listRaw)) throw new Error("Formato inesperado");
 
-        await go(80, "Carregando grupos...", () => setGroupArr(groupMock));
-        if (!isMounted || controller.signal.aborted) return;
+            const sizes = listRaw.map((t: any) => ({
+              id: Number(t.cdtamanho ?? t.cdTamanho ?? t.id ?? 0),
+              name: String(t.dstamanho ?? t.dsTamanho ?? t.nome ?? "").trim(),
+              price: Number(t.vlpreco ?? t.vlPreco ?? t.preco ?? 0),
+              productId: Number(t.cdproduto ?? t.cdProduto ?? 0),
+            }));
 
+            setSizes(sizes);
+          } catch (e: any) {
+            const msg = (e?.message || "").toLowerCase();
+            if (msg.includes("failed to fetch")) {
+              setError(
+                "Não foi possível conectar ao servidor (conexão recusada/indisponível). Verifique IP e porta."
+              );
+            } else if (msg.startsWith("http")) {
+              setError(`Servidor respondeu com erro: ${e.message}.`);
+            } else {
+              setError("Erro ao carregar tamanhos. Tente novamente.");
+            }
+            console.error("Tamanhos - erro:", e);
+          } finally {
+            clearTimeout(to);
+          }
+        });
+
+        await go(40, "Carregando complementos...", async () => {
+          const ctrl = new AbortController();
+          const to = setTimeout(() => ctrl.abort(), 15000);
+          try {
+            const papel = String(
+              useUserData.getState().userData?.tpPapel ??
+                localStorage.getItem("tpPapel") ??
+                "8"
+            );
+
+            const res = await Api.get(`adicional/agrupado?tpPapel=${papel}`, {
+              signal: ctrl.signal,
+            });
+
+            const listRaw = res?.data?.data ?? res?.data ?? [];
+            if (!Array.isArray(listRaw)) throw new Error("Formato inesperado");
+
+            const complements = listRaw.map((t: any) => ({
+              id: Number(t.cdAdicional ?? t.id ?? 0),
+              name: String(t.dsAdicional ?? t.nome ?? "").trim(),
+              order: Number(t.nrOrdem ?? 0),
+              price: Number(t.vlAdicional ?? 0),
+              groupId: Number(t.cdAgrupador ?? 0),
+              groupType: String(t.tpAgrupador ?? "").trim(),
+            }));
+
+            setComplements(complements);
+          } catch (e: any) {
+            const msg = (e?.message || "").toLowerCase();
+            if (msg.includes("failed to fetch")) {
+              setError(
+                "Não foi possível conectar ao servidor. Verifique IP e porta."
+              );
+            } else if (e?.name === "AbortError") {
+              setError("Tempo limite excedido. Verifique sua conexão.");
+            } else {
+              setError("Erro ao carregar complementos. Tente novamente.");
+            }
+            console.error("❌ Erro ao carregar complementos:", e);
+          } finally {
+            clearTimeout(to);
+          }
+        });
+
+        await go(60, "Carregando produtos...", async () => {
+          const ctrl = new AbortController();
+          const to = setTimeout(() => ctrl.abort(), 15000);
+          try {
+            const papel = String(
+              useUserData.getState().userData?.tpPapel ??
+                localStorage.getItem("tpPapel") ??
+                "8"
+            );
+
+            const res = await Api.get(`produto?tpPapel=${papel}`, {
+              signal: ctrl.signal,
+            });
+            console.log(res);
+            const listRaw = res?.data?.data ?? res?.data ?? [];
+            if (!Array.isArray(listRaw)) throw new Error("Formato inesperado");
+
+            const products = listRaw.map((p: any) => ({
+              id: Number(p.cdproduto),
+              name: (p.dsproduto ?? "").trim(),
+              price: Number(p.vlproduto ?? 0),
+              image: p.dsfotourl ?? "",
+              groupId: Number(p.cdgrupo ?? 0),
+            }));
+
+            setProductArr(products);
+          } catch (e: any) {
+            const msg = (e?.message || "").toLowerCase();
+            if (msg.includes("failed to fetch")) {
+              setError(
+                "Não foi possível conectar ao servidor (conexão recusada/indisponível). Verifique IP e porta."
+              );
+            } else if (msg.startsWith("http")) {
+              setError(`Servidor respondeu com erro: ${e.message}.`);
+            } else {
+              setError("Erro ao carregar produtos. Tente novamente.");
+            }
+            console.error("Produtos - erro:", e);
+          } finally {
+            clearTimeout(to);
+          }
+        });
+
+        await go(80, "Carregando grupos...", async () => {
+          const ctrl = new AbortController();
+          const to = setTimeout(() => ctrl.abort(), 15000);
+          try {
+            const papel = String(
+              useUserData.getState().userData?.tpPapel ??
+                localStorage.getItem("tpPapel") ??
+                "8"
+            );
+
+            const res = await Api.get(`produto/grupo?tpPapel=${papel}`, {
+              signal: ctrl.signal,
+            });
+
+            const listRaw = res?.data?.data ?? res?.data ?? [];
+            if (!Array.isArray(listRaw)) throw new Error("Formato inesperado");
+
+            const groups = listRaw.map((g: any) => ({
+              id: Number(g.cdgrupo ?? g.cdGrupo ?? 0),
+              name: String(g.dsgrupo ?? g.dsGrupo ?? "").trim(),
+              order: Number(g.nrordem ?? g.nrOrdem ?? 0),
+              subgroups: Array.isArray(g.subgrupos)
+                ? g.subgrupos.map((s: any) => ({
+                    id: Number(s.cdsubgrupo ?? s.cdSubgrupo ?? 0),
+                    name: String(s.dssubgrupo ?? s.dsSubgrupo ?? "").trim(),
+                    order: Number(s.nrordem ?? s.nrOrdem ?? 0),
+                  }))
+                : [],
+            }));
+            setGroupArr(groups);
+          } catch (e: any) {
+            const msg = (e?.message || "").toLowerCase();
+            if (msg.includes("failed to fetch")) {
+              setError(
+                "Não foi possível conectar ao servidor (conexão recusada/indisponível). Verifique IP e porta."
+              );
+            } else if (msg.startsWith("http")) {
+              setError(`Servidor respondeu com erro: ${e.message}.`);
+            } else {
+              setError("Erro ao carregar produtos. Tente novamente.");
+            }
+            console.error("Produtos - erro:", e);
+          } finally {
+            clearTimeout(to);
+          }
+        });
         await go(95, "Sincronizando usuário...", async () => {
-          setUserData(userMock);
           await wait(150);
         });
 

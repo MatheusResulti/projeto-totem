@@ -26,13 +26,14 @@ export const productMock = [
   {
     id: 6,
     name: "Água",
-    price: 6.0,
+    price: 4.0,
     image: "/assets/produtos/agua.png",
     groupId: 2,
   },
   {
     id: 7,
-    name: "Coca-Cola",
+    name: "Coca-Cola lata",
+    price: 6.0,
     image: "/assets/produtos/coca.png",
     groupId: 2,
   },

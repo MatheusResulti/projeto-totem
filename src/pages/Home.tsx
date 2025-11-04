@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useUserData } from "../utils/store";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -11,12 +12,28 @@ export default function Home() {
 
   const userData = useUserData((s) => s.userData);
   const setUserData = useUserData((s) => s.setUserData);
-  const paymentMethods = userData.FormasPgto;
   const [modalValidate, setModalValidate] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [secretCounter, setSecretCounter] = useState(0);
   const [modalConf, setModalConf] = useState(false);
+
+  const rawMethods =
+    (userData as any)?.FormasPgto ?? (userData as any)?.formasPgto ?? [];
+
+  const paymentMethods: string[] = Array.isArray(rawMethods)
+    ? Array.from(
+        new Set(
+          rawMethods.map((m: any) => {
+            const doc = (m.dsDocumento ?? m.dsReduzida ?? "")
+              .trim()
+              .toUpperCase();
+            if (doc.includes("CARTÃO")) return "CARTÃO";
+            return doc;
+          })
+        )
+      )
+    : [];
 
   const secretFunction = async () => {
     if (secretCounter >= 10) {
@@ -60,7 +77,7 @@ export default function Home() {
       className="flex flex-col h-screen w-screen bg-cover bg-center"
       style={{
         backgroundImage: `url(${
-          userData?.home || "/assets/defaultHomeImage.png"
+          userData?.cfgTotem?.dsImgCapa || "/assets/defaultHomeImage.png"
         })`,
       }}
     >
@@ -69,21 +86,26 @@ export default function Home() {
           <div className="flex flex-col items-center justify-center gap-10 w-full">
             <img
               src={
-                userData?.logo && userData.logo.length
-                  ? userData.logo
+                userData?.cfgTotem?.dsImgLogo &&
+                userData.cfgTotem?.dsImgLogo.length
+                  ? userData.cfgTotem?.dsImgLogo
                   : "/assets/logo.png"
               }
               className="max-w-1/5 rounded-xl"
             />
             <button
               onClick={() => navigate("/menu")}
-              className="text-3xl text-white font-bold bg-green-600/95 rounded-md w-9/10 h-20 touchable"
+              style={{
+                backgroundColor:
+                  userData?.cfgTotem?.cdCorPrimaria || "var(--color-secondary)",
+              }}
+              className="text-3xl text-white font-bold rounded-md w-9/10 h-20 touchable"
             >
               FAÇA SEU PEDIDO
             </button>
             <div className="flex gap-3 justify-center">
-              {paymentMethods.map((method) => (
-                <PaymentMethodBadge key={method} method={method} />
+              {paymentMethods.map((label, i) => (
+                <PaymentMethodBadge key={`${label}-${i}`} method={label} />
               ))}
             </div>
           </div>

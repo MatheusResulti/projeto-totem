@@ -17,9 +17,9 @@ export default function ProductCard({ item, onSelect }: Props) {
       >
         <div className="w-full h-38 flex items-center justify-center object-contain mt-3">
           <img
-            src={item.image}
+            src={item.image || "/assets/sem-foto.png"}
             alt={item.name}
-            className="w-fit h-full object-contain rounded-lg"
+            className="w-20 h-20 object-cover"
           />
         </div>
         <div className="mt-2 text-lg flex flex-col items-center font-bold">

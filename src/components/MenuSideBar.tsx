@@ -11,15 +11,15 @@ export default function MenuSideBar({
   onSelectGroup,
 }: MenuSideBarProps) {
   const GroupArr = useGroup((state) => state.groupArr);
-  const UserData = useUserData((state) => state.userData);
+  const userData = useUserData((state) => state.userData);
 
   return (
     <>
       <div className="flex flex-col items-center gap-3">
         <img
           src={
-            UserData?.logo && UserData.logo.length
-              ? UserData.logo
+            userData?.cfgTotem?.dsImgLogo && userData.cfgTotem?.dsImgLogo.length
+              ? userData.cfgTotem?.dsImgLogo
               : "/assets/icon.png"
           }
           alt="Logo do estabelecimento"
