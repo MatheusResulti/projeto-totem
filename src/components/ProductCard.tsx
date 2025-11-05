@@ -1,11 +1,13 @@
 import type { ProductType } from "../types/types";
 import { formatToBRL } from "../utils/helpers";
+import { useTotemColor } from "../utils/useTotemColor";
 
 interface Props {
   item: ProductType;
   onSelect?: (product: ProductType) => void;
 }
 export default function ProductCard({ item, onSelect }: Props) {
+  const { primary } = useTotemColor();
   const handleClick = () => {
     onSelect?.(item);
   };
@@ -19,13 +21,13 @@ export default function ProductCard({ item, onSelect }: Props) {
           <img
             src={item.image || "/assets/sem-foto.png"}
             alt={item.name}
-            className="w-20 h-20 object-cover"
+            className="h-full rounded-lg"
           />
         </div>
         <div className="mt-2 text-lg flex flex-col items-center font-bold">
           <p>{item.name}</p>
           {item.price && (
-            <p className="text-money">{formatToBRL(item.price)}</p>
+            <p style={{ color: primary }}>{formatToBRL(item.price)}</p>
           )}
         </div>
       </button>

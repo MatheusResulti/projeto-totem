@@ -17,12 +17,6 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const setUserData = useUserData((s) => s.setUserData);
 
-  // const setUser = async (data: any) => {
-  //   localStorage.setItem("user", JSON.stringify({ ...data }));
-  //   setUserData?.(data?.user ?? data);
-  //   navigate("/splash");
-  // };
-
   const handleLogin = async () => {
     if (loading) return;
     if (!apiRoute) return toast.error("O campo IP é obrigatório.");

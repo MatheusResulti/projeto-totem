@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import type { ItemType } from "../types/types";
 import { formatToBRL } from "../utils/helpers";
 import { useOrder, useProduct } from "../utils/store";
+import { useTotemColor } from "../utils/useTotemColor";
 
 type CartItemProps = {
   item: ItemType;
@@ -15,7 +16,8 @@ export default function CartItem({ item, index }: CartItemProps) {
   const productData = products.find((p) => p.id === item.produto_id);
   const order = useOrder((s) => s.order);
   const setOrder = useOrder((s) => s.setOrder);
-  // const adicionaisFiltrados = (item.adicionais ?? []).filter((a) => a?.name);
+  const adicionaisFiltrados = (item.adicionais ?? []).filter((a) => a?.name);
+  const { primary } = useTotemColor();
 
   const removeItem = () => {
     const itemObj = { ...item, delete: true };
@@ -39,57 +41,49 @@ export default function CartItem({ item, index }: CartItemProps) {
   };
 
   return (
-    <div className="w-full flex relative border-b border-gray-300 p-4 items-center">
+    <div className="w-full flex relative border-b border-border-color p-4 items-center">
       <img
         src={productData?.image}
         className="w-20 h-20 rounded-lg object-contain"
       />
-      <div className="flex flex-col ml-5 text-text-color justify-center gap-1">
+
+      <div className="flex flex-col ml-5 text-text-color justify-center gap-1 flex-1 min-w-0 pr-28">
         <div className="flex flex-row gap-2">
           <span className="text-gray-600">{item.quantidade}x</span>
           <span className="font-semibold">{item.dsProduto}</span>
         </div>
-        <div className="flex flex-col text-text-color justify-center gap-1 min-w-0 max-w-1/3">
-          {/* {adicionaisFiltrados.length > 0 && (
+
+        <div className="flex flex-col text-text-color justify-center gap-1 min-w-0">
+          {adicionaisFiltrados.length > 0 && (
             <ul className="text-xs text-gray-500 space-y-0.5">
-              {adicionaisFiltrados.map((a, i) => {
-                const qtd = a.quantidade ?? a.qty ?? 1;
-                const preco = a.valor ?? a.price ?? 0;
-                return (
-                  <li
-                    key={`${a.id ?? a.name}-${i}`}
-                    className="flex items-center gap-1"
-                  >
-                    <span>• {a.name}</span>
-                    {qtd > 1 && <span>×{qtd}</span>}
-                    {preco ? <span>— {formatToBRL(preco * qtd)}</span> : null}
-                  </li>
-                );
-              })}
+              {adicionaisFiltrados.map((a, i) => (
+                <li
+                  key={`${a.adicional_id ?? a.name}-${i}`}
+                  className="flex items-center gap-1"
+                >
+                  {a.name}
+                </li>
+              ))}
             </ul>
-          )} */}
-          <span
-            className="
-    text-gray-500 text-sm
-    break-all
-    overflow-hidden
-    [display:-webkit-box]
-    [-webkit-line-clamp:3]
-    [-webkit-box-orient:vertical]
-  "
-          >
+          )}
+
+          <span className="text-gray-500 text-sm truncate block">
             {item.observacao}
           </span>
         </div>
 
         <button
           onClick={removeItem}
-          className="text-red-700 text-start font-semibold touchable "
+          className="w-fit text-error text-start font-semibold touchable"
         >
           Remover
         </button>
       </div>
-      <span className="text-money text-lg absolute right-10 font-semibold">
+
+      <span
+        style={{ color: primary }}
+        className="text-lg absolute right-10 font-semibold"
+      >
         {formatToBRL(item.price)}
       </span>
     </div>

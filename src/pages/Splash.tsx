@@ -81,7 +81,7 @@ export default function Splash() {
     const door = localStorage.getItem("door");
 
     if (!userStr || !token || !route || !door) {
-      navigate("/");
+      navigate("/login");
       return () => {};
     }
 
@@ -89,7 +89,7 @@ export default function Splash() {
       const user = JSON.parse(userStr);
       setUserData(user);
     } catch {
-      navigate("/");
+      navigate("/login");
       return () => {};
     }
 
@@ -204,7 +204,6 @@ export default function Splash() {
             const res = await Api.get(`produto?tpPapel=${papel}`, {
               signal: ctrl.signal,
             });
-            console.log(res);
             const listRaw = res?.data?.data ?? res?.data ?? [];
             if (!Array.isArray(listRaw)) throw new Error("Formato inesperado");
 
@@ -254,16 +253,26 @@ export default function Splash() {
             const groups = listRaw.map((g: any) => ({
               id: Number(g.cdgrupo ?? g.cdGrupo ?? 0),
               name: String(g.dsgrupo ?? g.dsGrupo ?? "").trim(),
-              order: Number(g.nrordem ?? g.nrOrdem ?? 0),
+              order: Number(g.nrordem ?? g.nrOrdem ?? 999),
               subgroups: Array.isArray(g.subgrupos)
                 ? g.subgrupos.map((s: any) => ({
                     id: Number(s.cdsubgrupo ?? s.cdSubgrupo ?? 0),
                     name: String(s.dssubgrupo ?? s.dsSubgrupo ?? "").trim(),
-                    order: Number(s.nrordem ?? s.nrOrdem ?? 0),
+                    order: Number(s.nrordem ?? s.nrOrdem ?? 999),
                   }))
                 : [],
             }));
-            setGroupArr(groups);
+
+            const sortedGroups = groups
+              .sort((a, b) => (a.order ?? 999) - (b.order ?? 999))
+              .map((g) => ({
+                ...g,
+                subgroups: [...(g.subgroups ?? [])].sort(
+                  (a, b) => (a.order ?? 999) - (b.order ?? 999)
+                ),
+              }));
+
+            setGroupArr(sortedGroups);
           } catch (e: any) {
             const msg = (e?.message || "").toLowerCase();
             if (msg.includes("failed to fetch")) {
@@ -348,10 +357,10 @@ export default function Splash() {
         </div>
       ) : (
         <div className="mt-4 text-center">
-          <p className="text-red-300 mb-3">{error}</p>
+          <p className="text-error mb-3">{error}</p>
           <button
             onClick={handleRetry}
-            className="bg-primary px-5 py-2 rounded-md font-semibold hover:opacity-85 transition"
+            className="bg-primary px-5 py-2 rounded-md font-semibold touchable"
           >
             Tentar novamente
           </button>

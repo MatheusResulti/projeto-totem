@@ -13,11 +13,11 @@ import {
 import QuantityCounter from "./QuantityCounter";
 import AditionalItem from "./AditionalItem";
 import type { ItemType, ProductType } from "../types/types";
+import { useTotemColor } from "../utils/useTotemColor";
 
 type ProductInfoProps = {
   product: ProductType;
   setModalVisible: (value: boolean) => void;
-  // onAdd?: (product: ProductType) => void;
 };
 
 export default function ProductInfo({
@@ -30,6 +30,7 @@ export default function ProductInfo({
   const setOrder = useOrder((s) => s.setOrder);
   const userData = useUserData((s: any) => s.userData);
   const { quantity, setQuantity } = useCount();
+  const { primary } = useTotemColor();
 
   const [selectedSize, setSelectedSize] = useState<any>(null);
   const [obs, setObs] = useState("");
@@ -45,23 +46,37 @@ export default function ProductInfo({
     [sizes, product.id]
   );
 
-  const [complementsData, setComplementsData] = useState<any[]>([]);
-  useEffect(() => {
-    setComplementsData(
-      complements
-        .filter((c: any) => c.productId === product.id)
-        .map((c: any) => ({ ...c, selected: c.selected ?? false }))
-    );
-  }, [complements, product.id]);
-
   const selectSize = (item: any) => {
     setSelectedSize(item);
   };
 
-  const selectComplement = (item: any, i: number) => {
+  const filteredComplements = useMemo(() => {
+    const pid = Number(product.id);
+    const gid = Number(product.groupId ?? 0);
+
+    return complements
+      .filter((c: any) => {
+        const targetId = Number(c.groupId ?? 0);
+        const type = String(c.groupType ?? "").toLowerCase();
+        return (
+          (type === "p" && targetId === pid) ||
+          (type === "g" && targetId === gid)
+        );
+      })
+      .map((c: any) => ({ ...c, selected: !!c.selected }));
+  }, [complements, product.id, product.groupId]);
+
+  const [complementsData, setComplementsData] = useState<any[]>([]);
+
+  useEffect(() => {
+    setComplementsData(filteredComplements);
+  }, [filteredComplements]);
+
+  const selectComplement = (item: any) => {
     setComplementsData((prev) => {
       const next = [...prev];
-      next[i] = { ...item, selected: !item.selected };
+      const idx = next.findIndex((c) => c.id === item.id);
+      if (idx >= 0) next[idx] = { ...next[idx], selected: !next[idx].selected };
       return next;
     });
   };
@@ -123,7 +138,7 @@ export default function ProductInfo({
 
   return (
     <div className="flex flex-col max-h-[80vh]">
-      <div className="flex md:flex-row items-center px-5 gap-6 border-b-1 border-b-gray-200 h-70">
+      <div className="flex md:flex-row items-center px-5 gap-6 border-b border-b-gray-200 h-70">
         {product.image ? (
           <img
             src={product.image}
@@ -132,7 +147,7 @@ export default function ProductInfo({
           />
         ) : (
           <div className="flex items-center justify-center w-50 h-50 rounded-lg bg-gray-200">
-            <ShoppingBasket className="size-[56px] text-basket" />
+            <ShoppingBasket className="size-14 text-basket" />
           </div>
         )}
         <div className="flex flex-col">
@@ -194,7 +209,7 @@ export default function ProductInfo({
           </span>
           <span
             className={`text-sm ${
-              obs.length >= maxChars ? "text-red-500" : "text-gray-600/70"
+              obs.length >= maxChars ? "text-error" : "text-gray-600/70"
             }`}
           >
             {obs.length}/{maxChars}
@@ -205,7 +220,7 @@ export default function ProductInfo({
           onChange={(e) => setObs(e.target.value.slice(0, maxChars))}
           maxLength={maxChars}
           placeholder="Ex: remover alface e tomate"
-          className="border border-gray-300 rounded-lg mt-3 pl-2 pt-[10px] text-text-color w-full resize-none overflow-hidden h-12"
+          className="border border-gray-300 rounded-lg mt-3 pl-2 pt-2.5 text-text-color w-full resize-none overflow-hidden h-12"
         />
       </div>
 
@@ -213,15 +228,15 @@ export default function ProductInfo({
         <QuantityCounter />
         <button
           disabled={loadingInfo || (hasSizes && !selectedSize)}
-          className="cart-text touchable bg-money items-center rounded-lg h-full w-1/2 flex px-4 disabled:opacity-50"
+          style={{ backgroundColor: primary }}
+          className="cart-text touchable items-center justify-between rounded-lg h-full w-1/2 flex px-4 disabled:opacity-50"
           onClick={setOrderItem}
         >
           {loadingInfo ? "Adicionando..." : "Adicionar"}
+          <span>
+            {shouldDeferPrice ? "R$ --" : formatToBRL(totalPrice * quantity)}
+          </span>
         </button>
-
-        <span className="cart-text absolute right-9 bottom-7 pointer-events-none">
-          {shouldDeferPrice ? "R$ --" : formatToBRL(totalPrice * quantity)}
-        </span>
       </div>
     </div>
   );

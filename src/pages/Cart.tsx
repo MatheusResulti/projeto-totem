@@ -4,23 +4,30 @@ import { useUserData, useOrder } from "../utils/store.ts";
 import { formatToBRL } from "../utils/helpers.ts";
 import CartItem from "../components/CartItem.tsx";
 import PaymentMethodSelector from "../components/PaymentMethodSelector.tsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useTotemColor } from "../utils/useTotemColor.ts";
 
 export default function Cart() {
   const navigate = useNavigate();
-  const UserData = useUserData((state) => state.userData);
+  const { primary } = useTotemColor();
+  const userData = useUserData((state) => state.userData);
   const { itens, total } = useOrder((s) => s.order);
-  // const qtd = itens.reduce((acc, it) => acc + (it.quantidade ?? 1), 0);
   const [showSelector, setShowSelector] = useState(false);
+
+  useEffect(() => {
+    console.log("🎨 Cor primária recebida:", userData?.cfgTotem?.corPrimaria);
+    console.log("🧾 Tipo:", typeof userData?.cfgTotem?.corPrimaria);
+  }, [userData]);
 
   return (
     <div className="flex flex-col h-svh overflow-hidden">
-      <div className="px-4 pt-4 pb-6 flex flex-row items-center justify-between border-b border-gray-300">
+      <div className="px-4 pt-4 pb-6 flex flex-row items-center justify-between border-b border-border-color">
         <div className="flex flex-row items-center text-text-color">
           <img
             src={
-              UserData?.logo && UserData.logo.length
-                ? UserData.logo
+              userData?.cfgTotem?.dsImgLogo &&
+              userData.cfgTotem?.dsImgLogo.length
+                ? userData.cfgTotem?.dsImgLogo
                 : "/assets/icon.png"
             }
             alt="Logo do estabelecimento"
@@ -29,15 +36,19 @@ export default function Cart() {
           <div className="pl-4">
             <span>Seu pedido em</span>
             <h1 className="font-bold text-2xl">
-              {UserData?.nmUsuario && UserData.nmUsuario.length
-                ? UserData.nmUsuario
+              {userData?.nmUsuario && userData.nmUsuario.length
+                ? userData.nmUsuario
                 : "Restaurante Teste"}
             </h1>
           </div>
         </div>
         <button
           onClick={() => navigate("/menu")}
-          className="border-3 border-money rounded-full h-11 w-35 text-money font-semibold touchable"
+          style={{
+            borderColor: primary,
+            color: primary,
+          }}
+          className="border-3 rounded-full h-11 w-35 font-semibold touchable"
         >
           Ver cardápio
         </button>
@@ -49,14 +60,25 @@ export default function Cart() {
       </div>
       <PaymentMethodSelector
         open={showSelector}
-        onConfirm={() => navigate("/payment")}
+        onConfirm={() => navigate("/pixpayment")}
       />
-      <div className="sticky bottom-1 flex border-t border-border-color w-full px-4 py-3">
+      <div className="sticky bottom-1 flex border-t border-border-color w-full px-4 py-3 gap-2">
+        <div
+          style={{ color: primary }}
+          className="w-1/2 flex items-center justify-center"
+        >
+          <span className="text-3xl font-bold">
+            Total: {formatToBRL(total)}
+          </span>
+        </div>
         <button
           onClick={() => setShowSelector((v) => !v)}
-          className="rounded-2xl touchable justify-center items-center bg-money cart-text text-xl h-20 w-full p-4"
+          style={{
+            backgroundColor: primary,
+          }}
+          className="rounded-2xl touchable flex flex-col justify-center items-center cart-text font-bold text-xl h-20 w-full p-4 shadow-md active:scale-95 transition"
         >
-          Fazer pagamento Total: {formatToBRL(total)}
+          <span className="text-2xl tracking-wider">Fazer pagamento</span>
         </button>
       </div>
     </div>

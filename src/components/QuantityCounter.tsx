@@ -1,16 +1,23 @@
 import { useCount } from "../utils/store";
+import { useTotemColor } from "../utils/useTotemColor";
 
 export default function QuantityCounter() {
+  const { primary } = useTotemColor();
   const { quantity, inc, dec } = useCount();
+
+  const isDisabled = quantity <= 1;
 
   return (
     <div className="flex w-36 h-12 items-center justify-between rounded-md border border-gray-300 overflow-hidden shadow-sm bg-white">
       <button
         onClick={dec}
-        className={`flex-1 h-full flex items-center justify-center text-2xl font-bold transition-colors ${
-          quantity <= 1 ? "text-gray-400" : "text-money hover:bg-money/10"
+        disabled={isDisabled}
+        className={`flex-1 h-full flex items-center justify-center text-2xl font-bold transition-colors duration-150 ${
+          isDisabled ? "text-gray-400" : "touchable"
         }`}
-        disabled={quantity <= 1}
+        style={{
+          color: isDisabled ? "#9ca3af" : primary,
+        }}
       >
         −
       </button>
@@ -21,7 +28,8 @@ export default function QuantityCounter() {
 
       <button
         onClick={inc}
-        className="flex-1 h-full flex items-center justify-center text-2xl font-bold text-money hover:bg-money/10 transition-colors"
+        className="flex-1 h-full flex items-center justify-center text-2xl font-bold touchable"
+        style={{ color: primary }}
       >
         +
       </button>

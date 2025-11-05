@@ -1,5 +1,6 @@
 import GroupItem from "../components/GroupItem";
 import { useGroup, useUserData } from "../utils/store";
+import { useMemo } from "react";
 
 interface MenuSideBarProps {
   selectedGroup: number;
@@ -12,6 +13,16 @@ export default function MenuSideBar({
 }: MenuSideBarProps) {
   const GroupArr = useGroup((state) => state.groupArr);
   const userData = useUserData((state) => state.userData);
+
+  const sortedGroups = useMemo(() => {
+    return [...GroupArr].sort((a, b) => {
+      const ao = a.order ?? 999;
+      const bo = b.order ?? 999;
+
+      if (ao !== bo) return ao - bo;
+      return (a.id ?? 0) - (b.id ?? 0);
+    });
+  }, [GroupArr]);
 
   return (
     <>
@@ -27,18 +38,17 @@ export default function MenuSideBar({
         />
         <h1 className="font-bold text-2xl pb-3">Menu</h1>
       </div>
+
       <div className="flex flex-col items-start">
-        {GroupArr.map((group) => {
-          return (
-            <GroupItem
-              key={group.id}
-              id={group.id}
-              name={group.name}
-              selected={group.id === selectedGroup}
-              onSelect={onSelectGroup}
-            />
-          );
-        })}
+        {sortedGroups.map((group) => (
+          <GroupItem
+            key={group.id}
+            id={group.id}
+            name={group.name}
+            selected={group.id === selectedGroup}
+            onSelect={onSelectGroup}
+          />
+        ))}
       </div>
     </>
   );

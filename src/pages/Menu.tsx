@@ -7,10 +7,13 @@ import type { ProductType } from "../types/types";
 import ProductInfo from "../components/ProductInfo";
 import { useGroup, useOrder, useProduct, useCount } from "../utils/store";
 import { formatToBRL } from "../utils/helpers";
+import { useTotemColor } from "../utils/useTotemColor";
+import { ShoppingCart } from "lucide-react";
 
 export default function Menu() {
   const navigate = useNavigate();
 
+  const { primary } = useTotemColor();
   const GroupArr = useGroup((s) => s.groupArr);
   const ProductArr = useProduct((s) => s.productArr);
   const [selectedGroup, setSelectedGroup] = useState<number>(1);
@@ -72,11 +75,9 @@ export default function Menu() {
   };
 
   function CartTotal() {
-    const { itens, total } = useOrder((s) => s.order);
-    const qtd = itens.reduce((acc, it) => acc + (it.quantidade ?? 1), 0);
+    const { total } = useOrder((s) => s.order);
     return (
       <div className="text-xl flex flex-row gap-4">
-        <span>Itens: {qtd} </span>
         <span>Total: {formatToBRL(total)}</span>
       </div>
     );
@@ -118,10 +119,23 @@ export default function Menu() {
             <button
               disabled={!order.itens.length}
               onClick={() => navigate("/cart")}
-              className="bg-money rounded-lg flex items-center justify-between overflow-hidden cart-text text-start text-xl w-full h-full px-5 touchable disabled:opacity-50"
+              style={{ backgroundColor: primary }}
+              className={`rounded-2xl flex items-center justify-between text-white text-xl font-semibold w-full h-full px-6 py-4 touchable
+                ${!order.itens.length ? "opacity-60 cursor-not-allowed" : ""}`}
             >
-              Carrinho
-              {order.itens.length > 0 ? <CartTotal /> : null}
+              <div className="flex items-center gap-3">
+                <ShoppingCart size={28} />
+                <div className="flex flex-col items-start">
+                  <span>Carrinho</span>
+                  {order.itens.length > 0 && (
+                    <span className="text-sm opacity-90">
+                      {order.itens.length} item(s)
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {order.itens.length > 0 && <CartTotal />}
             </button>
           </div>
         </div>

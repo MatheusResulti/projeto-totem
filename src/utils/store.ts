@@ -40,9 +40,17 @@ export const useProduct = create<IProduct>((set) => ({
   setProductArr: (value) => set({ productArr: value }),
 }));
 
+interface Subgroup {
+  id: number;
+  name: string;
+  order?: number;
+}
+
 interface Group {
   id: number;
   name: string;
+  order?: number;
+  subgroups?: Subgroup[];
 }
 
 interface IGroup {

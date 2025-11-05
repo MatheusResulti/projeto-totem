@@ -1,4 +1,5 @@
 import { formatToBRL } from "../utils/helpers";
+import { useTotemColor } from "../utils/useTotemColor";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type AditionalItemProps = {
@@ -14,26 +15,31 @@ export default function AditionalItem({
   action,
   selected = false,
 }: AditionalItemProps) {
+  const { primary } = useTotemColor();
+
   return (
     <button
       onClick={() => action(item, i)}
-      className="w-full h-14 p-3 border-b-1 border-border-color flex items-center justify-between touchable"
+      className="w-full h-14 p-3 border-b border-border-color flex items-center justify-between touchable"
     >
       <span className="text-gray-800 font-medium">
         {item.name}
-        {item.price && (
+        {item.price !== 0 && (
           <>
             {" - "}
-            <span className="text-money font-semibold">
+            <span style={{ color: primary }} className="font-semibold">
               {formatToBRL(item.price)}
             </span>
           </>
         )}
       </span>
       <div
-        className={`w-5 h-5 rounded-full border border-border-color bg-gray-300 touchable
-          ${selected ? "bg-money" : "bg-gray-300"}
-        `}
+        className={`w-5 h-5 rounded-full border border-border-color touchable`}
+        style={{
+          backgroundColor: selected
+            ? primary ?? "var(--color-secondary)"
+            : "#d1d5db",
+        }}
       ></div>
     </button>
   );

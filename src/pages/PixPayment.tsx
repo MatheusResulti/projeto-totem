@@ -8,8 +8,9 @@ import toast from "react-hot-toast";
 import { Api } from "../api/Api";
 import { ResultiApi } from "../api/ResultiApi";
 import { formatToBRL } from "../utils/helpers";
+import { useTotemColor } from "../utils/useTotemColor";
 
-export default function Payment() {
+export default function PixPayment() {
   const navigate = useNavigate();
   const userData = useUserData((s) => s.userData);
   const [isPaid, setIsPaid] = useState(false);
@@ -19,6 +20,7 @@ export default function Payment() {
   const [pixData, setPixData] = useState<ResultiPayType | null>();
   const order = useOrder((s) => s.order);
   const setOrder = useOrder((s) => s.setOrder);
+  const { primary } = useTotemColor();
 
   const sendOrder = async (pixI?: any, pixD?: any) => {
     let data: any = null;
@@ -43,21 +45,21 @@ export default function Payment() {
           toast.error(res.error);
           return;
         }
-        await createBytes(res.impressao).then(() => {
-          setOrder({
-            cdEmpresa: 1,
-            tpAtendimento: 2,
-            dsAtendimento: "TOTEM",
-            tpLocal: 1,
-            cdUsuario: 0,
-            dsRotulo: "",
-            total: 0,
-            itens: [],
-          });
-          setTimeout(() => {
-            navigate("/home");
-          }, 5000);
-        });
+        //   await createBytes(res.impressao).then(() => {
+        //     setOrder({
+        //       cdEmpresa: 1,
+        //       tpAtendimento: 2,
+        //       dsAtendimento: "TOTEM",
+        //       tpLocal: 1,
+        //       cdUsuario: 0,
+        //       dsRotulo: "",
+        //       total: 0,
+        //       itens: [],
+        //     });
+        //     setTimeout(() => {
+        //       navigate("/home");
+        //     }, 5000);
+        //   });
       })
       .catch(() => {
         toast.error(
@@ -141,50 +143,50 @@ export default function Payment() {
       });
   };
 
-  const createBytes = async (impressao: any) => {
-    try {
-      const connection = new InMemory();
-      const printer = await Printer.CONNECT("Sunmi-T2s", connection);
-      const capability = Model.EXPAND(Model.FIND("Sunmi-T2s"));
-      const { feed } = capability;
+  // const createBytes = async (impressao: any) => {
+  //   try {
+  //     const connection = new InMemory();
+  //     const printer = await Printer.CONNECT("Sunmi-T2s", connection);
+  //     const capability = Model.EXPAND(Model.FIND("Sunmi-T2s"));
+  //     const { feed } = capability;
 
-      await Promise.all(
-        impressao.map(async (item: any) => {
-          if (item.text && item.text.length) {
-            if (item.bold) {
-              await printer.writeln(item.text + "\n", Style.Bold);
-            } else {
-              await printer.writeln(item.text + "\n", 0);
-            }
-          }
-          if (item.line) {
-            await printer.writeln("--------------------------------\n");
-          }
-          if (item.doubleLine) {
-            await printer.writeln("================================\n");
-          }
-          if (item.emptyLine) {
-            await printer.feed(1);
-          }
-        })
-      );
-      const lastItem = impressao[impressao.length - 1];
-      if (lastItem?.cutt) {
-        await printer.feed(0);
-        await printer.cutter();
-        const status =
-          await NativeModuleTectToySunmiSDK.impressora.ObterStatus();
-        if (status.status === "OK") {
-          await NativeModuleTectToySunmiSDK.impressora.ImprimirRAW(
-            ConvertBufferToBytes(connection.buffer()),
-            0
-          );
-        }
-      }
-    } catch (error: Error | any) {
-      toast.error("Algo deu errado na sua impressão!", error.message);
-    }
-  };
+  //     await Promise.all(
+  //       impressao.map(async (item: any) => {
+  //         if (item.text && item.text.length) {
+  //           if (item.bold) {
+  //             await printer.writeln(item.text + "\n", Style.Bold);
+  //           } else {
+  //             await printer.writeln(item.text + "\n", 0);
+  //           }
+  //         }
+  //         if (item.line) {
+  //           await printer.writeln("--------------------------------\n");
+  //         }
+  //         if (item.doubleLine) {
+  //           await printer.writeln("================================\n");
+  //         }
+  //         if (item.emptyLine) {
+  //           await printer.feed(1);
+  //         }
+  //       })
+  //     );
+  //     const lastItem = impressao[impressao.length - 1];
+  //     if (lastItem?.cutt) {
+  //       await printer.feed(0);
+  //       await printer.cutter();
+  //       const status =
+  //         await NativeModuleTectToySunmiSDK.impressora.ObterStatus();
+  //       if (status.status === "OK") {
+  //         await NativeModuleTectToySunmiSDK.impressora.ImprimirRAW(
+  //           ConvertBufferToBytes(connection.buffer()),
+  //           0
+  //         );
+  //       }
+  //     }
+  //   } catch (error: Error | any) {
+  //     toast.error("Algo deu errado na sua impressão!", error.message);
+  //   }
+  // };
 
   return (
     <div className="relative h-svh overflow-hidden items-center justify-center flex flex-col gap-3 text-text-color">
@@ -203,7 +205,7 @@ export default function Payment() {
         alt="Logo do estabelecimento"
         className="size-40 object-contain rounded-xl"
       />
-      <span className="font-bold text-3xl text-money">
+      <span style={{ color: primary }} className="font-bold text-3xl">
         Seu PIX está pronto!
       </span>
       <span className="font-semibold text-2xl">
@@ -212,11 +214,15 @@ export default function Payment() {
       <div className="flex flex-col w-120 border border-border-color text-xl p-4 gap-3">
         <div className="flex flex-row gap-2">
           {" "}
-          <span className="font-semibold text-money">Empresa: </span>
+          <span style={{ color: primary }} className="font-semibold ">
+            Empresa:{" "}
+          </span>
           <span className="">{userData?.nmUsuario}</span>
         </div>
         <div className="flex flex-row gap-2">
-          <span className="font-semibold text-money">Valor do pedido:</span>
+          <span style={{ color: primary }} className="font-semibold">
+            Valor do pedido:
+          </span>
           <span>{formatToBRL(order.total)}</span>
         </div>
         <button
