@@ -5,7 +5,13 @@ import { useEffect, useRef, useState } from "react";
 import MenuSideBar from "../components/MenuSideBar";
 import type { ProductType } from "../types/types";
 import ProductInfo from "../components/ProductInfo";
-import { useGroup, useOrder, useProduct, useCount } from "../utils/store";
+import {
+  useGroup,
+  useOrder,
+  useProduct,
+  useCount,
+  useUserData,
+} from "../utils/store";
 import { formatToBRL } from "../utils/helpers";
 import { useTotemColor } from "../utils/useTotemColor";
 import { ShoppingCart } from "lucide-react";
@@ -14,6 +20,7 @@ export default function Menu() {
   const navigate = useNavigate();
 
   const { primary } = useTotemColor();
+  const userData = useUserData((s) => s.userData);
   const GroupArr = useGroup((s) => s.groupArr);
   const ProductArr = useProduct((s) => s.productArr);
   const [selectedGroup, setSelectedGroup] = useState<number>(1);
@@ -85,7 +92,14 @@ export default function Menu() {
 
   return (
     <div className="h-dvh flex flex-col text-text-color">
-      <div className="bg-[url(/assets/defaultCapa.png)] bg-cover bg-center bg-no-repeat h-40 flex justify-end px-2 py-2">
+      <div
+        style={{
+          backgroundImage: `url(${
+            userData?.capa || "/assets/defaultCapa.png"
+          })`,
+        }}
+        className="bg-[url(/assets/defaultCapa.png)] bg-cover bg-center bg-no-repeat h-40 flex justify-end px-2 py-2"
+      >
         <button
           onClick={handleCancel}
           className="bg-error text-2xl font-semibold border-2 border-white rounded-lg text-white p-2 h-15 touchable contain-content"

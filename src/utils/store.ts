@@ -95,6 +95,13 @@ interface IUserData {
       dtManutencao?: string;
       [key: string]: any;
     };
+    empresa?: {
+      dsRazao?: string;
+      dsFantasia?: string;
+      nrCnpj?: string;
+      dsEndereco?: string;
+      dsBairro?: string;
+    };
   };
   setUserData: (value: any) => void;
 }
@@ -130,6 +137,13 @@ export const useUserData = create<IUserData>((set) => ({
       dsImgInicial: "",
       dsImgLogo: "",
       dtManutencao: "",
+    },
+    empresa: {
+      dsRazao: "",
+      dsFantasia: "",
+      nrCnpj: "",
+      dsEndereco: "",
+      dsBairro: "",
     },
   },
   setUserData: (value: any) => set({ userData: value }),

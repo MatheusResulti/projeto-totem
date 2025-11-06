@@ -8,6 +8,7 @@ const Cart = lazy(() => import("./pages/Cart"));
 const Splash = lazy(() => import("./pages/Splash"));
 const Login = lazy(() => import("./pages/Login"));
 const PixPayment = lazy(() => import("./pages/PixPayment"));
+const CardPayment = lazy(() => import("./pages/CardPayment"));
 
 function RootLayout() {
   return (
@@ -31,7 +32,8 @@ export default function App() {
             <Route path="home" element={<Home />} />
             <Route path="menu" element={<Menu />} />
             <Route path="cart" element={<Cart />} />
-            <Route path="pixpayment" element={<PixPayment />} />
+            <Route path="/pagamento/pix" element={<PixPayment />} />
+            <Route path="/pagamento/cartao/:tipo" element={<CardPayment />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />

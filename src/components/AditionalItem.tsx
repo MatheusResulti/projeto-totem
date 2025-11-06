@@ -22,7 +22,7 @@ export default function AditionalItem({
       onClick={() => action(item, i)}
       className="w-full h-14 p-3 border-b border-border-color flex items-center justify-between touchable"
     >
-      <span className="text-gray-800 font-medium">
+      <span className="text-text-color font-medium">
         {item.name}
         {item.price !== 0 && (
           <>

@@ -189,7 +189,7 @@ export default function PixPayment() {
   // };
 
   return (
-    <div className="relative h-svh overflow-hidden items-center justify-center flex flex-col gap-3 text-text-color">
+    <div className="h-svh items-center justify-center flex flex-col gap-3 text-text-color">
       <button
         onClick={() => navigate("/cart")}
         className="touchable absolute top-1 left-1"
@@ -198,8 +198,8 @@ export default function PixPayment() {
       </button>
       <img
         src={
-          userData?.logo && userData.logo.length
-            ? userData.logo
+          userData?.cfgTotem?.dsImgLogo && userData.cfgTotem?.dsImgLogo.length
+            ? userData.cfgTotem?.dsImgLogo
             : "/assets/icon.png"
         }
         alt="Logo do estabelecimento"
@@ -211,13 +211,18 @@ export default function PixPayment() {
       <span className="font-semibold text-2xl">
         Para continuar, leia o QrCode
       </span>
+      <img
+        src="/assets/qrcode.png"
+        alt="qrcode"
+        className="h-1/5 opacity-90 border-2 rounded-lg border-border-color"
+      />
       <div className="flex flex-col w-120 border border-border-color text-xl p-4 gap-3">
         <div className="flex flex-row gap-2">
           {" "}
           <span style={{ color: primary }} className="font-semibold ">
             Empresa:{" "}
           </span>
-          <span className="">{userData?.nmUsuario}</span>
+          <span className="">{userData?.empresa?.dsFantasia}</span>
         </div>
         <div className="flex flex-row gap-2">
           <span style={{ color: primary }} className="font-semibold">

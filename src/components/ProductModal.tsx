@@ -9,7 +9,6 @@ interface ProductModalProps {
   title?: string;
   type?: "default" | "recarga";
   onClose?: () => void;
-  closeOnBackdrop?: boolean;
   showCloseButton?: boolean;
   size?: "auto" | "full";
   maxWidthClassName?: string;
@@ -29,7 +28,6 @@ export default function ProductModal({
   title,
   type = "default",
   onClose,
-  closeOnBackdrop = false,
   showCloseButton,
   size = "full",
   maxWidthClassName = "max-w-[1200px]",
@@ -77,29 +75,22 @@ export default function ProductModal({
       ? showCloseButton
       : Boolean(title?.length) && type !== "recarga";
 
-  function handleBackdropClick(e: React.MouseEvent<HTMLDivElement>) {
-    if (!closeOnBackdrop) return;
-    if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
-      closeModal();
-    }
-  }
-
   const content = (
     <div
-      className={`fixed inset-0 flex justify-center items-center overflow-hidden p-10${
+      className={`fixed inset-0 z-150 flex justify-center items-center overflow-hidden p-10 ${
         classNameWrapper ?? ""
       }`}
-      onMouseDown={handleBackdropClick}
     >
       <div className="absolute inset-0 bg-black/70" />
       <div
         ref={panelRef}
-        className={`z-50 flex flex-col relative gap-4 ${
+        className={`z-160 flex flex-col relative gap-4 ${
           size === "auto" ? "w-auto" : "w-full"
         } ${maxWidthClassName} h-full ${maxHeightClassName} rounded-xl overflow-hidden bg-white transition-transform ease-in-out duration-250 ${
           showModal ? "translate-y-0" : "translate-y-[1500px]"
         } ${classNamePanel ?? ""}`}
       >
+        {" "}
         {title && title.length ? (
           <div className="flex items-center justify-between pr-10">
             <span
@@ -112,7 +103,6 @@ export default function ProductModal({
             {headerRight ? <div className="ml-2">{headerRight}</div> : null}
           </div>
         ) : null}
-
         {shouldShowCloseButton && (
           <button
             className="p-1 rounded-full outline-none text-gray-500 absolute top-3 right-3 border-2 border-gray-300 touchable"
@@ -121,14 +111,12 @@ export default function ProductModal({
             <X size={26} />
           </button>
         )}
-
         {type === "recarga" && idPermissao === "2" ? (
           <button
             className="p-1 rounded-full outline-none text-gray-500 absolute top-3 right-3 hover:bg-neutral-100 transition-all ease-in-out duration-300"
             onClick={closeModal}
           />
         ) : null}
-
         <div
           className={`flex flex-col flex-1 overflow-hidden ${
             classNameContent ?? ""
@@ -136,7 +124,6 @@ export default function ProductModal({
         >
           {children}
         </div>
-
         {footer ? <div className="pt-2">{footer}</div> : null}
       </div>
     </div>

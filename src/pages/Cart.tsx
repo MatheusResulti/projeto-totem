@@ -4,7 +4,7 @@ import { useUserData, useOrder } from "../utils/store.ts";
 import { formatToBRL } from "../utils/helpers.ts";
 import CartItem from "../components/CartItem.tsx";
 import PaymentMethodSelector from "../components/PaymentMethodSelector.tsx";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTotemColor } from "../utils/useTotemColor.ts";
 
 export default function Cart() {
@@ -13,11 +13,6 @@ export default function Cart() {
   const userData = useUserData((state) => state.userData);
   const { itens, total } = useOrder((s) => s.order);
   const [showSelector, setShowSelector] = useState(false);
-
-  useEffect(() => {
-    console.log("🎨 Cor primária recebida:", userData?.cfgTotem?.corPrimaria);
-    console.log("🧾 Tipo:", typeof userData?.cfgTotem?.corPrimaria);
-  }, [userData]);
 
   return (
     <div className="flex flex-col h-svh overflow-hidden">
@@ -36,8 +31,9 @@ export default function Cart() {
           <div className="pl-4">
             <span>Seu pedido em</span>
             <h1 className="font-bold text-2xl">
-              {userData?.nmUsuario && userData.nmUsuario.length
-                ? userData.nmUsuario
+              {userData?.empresa?.dsFantasia &&
+              userData.empresa?.dsFantasia.length
+                ? userData.empresa?.dsFantasia
                 : "Restaurante Teste"}
             </h1>
           </div>
@@ -60,8 +56,9 @@ export default function Cart() {
       </div>
       <PaymentMethodSelector
         open={showSelector}
-        onConfirm={() => navigate("/pixpayment")}
+        onToggle={() => setShowSelector(false)}
       />
+
       <div className="sticky bottom-1 flex border-t border-border-color w-full px-4 py-3 gap-2">
         <div
           style={{ color: primary }}
