@@ -231,7 +231,7 @@ export default function PixPayment() {
           <span>{formatToBRL(order.total)}</span>
         </div>
         <button
-          onClick={() => cancelOrder()}
+          onClick={() => navigate(-1)}
           className="w-full h-12 border-2 border-error text-error font-semibold rounded-lg touchable"
         >
           Cancelar
