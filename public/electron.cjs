@@ -28,7 +28,7 @@ function createWindow() {
     height: 800,
     autoHideMenuBar: true,
     webPreferences: {
-      preload: path.join(__dirname, "preload.cjs"), // verifique o nome e caminho
+      preload: path.join(__dirname, "preload.cjs"),
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,

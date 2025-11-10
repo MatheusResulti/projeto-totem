@@ -23,7 +23,7 @@ export default function Cart() {
               userData?.cfgTotem?.dsImgLogo &&
               userData.cfgTotem?.dsImgLogo.length
                 ? userData.cfgTotem?.dsImgLogo
-                : "/assets/icon.png"
+                : "./assets/icon.png"
             }
             alt="Logo do estabelecimento"
             className="size-32 rounded-xl"
@@ -49,17 +49,24 @@ export default function Cart() {
           Ver cardápio
         </button>
       </div>
-      <div className="flex-1 overflow-y-auto h-[calc(100vh-12rem)]">
+      <div className="flex-1 overflow-y-auto scrollbar-none">
         {itens.map((item: any, i: number) => (
           <CartItem key={i} index={i} item={item} />
         ))}
       </div>
-      <PaymentMethodSelector
-        open={showSelector}
-        onToggle={() => setShowSelector(false)}
-      />
-
-      <div className="sticky bottom-1 flex border-t border-border-color w-full px-4 py-3 gap-2">
+      {showSelector ? (
+        <div className="flex w-full px-4 pt-2 border-t border-border-color">
+          <PaymentMethodSelector
+            open={showSelector}
+            onClose={(e: any) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setShowSelector(!showSelector);
+            }}
+          />
+        </div>
+      ) : null}
+      <div className="sticky bottom-1 flex border-t border-border-color w-full px-4 py-3 gap-2 bg-white">
         <div
           style={{ color: primary }}
           className="w-1/2 flex items-center justify-center"
@@ -69,11 +76,15 @@ export default function Cart() {
           </span>
         </div>
         <button
-          onClick={() => setShowSelector((v) => !v)}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setShowSelector(!showSelector);
+          }}
           style={{
             backgroundColor: primary,
           }}
-          className="rounded-2xl touchable flex flex-col justify-center items-center cart-text font-bold text-xl h-20 w-full p-4 shadow-md active:scale-95 transition"
+          className="rounded-2xl touchable flex flex-col justify-center items-center cart-text font-bold text-xl h-20 w-full p-4"
         >
           <span className="text-2xl tracking-wider">Fazer pagamento</span>
         </button>

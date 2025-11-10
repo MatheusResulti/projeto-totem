@@ -23,6 +23,17 @@
   .cart-text {
     @apply text-white font-semibold tracking-wide;
   }
+  .payment-button {
+    @apply p-3 border-2 border-border-color rounded-xl min-h-25 min-w-50;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 
 /* (opcional) se quiser definir onde o Tailwind deve buscar classes

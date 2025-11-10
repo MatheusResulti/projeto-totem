@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useUserData } from "../utils/store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TotemConfigModal from "../components/TotemConfigModal";
 import { RefreshCcw, LogOut, Lock, Eye, EyeOff } from "lucide-react";
@@ -72,12 +72,16 @@ export default function Home() {
     navigate("/login");
   };
 
+  useEffect(() => {
+    sessionStorage.setItem("timeExceededOpens", "0");
+  }, []);
+
   return (
     <div
       className="flex flex-col h-screen w-screen bg-cover bg-center"
       style={{
         backgroundImage: `url(${
-          userData?.cfgTotem?.dsImgCapa || "/assets/defaultHomeImage.png"
+          userData?.cfgTotem?.dsImgCapa || "./assets/defaultHomeImage.png"
         })`,
       }}
     >
@@ -89,7 +93,7 @@ export default function Home() {
                 userData?.cfgTotem?.dsImgLogo &&
                 userData.cfgTotem?.dsImgLogo.length
                   ? userData.cfgTotem?.dsImgLogo
-                  : "/assets/logo.png"
+                  : "./assets/logo.png"
               }
               className="max-w-1/5 rounded-xl"
             />
@@ -115,13 +119,13 @@ export default function Home() {
             Um produto disponibilizado por
           </span>
           <img
-            src="/assets/logo.png"
+            src="./assets/logo.png"
             alt="Logo ControlChef"
             className="h-6 w-auto object-contain ml-3"
           />
           <button onClick={() => secretFunction()}>
             <img
-              src="/assets/resultiLogo.png"
+              src="./assets/resultiLogo.png"
               alt="Logo Resulti"
               className="h-8 w-auto object-contain translate-y-0.5 ml-3"
             />

@@ -26,7 +26,7 @@ export default function CardPayment() {
         src={
           userData?.cfgTotem?.dsImgLogo && userData.cfgTotem?.dsImgLogo.length
             ? userData.cfgTotem?.dsImgLogo
-            : "/assets/icon.png"
+            : "./assets/icon.png"
         }
         alt="Logo do estabelecimento"
         className="size-40 object-contain rounded-xl"
@@ -43,7 +43,7 @@ export default function CardPayment() {
         )}
       </div>
       <span className="font-semibold text-2xl">
-        Confira o pagamento na maquininha
+        Confira o pagamento na maquininha.
       </span>
       <div className="flex flex-col w-120 border border-border-color text-xl p-4 gap-3">
         <div className="flex flex-row gap-2">
@@ -69,7 +69,7 @@ export default function CardPayment() {
       <span className="text-xl text-gray-500">
         Pagamento disponibilizado por
       </span>
-      <img src="/assets/rPay.png" className="w-75 " />
+      <img src="./assets/rPay.png" className="w-75 " />
     </div>
   );
 }

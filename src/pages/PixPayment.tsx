@@ -2,146 +2,146 @@
 import { useNavigate } from "react-router-dom";
 import { useOrder, useUserData } from "../utils/store";
 import { ChevronLeft } from "lucide-react";
-import { useState } from "react";
-import type { ResultiPayType } from "../types/types";
-import toast from "react-hot-toast";
-import { Api } from "../api/Api";
-import { ResultiApi } from "../api/ResultiApi";
+// import { useState } from "react";
+// import type { ResultiPayType } from "../types/types";
+// import toast from "react-hot-toast";
+// import { Api } from "../api/Api";
+// import { ResultiApi } from "../api/ResultiApi";
 import { formatToBRL } from "../utils/helpers";
 import { useTotemColor } from "../utils/useTotemColor";
 
 export default function PixPayment() {
   const navigate = useNavigate();
   const userData = useUserData((s) => s.userData);
-  const [isPaid, setIsPaid] = useState(false);
-  const [loadingPix, setLoadingPix] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [pixItem, setPixItem] = useState<any>();
-  const [pixData, setPixData] = useState<ResultiPayType | null>();
+  // const [isPaid, setIsPaid] = useState(false);
+  // const [loadingPix, setLoadingPix] = useState(false);
+  // const [loading, setLoading] = useState(false);
+  // const [pixItem, setPixItem] = useState<any>();
+  // const [pixData, setPixData] = useState<ResultiPayType | null>();
   const order = useOrder((s) => s.order);
-  const setOrder = useOrder((s) => s.setOrder);
+  // const setOrder = useOrder((s) => s.setOrder);
   const { primary } = useTotemColor();
 
-  const sendOrder = async (pixI?: any, pixD?: any) => {
-    let data: any = null;
-    data = {
-      ...order,
-      tpOrigemPed: 8,
-      pagamento: [
-        {
-          cdDocumento: pixI.cdDocumento,
-          tpDocumento: pixI.tpDocumento,
-          valor: order.total,
-          resultipay: {
-            idpk: pixD.fmp_idpk,
-          },
-        },
-      ],
-    };
+  // const sendOrder = async (pixI?: any, pixD?: any) => {
+  //   let data: any = null;
+  //   data = {
+  //     ...order,
+  //     tpOrigemPed: 8,
+  //     pagamento: [
+  //       {
+  //         cdDocumento: pixI.cdDocumento,
+  //         tpDocumento: pixI.tpDocumento,
+  //         valor: order.total,
+  //         resultipay: {
+  //           idpk: pixD.fmp_idpk,
+  //         },
+  //       },
+  //     ],
+  //   };
 
-    await Api.post(`atendimento`, data)
-      .then(async (res: any) => {
-        if (res.error) {
-          toast.error(res.error);
-          return;
-        }
-        //   await createBytes(res.impressao).then(() => {
-        //     setOrder({
-        //       cdEmpresa: 1,
-        //       tpAtendimento: 2,
-        //       dsAtendimento: "TOTEM",
-        //       tpLocal: 1,
-        //       cdUsuario: 0,
-        //       dsRotulo: "",
-        //       total: 0,
-        //       itens: [],
-        //     });
-        //     setTimeout(() => {
-        //       navigate("/home");
-        //     }, 5000);
-        //   });
-      })
-      .catch(() => {
-        toast.error(
-          "Algo deu errado com seu pedido! Verifique sua conexão e tente novamente."
-        );
-      });
-  };
+  //   await Api.post(`atendimento`, data)
+  //     .then(async (res: any) => {
+  //       if (res.error) {
+  //         toast.error(res.error);
+  //         return;
+  //       }
+  //       //   await createBytes(res.impressao).then(() => {
+  //       //     setOrder({
+  //       //       cdEmpresa: 1,
+  //       //       tpAtendimento: 2,
+  //       //       dsAtendimento: "TOTEM",
+  //       //       tpLocal: 1,
+  //       //       cdUsuario: 0,
+  //       //       dsRotulo: "",
+  //       //       total: 0,
+  //       //       itens: [],
+  //       //     });
+  //       //     setTimeout(() => {
+  //       //       navigate("/home");
+  //       //     }, 5000);
+  //       //   });
+  //     })
+  //     .catch(() => {
+  //       toast.error(
+  //         "Algo deu errado com seu pedido! Verifique sua conexão e tente novamente."
+  //       );
+  //     });
+  // };
 
-  const createPix = async () => {
-    const item = userData?.FormasPgto.length ? userData?.FormasPgto[0] : [];
-    setLoading(true);
-    setPixItem(item);
-    const data = {
-      fmp_descricao: `TOTEM`,
-      fmp_valor: order.total,
-    };
+  // const createPix = async () => {
+  //   const item = userData?.FormasPgto.length ? userData?.FormasPgto[0] : [];
+  //   setLoading(true);
+  //   setPixItem(item);
+  //   const data = {
+  //     fmp_descricao: `TOTEM`,
+  //     fmp_valor: order.total,
+  //   };
 
-    ResultiApi.post(
-      `${item.resultipay.host}/api/v1/Pix/Instantaneo`,
-      item.resultipay.hash,
-      data
-    )
-      .then((res: any) => {
-        if (res.error) {
-          toast.error(res.error);
-          setLoading(false);
-          return;
-        }
-        const data: ResultiPayType = res.registros[0];
-        setPixData(data);
-        setLoading(false);
-        loop(data, item);
-      })
-      .catch(() => {
-        toast.error(
-          "Algo deu errado! Verifique sua conexão e tente novamente."
-        );
-        setLoading(false);
-        return;
-      });
-  };
+  //   ResultiApi.post(
+  //     `${item.resultipay.host}/api/v1/Pix/Instantaneo`,
+  //     item.resultipay.hash,
+  //     data
+  //   )
+  //     .then((res: any) => {
+  //       if (res.error) {
+  //         toast.error(res.error);
+  //         setLoading(false);
+  //         return;
+  //       }
+  //       const data: ResultiPayType = res.registros[0];
+  //       setPixData(data);
+  //       setLoading(false);
+  //       loop(data, item);
+  //     })
+  //     .catch(() => {
+  //       toast.error(
+  //         "Algo deu errado! Verifique sua conexão e tente novamente."
+  //       );
+  //       setLoading(false);
+  //       return;
+  //     });
+  // };
 
-  const cancelOrder = () => {
-    setLoadingPix(true);
-    ResultiApi.delete(
-      `${pixItem.resultipay.host}/api/v1/Pix/Remover/${pixData?.fmp_idpk}`,
-      pixItem.resultipay.hash
-    )
-      .then((res: any) => {
-        if (res.error) {
-          toast.error(res.error);
-          setLoading(false);
-          setIsPaid(false);
-          setLoadingPix(false);
+  // const cancelOrder = () => {
+  //   setLoadingPix(true);
+  //   ResultiApi.delete(
+  //     `${pixItem.resultipay.host}/api/v1/Pix/Remover/${pixData?.fmp_idpk}`,
+  //     pixItem.resultipay.hash
+  //   )
+  //     .then((res: any) => {
+  //       if (res.error) {
+  //         toast.error(res.error);
+  //         setLoading(false);
+  //         setIsPaid(false);
+  //         setLoadingPix(false);
 
-          return;
-        }
-        setOrder({
-          cdEmpresa: 1,
-          tpAtendimento: 2,
-          dsAtendimento: "TOTEM",
-          tpLocal: 1,
-          cdUsuario: 0,
-          dsRotulo: "",
-          total: 0,
-          itens: [],
-        });
-        setLoading(false);
-        setLoadingPix(false);
-        setIsPaid(false);
-        navigate("/home");
-        toast.success("Pedido cancelado com sucesso!");
-      })
-      .catch(() => {
-        toast.error(
-          "Algo deu errado! Verifique sua conexão e tente novamente."
-        );
-        setLoading(false);
-        setIsPaid(false);
-        setLoadingPix(false);
-      });
-  };
+  //         return;
+  //       }
+  //       setOrder({
+  //         cdEmpresa: 1,
+  //         tpAtendimento: 2,
+  //         dsAtendimento: "TOTEM",
+  //         tpLocal: 1,
+  //         cdUsuario: 0,
+  //         dsRotulo: "",
+  //         total: 0,
+  //         itens: [],
+  //       });
+  //       setLoading(false);
+  //       setLoadingPix(false);
+  //       setIsPaid(false);
+  //       navigate("/home");
+  //       toast.success("Pedido cancelado com sucesso!");
+  //     })
+  //     .catch(() => {
+  //       toast.error(
+  //         "Algo deu errado! Verifique sua conexão e tente novamente."
+  //       );
+  //       setLoading(false);
+  //       setIsPaid(false);
+  //       setLoadingPix(false);
+  //     });
+  // };
 
   // const createBytes = async (impressao: any) => {
   //   try {
@@ -200,7 +200,7 @@ export default function PixPayment() {
         src={
           userData?.cfgTotem?.dsImgLogo && userData.cfgTotem?.dsImgLogo.length
             ? userData.cfgTotem?.dsImgLogo
-            : "/assets/icon.png"
+            : "./assets/icon.png"
         }
         alt="Logo do estabelecimento"
         className="size-40 object-contain rounded-xl"
@@ -212,7 +212,7 @@ export default function PixPayment() {
         Para continuar, leia o QrCode
       </span>
       <img
-        src="/assets/qrcode.png"
+        src="./assets/qrcode.png"
         alt="qrcode"
         className="h-1/5 opacity-90 border-2 rounded-lg border-border-color"
       />
@@ -240,7 +240,7 @@ export default function PixPayment() {
       <span className="text-xl text-gray-500">
         Pagamento disponibilizado por
       </span>
-      <img src="/assets/rPay.png" className="w-75 " />
+      <img src="./assets/rPay.png" className="w-75 " />
     </div>
   );
 }

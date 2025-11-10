@@ -1,18 +1,25 @@
 {
   "name": "projeto-totem",
-  "private": true,
-  "version": "0.0.0",
+  "productName": "Projeto Totem",
+  "version": "0.0.1",
+  "description": "Totem de autoatendimento para restaurantes com PDV integrado.",
+  "author": "Resulti Sistemas <resultisistemas@gmail.com>",
+  "homepage": "https://www.resultisistemas.com.br/",
+  "license": "Dione Bueno",
   "type": "module",
   "main": "public/electron.cjs",
   "scripts": {
     "dev": "concurrently -k \"vite --port 5173\" \"wait-on tcp:5173 && cross-env GDK_BACKEND=x11 XDG_SESSION_TYPE=x11 ELECTRON_OZONE_PLATFORM_HINT=x11 LIBGL_ALWAYS_SOFTWARE=1 LIBVA_DRIVER_NAME=dummy electron . --ozone-platform=x11 --in-process-gpu --use-gl=swiftshader --disable-features=VaapiVideoDecoder,CanvasOopRasterization --disable-gpu --disable-gpu-sandbox --disable-dev-shm-usage --no-sandbox\"",
     "build": "tsc -b && vite build",
-    "start": "cross-env GDK_BACKEND=x11 XDG_SESSION_TYPE=x11 ELECTRON_OZONE_PLATFORM_HINT=x11 LIBGL_ALWAYS_SOFTWARE=1 LIBVA_DRIVER_NAME=dummy electron . --ozone-platform=x11 --in-process-gpu --use-gl=swiftshader --disable-features=VaapiVideoDecoder,CanvasOopRasterization --disable-gpu --disable-gpu-sandbox --disable-dev-shm-usage --no-sandbox",
+    "start": "electron-forge start",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.14",
+    "electron-squirrel-startup": "^1.0.1",
     "esc-pos-encoder": "^3.0.0",
     "framer-motion": "^12.23.24",
     "lucide": "^0.546.0",
@@ -25,6 +32,14 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
+    "@electron-forge/cli": "^7.10.2",
+    "@electron-forge/maker-deb": "^7.10.2",
+    "@electron-forge/maker-rpm": "^7.10.2",
+    "@electron-forge/maker-squirrel": "^7.10.2",
+    "@electron-forge/maker-zip": "^7.10.2",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.10.2",
+    "@electron-forge/plugin-fuses": "^7.10.2",
+    "@electron/fuses": "^1.8.0",
     "@eslint/js": "^9.36.0",
     "@tailwindcss/line-clamp": "^0.4.4",
     "@tailwindcss/postcss": "^4.1.16",

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTotemColor } from "../utils/useTotemColor";
@@ -6,13 +7,13 @@ type Method = "pix" | "credito" | "debito";
 
 type Props = {
   open?: boolean;
-  onToggle?: () => void;
+  onClose?: (value?: any) => void;
   onConfirm?: (m: Method) => void;
 };
 
 export default function PaymentMethodSelector({
   open = false,
-  onToggle,
+  onClose,
   onConfirm,
 }: Props) {
   const navigate = useNavigate();
@@ -27,17 +28,17 @@ export default function PaymentMethodSelector({
         wrapperRef.current &&
         !wrapperRef.current.contains(e.target as Node)
       ) {
-        onToggle?.();
+        onClose?.();
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [open, onToggle]);
+  }, [open, onClose]);
 
   const selectAndGo = (m: Method) => {
     onConfirm?.(m);
-    onToggle?.();
+    onClose?.();
     if (m === "pix") navigate("/pagamento/pix");
     else navigate(`/pagamento/cartao/${m}`);
   };
@@ -46,14 +47,11 @@ export default function PaymentMethodSelector({
     <div
       ref={wrapperRef}
       style={{ borderColor: primary }}
-      className={[
-        "w-fit h-fit self-center rounded-xl border mb-4 overflow-hidden flex flex-col text-text-color origin-bottom transition-all duration-300",
-        open
-          ? "scale-y-100 opacity-100 translate-y-0"
-          : "scale-y-0 opacity-0 translate-y-2 pointer-events-none",
-      ].join(" ")}
+      className={
+        "w-full h-fit self-center rounded-xl border mb-4 overflow-hidden flex flex-col text-text-color bg-white"
+      }
     >
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full w-full">
         <div
           style={{ backgroundColor: primary }}
           className="w-full p-5 text-center"
@@ -68,19 +66,19 @@ export default function PaymentMethodSelector({
         >
           <button
             onClick={() => selectAndGo("pix")}
-            className="p-3 border-2 border-border-color rounded-xl touchable min-h-25 min-w-50"
+            className="payment-button touchable w-full"
           >
             PIX
           </button>
           <button
             onClick={() => selectAndGo("credito")}
-            className="p-3 border-2 border-border-color rounded-xl touchable min-w-50"
+            className="payment-button touchable w-full"
           >
             CRÉDITO
           </button>
           <button
             onClick={() => selectAndGo("debito")}
-            className="p-3 border-2 border-border-color rounded-xl touchable min-w-50"
+            className="payment-button touchable w-full"
           >
             DÉBITO
           </button>

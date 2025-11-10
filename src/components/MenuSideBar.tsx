@@ -31,7 +31,7 @@ export default function MenuSideBar({
           src={
             userData?.cfgTotem?.dsImgLogo && userData.cfgTotem?.dsImgLogo.length
               ? userData.cfgTotem?.dsImgLogo
-              : "/assets/icon.png"
+              : "./assets/icon.png"
           }
           alt="Logo do estabelecimento"
           className="size-32 rounded-xl"

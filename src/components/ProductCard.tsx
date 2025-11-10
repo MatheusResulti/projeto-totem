@@ -14,12 +14,13 @@ export default function ProductCard({ item, onSelect }: Props) {
   return (
     <>
       <button
+        draggable={false}
         onClick={handleClick}
         className="bg-white flex flex-col items-center w-full pb-2 rounded-2xl overflow-hidden touchable"
       >
         <div className="w-full h-38 flex items-center justify-center object-contain mt-3">
           <img
-            src={item.image || "/assets/sem-foto.png"}
+            src={item.image || "./assets/sem-foto.png"}
             alt={item.name}
             className="h-full rounded-lg"
           />

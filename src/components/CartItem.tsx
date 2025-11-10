@@ -44,7 +44,7 @@ export default function CartItem({ item, index }: CartItemProps) {
     <div className="w-full flex relative border-b border-border-color p-4 items-center">
       <img
         src={productData?.image}
-        className="w-20 h-20 rounded-lg object-contain"
+        className="w-20 h-fit rounded-lg object-contain"
       />
 
       <div className="flex flex-col ml-5 text-text-color justify-center gap-1 flex-1 min-w-0 pr-28">

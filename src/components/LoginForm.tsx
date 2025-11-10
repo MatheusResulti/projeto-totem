@@ -75,7 +75,7 @@ export default function LoginForm() {
       "
     >
       <div className="flex flex-col items-center text-center space-y-1 sm:space-y-1.5 mb-4 sm:mb-6">
-        <img src="/assets/icon.png" className="h-14 sm:h-16 mb-2" alt="" />
+        <img src="./assets/icon.png" className="h-14 sm:h-16 mb-2" alt="" />
         <span className="font-semibold text-base sm:text-lg lg:text-xl">
           Bem vindo!
         </span>

@@ -329,7 +329,7 @@ export default function Splash() {
   return (
     <div className="bg-splash-bg h-screen w-screen flex flex-col items-center justify-center text-white font-semibold px-4">
       <img
-        src="/assets/logo.png"
+        src="./assets/logo.png"
         className="h-20 object-contain mb-4"
         alt="Logo"
       />
@@ -337,7 +337,7 @@ export default function Splash() {
       {!error ? (
         <div className="flex flex-col items-center gap-4">
           <img
-            src="/assets/loading.png"
+            src="./assets/loading.png"
             className="h-20 object-contain opacity-80"
             alt=""
           />

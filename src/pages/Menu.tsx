@@ -31,7 +31,7 @@ export default function Menu() {
   const order = useOrder((s) => s.order);
   const setOrder = useOrder((s) => s.setOrder);
   const { setQuantity } = useCount();
-  const closeModalTimeoutRef = useRef<number | undefined>(undefined);
+  const closeModalTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -45,10 +45,9 @@ export default function Menu() {
   );
 
   useEffect(() => {
+    const id = closeModalTimeoutRef.current;
     return () => {
-      if (closeModalTimeoutRef.current) {
-        clearTimeout(closeModalTimeoutRef.current);
-      }
+      if (id !== null) clearTimeout(id);
     };
   }, []);
 
@@ -95,10 +94,10 @@ export default function Menu() {
       <div
         style={{
           backgroundImage: `url(${
-            userData?.capa || "/assets/defaultCapa.png"
+            userData?.capa || "./assets/defaultCapa.png"
           })`,
         }}
-        className="bg-[url(/assets/defaultCapa.png)] bg-cover bg-center bg-no-repeat h-40 flex justify-end px-2 py-2"
+        className="bg-[url(./assets/defaultCapa.png)] bg-cover bg-center bg-no-repeat h-40 flex justify-end px-2 py-2"
       >
         <button
           onClick={handleCancel}
@@ -135,7 +134,7 @@ export default function Menu() {
               onClick={() => navigate("/cart")}
               style={{ backgroundColor: primary }}
               className={`rounded-2xl flex items-center justify-between text-white text-xl font-semibold w-full h-full px-6 py-4 touchable
-                ${!order.itens.length ? "opacity-60 cursor-not-allowed" : ""}`}
+                ${!order.itens.length ? "opacity-60" : ""}`}
             >
               <div className="flex items-center gap-3">
                 <ShoppingCart size={28} />
