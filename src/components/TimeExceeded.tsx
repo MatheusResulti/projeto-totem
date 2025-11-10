@@ -30,6 +30,7 @@ export default function TimeExceeded() {
     });
     setQuantity(1);
     sessionStorage.setItem("timeExceededOpens", "0");
+    sessionStorage.removeItem("lastRoute");
     navigate("/home");
   }, [navigate, setOrder, setQuantity]);
 
