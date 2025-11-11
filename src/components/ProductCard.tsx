@@ -1,8 +1,5 @@
 import type { ProductType } from "../types/types";
-<<<<<<< HEAD
-=======
 import { asset } from "../utils/asset";
->>>>>>> 189e5da (alterações feitas para o exe)
 import { formatToBRL } from "../utils/helpers";
 import { useTotemColor } from "../utils/useTotemColor";
 
@@ -11,11 +8,7 @@ interface Props {
   onSelect?: (product: ProductType) => void;
 }
 export default function ProductCard({ item, onSelect }: Props) {
-<<<<<<< HEAD
-  const semFoto = "/assets/sem-foto.png";
-=======
   const semFoto = asset("/assets/sem-foto.png");
->>>>>>> 189e5da (alterações feitas para o exe)
   const { primary } = useTotemColor();
   const handleClick = () => {
     onSelect?.(item);

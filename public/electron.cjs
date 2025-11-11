@@ -12,19 +12,6 @@ app.commandLine.appendSwitch("in-process-gpu");
 app.commandLine.appendSwitch("use-gl", "swiftshader");
 app.commandLine.appendSwitch("disable-gpu");
 app.commandLine.appendSwitch("disable-gpu-sandbox");
-<<<<<<< HEAD
-app.commandLine.appendSwitch(
-  "disable-features",
-  "VaapiVideoDecoder,CanvasOopRasterization"
-);
-app.commandLine.appendSwitch("disable-dev-shm-usage");
-app.commandLine.appendSwitch("no-sandbox");
-
-const isDev = !app.isPackaged;
-const DEV_URL = process.env.VITE_DEV_SERVER_URL || "http://localhost:5173";
-
-function createWindow() {
-=======
 app.commandLine.appendSwitch("disable-features", "VaapiVideoDecoder,CanvasOopRasterization");
 app.commandLine.appendSwitch("disable-dev-shm-usage");
 app.commandLine.appendSwitch("no-sandbox");
@@ -54,27 +41,18 @@ function createWindow() {
     ? resolveApp("preload.cjs")
     : resolveApp("dist", "preload.cjs");
 
->>>>>>> 189e5da (alterações feitas para o exe)
   const win = new BrowserWindow({
     width: 1200,
     height: 800,
     autoHideMenuBar: true,
     webPreferences: {
-<<<<<<< HEAD
-      preload: path.join(__dirname, "preload.cjs"),
-=======
       preload: preloadPath,
->>>>>>> 189e5da (alterações feitas para o exe)
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,
     },
   });
 
-<<<<<<< HEAD
-  if (isDev) win.loadURL(DEV_URL);
-  else win.loadFile(path.join(__dirname, "index.html"));
-=======
   if (isDev) {
     win.loadURL(DEV_URL);
   } else {
@@ -88,15 +66,10 @@ function createWindow() {
     const tag = levels[level] || "log";
     console[tag](`🪵 [renderer:${tag}] ${message} (${sourceId}:${line})`);
   });
->>>>>>> 189e5da (alterações feitas para o exe)
 }
 
 app.whenReady().then(() => {
   createWindow();
-<<<<<<< HEAD
-
-=======
->>>>>>> 189e5da (alterações feitas para o exe)
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });

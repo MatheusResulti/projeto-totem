@@ -12,10 +12,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import ProgressBar from "../components/ProgressBar";
 import { Api } from "../api/Api";
-<<<<<<< HEAD
-=======
 import { asset } from "../utils/asset";
->>>>>>> 189e5da (alterações feitas para o exe)
 
 const words = [
   "Aguarde um momento",
@@ -26,13 +23,8 @@ const words = [
 ];
 
 export default function Splash() {
-<<<<<<< HEAD
-  const loadingImg = "/assets/loading.png";
-  const logo = "/assets/logo.png";
-=======
   const loadingImg = asset("/assets/loading.png");
   const logo = asset("/assets/logo.png");
->>>>>>> 189e5da (alterações feitas para o exe)
   const setSizes = useSizes((s) => s.setSizes);
   const setComplements = useComplements((s) => s.setComplements);
   const setProductArr = useProduct((s) => s.setProductArr);

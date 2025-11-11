@@ -1,17 +1,10 @@
 import { X } from "lucide-react";
 import LoginForm from "../components/LoginForm";
-<<<<<<< HEAD
-
-export default function Login() {
-  const logo = "/assets/logo.png";
-  const capa = "/assets/capa.jpg";
-=======
 import { asset } from "../utils/asset";
 
 export default function Login() {
   const logo = asset("/assets/logo.png");
   const capa = asset("/assets/capa.jpg");
->>>>>>> 189e5da (alterações feitas para o exe)
   const handleClose = () => {
     if (window.electronAPI?.closeApp) window.electronAPI.closeApp();
     else window.close();

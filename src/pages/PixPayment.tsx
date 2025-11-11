@@ -9,14 +9,6 @@ import { ChevronLeft } from "lucide-react";
 // import { ResultiApi } from "../api/ResultiApi";
 import { formatToBRL } from "../utils/helpers";
 import { useTotemColor } from "../utils/useTotemColor";
-<<<<<<< HEAD
-
-export default function PixPayment() {
-  const navigate = useNavigate();
-  const icon = "/assets/icon.png";
-  const qrcode = "/assets/qrcode.png";
-  const rPay = "/assets/rPay.png";
-=======
 import { asset } from "../utils/asset";
 
 export default function PixPayment() {
@@ -24,7 +16,6 @@ export default function PixPayment() {
   const icon = asset("/assets/icon.png");
   const qrcode = asset("/assets/qrcode.png");
   const rPay = asset("/assets/rPay.png");
->>>>>>> 189e5da (alterações feitas para o exe)
   const userData = useUserData((s) => s.userData);
   // const [isPaid, setIsPaid] = useState(false);
   // const [loadingPix, setLoadingPix] = useState(false);

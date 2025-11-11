@@ -1,8 +1,5 @@
 import GroupItem from "../components/GroupItem";
-<<<<<<< HEAD
-=======
 import { asset } from "../utils/asset";
->>>>>>> 189e5da (alterações feitas para o exe)
 import { useGroup, useUserData } from "../utils/store";
 import { useMemo } from "react";
 
@@ -15,11 +12,7 @@ export default function MenuSideBar({
   selectedGroup,
   onSelectGroup,
 }: MenuSideBarProps) {
-<<<<<<< HEAD
-  const icon = "/assets/icon.png";
-=======
   const icon = asset("/assets/icon.png");
->>>>>>> 189e5da (alterações feitas para o exe)
   const GroupArr = useGroup((state) => state.groupArr);
   const userData = useUserData((state) => state.userData);
 
