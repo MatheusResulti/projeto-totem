@@ -7,6 +7,7 @@ interface Props {
   onSelect?: (product: ProductType) => void;
 }
 export default function ProductCard({ item, onSelect }: Props) {
+  const semFoto = "/assets/sem-foto.png";
   const { primary } = useTotemColor();
   const handleClick = () => {
     onSelect?.(item);
@@ -20,7 +21,7 @@ export default function ProductCard({ item, onSelect }: Props) {
       >
         <div className="w-full h-38 flex items-center justify-center object-contain mt-3">
           <img
-            src={item.image || "./assets/sem-foto.png"}
+            src={item.image || semFoto}
             alt={item.name}
             className="h-full rounded-lg"
           />

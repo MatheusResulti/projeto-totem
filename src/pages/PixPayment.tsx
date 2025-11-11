@@ -12,6 +12,9 @@ import { useTotemColor } from "../utils/useTotemColor";
 
 export default function PixPayment() {
   const navigate = useNavigate();
+  const icon = "/assets/icon.png";
+  const qrcode = "/assets/qrcode.png";
+  const rPay = "/assets/rPay.png";
   const userData = useUserData((s) => s.userData);
   // const [isPaid, setIsPaid] = useState(false);
   // const [loadingPix, setLoadingPix] = useState(false);
@@ -200,7 +203,7 @@ export default function PixPayment() {
         src={
           userData?.cfgTotem?.dsImgLogo && userData.cfgTotem?.dsImgLogo.length
             ? userData.cfgTotem?.dsImgLogo
-            : "./assets/icon.png"
+            : icon
         }
         alt="Logo do estabelecimento"
         className="size-40 object-contain rounded-xl"
@@ -212,7 +215,7 @@ export default function PixPayment() {
         Para continuar, leia o QrCode
       </span>
       <img
-        src="./assets/qrcode.png"
+        src={qrcode}
         alt="qrcode"
         className="h-1/5 opacity-90 border-2 rounded-lg border-border-color"
       />
@@ -240,7 +243,7 @@ export default function PixPayment() {
       <span className="text-xl text-gray-500">
         Pagamento disponibilizado por
       </span>
-      <img src="./assets/rPay.png" className="w-75 " />
+      <img src={rPay} className="w-75 " />
     </div>
   );
 }

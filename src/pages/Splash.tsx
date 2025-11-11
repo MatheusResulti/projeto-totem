@@ -22,6 +22,8 @@ const words = [
 ];
 
 export default function Splash() {
+  const loadingImg = "/assets/loading.png";
+  const logo = "/assets/logo.png";
   const setSizes = useSizes((s) => s.setSizes);
   const setComplements = useComplements((s) => s.setComplements);
   const setProductArr = useProduct((s) => s.setProductArr);
@@ -328,16 +330,12 @@ export default function Splash() {
 
   return (
     <div className="bg-splash-bg h-screen w-screen flex flex-col items-center justify-center text-white font-semibold px-4">
-      <img
-        src="./assets/logo.png"
-        className="h-20 object-contain mb-4"
-        alt="Logo"
-      />
+      <img src={logo} className="h-20 object-contain mb-4" alt="Logo" />
 
       {!error ? (
         <div className="flex flex-col items-center gap-4">
           <img
-            src="./assets/loading.png"
+            src={loadingImg}
             className="h-20 object-contain opacity-80"
             alt=""
           />

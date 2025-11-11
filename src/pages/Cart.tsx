@@ -9,6 +9,7 @@ import { useTotemColor } from "../utils/useTotemColor.ts";
 
 export default function Cart() {
   const navigate = useNavigate();
+  const icon = "/assets/icon.png";
   const { primary } = useTotemColor();
   const userData = useUserData((state) => state.userData);
   const { itens, total } = useOrder((s) => s.order);
@@ -23,7 +24,7 @@ export default function Cart() {
               userData?.cfgTotem?.dsImgLogo &&
               userData.cfgTotem?.dsImgLogo.length
                 ? userData.cfgTotem?.dsImgLogo
-                : "./assets/icon.png"
+                : icon
             }
             alt="Logo do estabelecimento"
             className="size-32 rounded-xl"
@@ -58,10 +59,10 @@ export default function Cart() {
         <div className="flex w-full px-4 pt-2 border-t border-border-color">
           <PaymentMethodSelector
             open={showSelector}
-            onClose={(e: any) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setShowSelector(!showSelector);
+            onClose={(e?: any) => {
+              e?.preventDefault?.();
+              e?.stopPropagation?.();
+              setShowSelector(false);
             }}
           />
         </div>

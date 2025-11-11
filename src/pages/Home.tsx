@@ -9,6 +9,9 @@ import toast from "react-hot-toast";
 
 export default function Home() {
   const navigate = useNavigate();
+  const defaultHomeImage = "/assets/defaultHomeImage";
+  const logo = "/assets/logo.png";
+  const resultiLogo = "/assets/resultiLogo.png";
 
   const userData = useUserData((s) => s.userData);
   const setUserData = useUserData((s) => s.setUserData);
@@ -81,7 +84,7 @@ export default function Home() {
       className="flex flex-col h-screen w-screen bg-cover bg-center"
       style={{
         backgroundImage: `url(${
-          userData?.cfgTotem?.dsImgCapa || "./assets/defaultHomeImage.png"
+          userData?.cfgTotem?.dsImgCapa || defaultHomeImage
         })`,
       }}
     >
@@ -93,7 +96,7 @@ export default function Home() {
                 userData?.cfgTotem?.dsImgLogo &&
                 userData.cfgTotem?.dsImgLogo.length
                   ? userData.cfgTotem?.dsImgLogo
-                  : "./assets/logo.png"
+                  : logo
               }
               className="max-w-1/5 rounded-xl"
             />
@@ -119,15 +122,15 @@ export default function Home() {
             Um produto disponibilizado por
           </span>
           <img
-            src="./assets/logo.png"
+            src={logo}
             alt="Logo ControlChef"
             className="h-6 w-auto object-contain ml-3"
           />
           <button onClick={() => secretFunction()}>
             <img
-              src="./assets/resultiLogo.png"
+              src={resultiLogo}
               alt="Logo Resulti"
-              className="h-8 w-auto object-contain translate-y-0.5 ml-3"
+              className="h-9 w-auto object-contain translate-y-0.5 ml-3"
             />
           </button>
         </div>

@@ -2,13 +2,18 @@ import { X } from "lucide-react";
 import LoginForm from "../components/LoginForm";
 
 export default function Login() {
+  const logo = "/assets/logo.png";
+  const capa = "/assets/capa.jpg";
   const handleClose = () => {
     if (window.electronAPI?.closeApp) window.electronAPI.closeApp();
     else window.close();
   };
 
   return (
-    <div className="relative min-h-dvh bg-[url(./assets/capa.jpg)] bg-cover bg-center">
+    <div
+      className="relative min-h-dvh bg-cover bg-center"
+      style={{ backgroundImage: `url(${capa})` }}
+    >
       <div className="absolute inset-0 bg-black/35 pointer-events-none" />
       <button
         onClick={handleClose}
@@ -21,7 +26,7 @@ export default function Login() {
         <div className="w-full">
           <div className="mb-6 flex justify-center">
             <img
-              src="./assets/logo.png"
+              src={logo}
               className="h-10 sm:h-12 md:h-14 w-auto object-contain"
               alt="ControlChef"
             />

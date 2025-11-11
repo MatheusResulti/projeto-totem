@@ -11,6 +11,7 @@ export default function MenuSideBar({
   selectedGroup,
   onSelectGroup,
 }: MenuSideBarProps) {
+  const icon = "/assets/icon.png";
   const GroupArr = useGroup((state) => state.groupArr);
   const userData = useUserData((state) => state.userData);
 
@@ -31,7 +32,7 @@ export default function MenuSideBar({
           src={
             userData?.cfgTotem?.dsImgLogo && userData.cfgTotem?.dsImgLogo.length
               ? userData.cfgTotem?.dsImgLogo
-              : "./assets/icon.png"
+              : icon
           }
           alt="Logo do estabelecimento"
           className="size-32 rounded-xl"

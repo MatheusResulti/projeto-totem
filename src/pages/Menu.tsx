@@ -18,6 +18,7 @@ import { ShoppingCart } from "lucide-react";
 
 export default function Menu() {
   const navigate = useNavigate();
+  const defaultCapa = "/assets/defaultCapa.png";
 
   const { primary } = useTotemColor();
   const userData = useUserData((s) => s.userData);
@@ -93,11 +94,9 @@ export default function Menu() {
     <div className="h-dvh flex flex-col text-text-color">
       <div
         style={{
-          backgroundImage: `url(${
-            userData?.capa || "./assets/defaultCapa.png"
-          })`,
+          backgroundImage: `url(${userData?.capa || defaultCapa})`,
         }}
-        className="bg-[url(./assets/defaultCapa.png)] bg-cover bg-center bg-no-repeat h-40 flex justify-end px-2 py-2"
+        className="bg-cover bg-center bg-no-repeat h-40 flex justify-end px-2 py-2"
       >
         <button
           onClick={handleCancel}

@@ -36,7 +36,7 @@ function createWindow() {
   });
 
   if (isDev) win.loadURL(DEV_URL);
-  else win.loadFile(path.join(__dirname, "../dist/index.html"));
+  else win.loadFile(path.join(__dirname, "index.html"));
 }
 
 app.whenReady().then(() => {

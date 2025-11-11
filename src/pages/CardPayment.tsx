@@ -7,6 +7,8 @@ import { formatToBRL } from "../utils/helpers";
 type Tipo = "credito" | "debito";
 
 export default function CardPayment() {
+  const icon = "/assets/icon.png";
+  const rPay = "/assets/rPay.png";
   const { primary } = useTotemColor();
   const order = useOrder((s) => s.order);
   const userData = useUserData((s) => s.userData);
@@ -26,7 +28,7 @@ export default function CardPayment() {
         src={
           userData?.cfgTotem?.dsImgLogo && userData.cfgTotem?.dsImgLogo.length
             ? userData.cfgTotem?.dsImgLogo
-            : "./assets/icon.png"
+            : icon
         }
         alt="Logo do estabelecimento"
         className="size-40 object-contain rounded-xl"
@@ -69,7 +71,7 @@ export default function CardPayment() {
       <span className="text-xl text-gray-500">
         Pagamento disponibilizado por
       </span>
-      <img src="./assets/rPay.png" className="w-75 " />
+      <img src={rPay} className="w-75 " />
     </div>
   );
 }

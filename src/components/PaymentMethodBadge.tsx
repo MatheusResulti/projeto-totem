@@ -10,11 +10,13 @@ function canon(s: string) {
 }
 
 export default function PaymentMethodBadge({ method }: PaymentMethodProps) {
+  const cardIcon = "/assets/cardIcon.png";
+  const pixIcon = "/assets/pixIcon.png";
   const paymentConfig: Record<string, { icon: string; label?: string }> = {
-    PIX: { icon: "./assets/pixIcon.png" },
-    CARTAO: { icon: "./assets/cardIcon.png", label: "CARTÃO" },
-    CARTAO_CREDITO: { icon: "./assets/cardIcon.png", label: "CARTÃO" },
-    CARTAO_DEBITO: { icon: "./assets/cardIcon.png", label: "CARTÃO" },
+    PIX: { icon: pixIcon },
+    CARTAO: { icon: cardIcon, label: "CARTÃO" },
+    CARTAO_CREDITO: { icon: cardIcon, label: "CARTÃO" },
+    CARTAO_DEBITO: { icon: cardIcon, label: "CARTÃO" },
   };
 
   const key = (() => {
