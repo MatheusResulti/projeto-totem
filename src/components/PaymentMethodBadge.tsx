@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+import { asset } from "../utils/asset";
+
+>>>>>>> 189e5da (alterações feitas para o exe)
 interface PaymentMethodProps {
   method: string;
 }
@@ -10,8 +15,13 @@ function canon(s: string) {
 }
 
 export default function PaymentMethodBadge({ method }: PaymentMethodProps) {
+<<<<<<< HEAD
   const cardIcon = "/assets/cardIcon.png";
   const pixIcon = "/assets/pixIcon.png";
+=======
+  const cardIcon = asset("/assets/cardIcon.png");
+  const pixIcon = asset("/assets/pixIcon.png");
+>>>>>>> 189e5da (alterações feitas para o exe)
   const paymentConfig: Record<string, { icon: string; label?: string }> = {
     PIX: { icon: pixIcon },
     CARTAO: { icon: cardIcon, label: "CARTÃO" },

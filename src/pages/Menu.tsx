@@ -15,10 +15,18 @@ import {
 import { formatToBRL } from "../utils/helpers";
 import { useTotemColor } from "../utils/useTotemColor";
 import { ShoppingCart } from "lucide-react";
+<<<<<<< HEAD
 
 export default function Menu() {
   const navigate = useNavigate();
   const defaultCapa = "/assets/defaultCapa.png";
+=======
+import { asset } from "../utils/asset";
+
+export default function Menu() {
+  const navigate = useNavigate();
+  const defaultCapa = asset("/assets/defaultCapa.png");
+>>>>>>> 189e5da (alterações feitas para o exe)
 
   const { primary } = useTotemColor();
   const userData = useUserData((s) => s.userData);

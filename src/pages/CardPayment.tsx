@@ -3,12 +3,21 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useOrder, useUserData } from "../utils/store";
 import { useTotemColor } from "../utils/useTotemColor";
 import { formatToBRL } from "../utils/helpers";
+<<<<<<< HEAD
+=======
+import { asset } from "../utils/asset";
+>>>>>>> 189e5da (alterações feitas para o exe)
 
 type Tipo = "credito" | "debito";
 
 export default function CardPayment() {
+<<<<<<< HEAD
   const icon = "/assets/icon.png";
   const rPay = "/assets/rPay.png";
+=======
+  const icon = asset("/assets/icon.png");
+  const rPay = asset("/assets/rPay.png");
+>>>>>>> 189e5da (alterações feitas para o exe)
   const { primary } = useTotemColor();
   const order = useOrder((s) => s.order);
   const userData = useUserData((s) => s.userData);

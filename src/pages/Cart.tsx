@@ -6,10 +6,18 @@ import CartItem from "../components/CartItem.tsx";
 import PaymentMethodSelector from "../components/PaymentMethodSelector.tsx";
 import { useState } from "react";
 import { useTotemColor } from "../utils/useTotemColor.ts";
+<<<<<<< HEAD
 
 export default function Cart() {
   const navigate = useNavigate();
   const icon = "/assets/icon.png";
+=======
+import { asset } from "../utils/asset.ts";
+
+export default function Cart() {
+  const navigate = useNavigate();
+  const icon = asset("/assets/icon.png");
+>>>>>>> 189e5da (alterações feitas para o exe)
   const { primary } = useTotemColor();
   const userData = useUserData((state) => state.userData);
   const { itens, total } = useOrder((s) => s.order);

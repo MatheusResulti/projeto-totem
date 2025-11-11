@@ -7,10 +7,18 @@ import PasswordInput from "./PasswordInput";
 import { Api, setAuthToken } from "../api/Api";
 import { useUserData } from "../utils/store";
 import { useNavigate } from "react-router-dom";
+<<<<<<< HEAD
 
 export default function LoginForm() {
   const navigate = useNavigate();
   const icon = "/assets/icon.png";
+=======
+import { asset } from "../utils/asset";
+
+export default function LoginForm() {
+  const navigate = useNavigate();
+  const icon = asset("/assets/icon.png");
+>>>>>>> 189e5da (alterações feitas para o exe)
 
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");

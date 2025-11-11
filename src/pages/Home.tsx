@@ -6,12 +6,22 @@ import TotemConfigModal from "../components/TotemConfigModal";
 import { RefreshCcw, LogOut, Lock, Eye, EyeOff } from "lucide-react";
 import PaymentMethodBadge from "../components/PaymentMethodBadge";
 import toast from "react-hot-toast";
+<<<<<<< HEAD
 
 export default function Home() {
   const navigate = useNavigate();
   const defaultHomeImage = "/assets/defaultHomeImage";
   const logo = "/assets/logo.png";
   const resultiLogo = "/assets/resultiLogo.png";
+=======
+import { asset } from "../utils/asset";
+
+export default function Home() {
+  const navigate = useNavigate();
+  const defaultHomeImage = asset("/assets/defaultHomeImage");
+  const logo = asset("/assets/logo.png");
+  const resultiLogo = asset("/assets/resultiLogo.png");
+>>>>>>> 189e5da (alterações feitas para o exe)
 
   const userData = useUserData((s) => s.userData);
   const setUserData = useUserData((s) => s.setUserData);
