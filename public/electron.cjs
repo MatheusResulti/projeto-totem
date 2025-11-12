@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, globalShortcut } = require("electron");
 const path = require("path");
 
 app.disableHardwareAcceleration();
@@ -16,20 +16,22 @@ app.commandLine.appendSwitch("disable-features", "VaapiVideoDecoder,CanvasOopRas
 app.commandLine.appendSwitch("disable-dev-shm-usage");
 app.commandLine.appendSwitch("no-sandbox");
 
-const resolveApp = (...segments) =>
-  app.isPackaged
-    ? path.join(app.getAppPath(), ...segments)
-    : path.join(__dirname, ...segments);
-
 const isDev = !app.isPackaged;
-const DEV_URL = process.env.VITE_DEV_SERVER_URL || "http://localhost:3000";
+const DEV_URL = process.env.VITE_DEV_SERVER_URL || "http://localhost:5173";
+
+const preloadPath = isDev
+  ? path.join(__dirname, "preload.cjs")      
+  : path.join(app.getAppPath(), "dist", "preload.cjs"); 
+
+let win;
+let kioskLocked = false;
 
 app.on("web-contents-created", (_evt, contents) => {
   contents.on("will-navigate", (_e, url) => console.log("➡️ will-navigate:", url));
   contents.on("did-start-navigation", (_e, url, isInPlace, isMainFrame) =>
     console.log("🚦 did-start-navigation:", { url, isInPlace, isMainFrame })
   );
-  contents.on("did-finish-load", () => console.log("✅ Página carregada com sucesso"));
+  contents.on("did-finish-load", () => console.log("✅ Página carregada"));
   contents.on("did-fail-load", (_e, code, desc, url) =>
     console.error("❌ did-fail-load:", { code, desc, url })
   );
@@ -37,13 +39,12 @@ app.on("web-contents-created", (_evt, contents) => {
 });
 
 function createWindow() {
-  const preloadPath = isDev
-    ? resolveApp("preload.cjs")
-    : resolveApp("dist", "preload.cjs");
-
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     width: 1200,
     height: 800,
+    show: false,
+    frame: false,           
+    resizable: isDev,             
     autoHideMenuBar: true,
     webPreferences: {
       preload: preloadPath,
@@ -56,10 +57,35 @@ function createWindow() {
   if (isDev) {
     win.loadURL(DEV_URL);
   } else {
-    const indexPath = resolveApp("dist", "index.html");
+    const indexPath = path.join(app.getAppPath(), "dist", "index.html");
     console.log("📂 Carregando:", indexPath);
     win.loadFile(indexPath);
   }
+
+  win.once("ready-to-show", () => win.show());
+
+  win.on("close", (e) => {
+    if (kioskLocked) {
+      e.preventDefault();
+      win.webContents.send("app:navigate", "/login");
+    }
+  });
+
+  win.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
+  win.webContents.on("context-menu", (e) => e.preventDefault());
+  win.webContents.on("before-input-event", (event, input) => {
+    if (!kioskLocked) return;
+    const key = input.key?.toLowerCase();
+    const ctrl = input.control || input.meta;
+    const alt = input.alt;
+    if (
+      key === "f5" || key === "f11" || key === "escape" ||
+      (ctrl && (key === "r" || key === "w" || key === "q" || key === "i")) ||
+      (alt && key === "f4")
+    ) {
+      event.preventDefault();
+    }
+  });
 
   win.webContents.on("console-message", (_e, level, message, line, sourceId) => {
     const levels = ["log", "warn", "error", "debug", "info"];
@@ -70,15 +96,44 @@ function createWindow() {
 
 app.whenReady().then(() => {
   createWindow();
+
+  globalShortcut.register("CommandOrControl+R", () => {});
+  globalShortcut.register("F5", () => {});
+  globalShortcut.register("CommandOrControl+Shift+I", () => {});
+  globalShortcut.register("F11", () => {});
+
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
 });
 
+app.on("will-quit", () => {
+  globalShortcut.unregisterAll();
+});
+
+ipcMain.on("auth:logged-in", () => {
+  kioskLocked = true;
+  if (!win) return;
+  win.setKiosk(true);                   
+  win.setFullScreen(true);
+  win.setAlwaysOnTop(true, "screen-saver");
+  win.setMenuBarVisibility(false);
+});
+
+ipcMain.on("auth:logout", () => {
+  kioskLocked = false;
+  if (!win) return;
+  win.setAlwaysOnTop(false);
+  win.setFullScreen(false);
+  win.setKiosk(false);
+  win.webContents.send("app:navigate", "/login");
+});
+
 ipcMain.on("app-quit", () => {
-  console.log("Fechando app via IPC...");
+  console.log("Recebi app-quit");
   app.quit();
 });
+
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();

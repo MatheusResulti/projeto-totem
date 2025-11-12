@@ -47,6 +47,8 @@ export default function LoginForm() {
       localStorage.setItem("user", JSON.stringify(payload));
       setUserData?.(payload);
 
+      window.electronAPI?.loginKiosk?.();
+
       toast.success("Login realizado!");
       navigate("/splash");
     } catch (e: any) {
@@ -65,6 +67,7 @@ export default function LoginForm() {
     if (route) setApiRoute(route);
     if (door) setApiDoor(door);
     if (user && route && door) {
+      window.electronAPI?.loginKiosk?.();
       navigate("/splash");
     }
   }, [navigate]);

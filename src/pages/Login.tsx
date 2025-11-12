@@ -6,9 +6,13 @@ export default function Login() {
   const logo = asset("/assets/logo.png");
   const capa = asset("/assets/capa.jpg");
   const handleClose = () => {
-    if (window.electronAPI?.closeApp) window.electronAPI.closeApp();
-    else window.close();
+    if (window.electronAPI?.closeApp) {
+      window.electronAPI.closeApp();
+    } else {
+      window.close(); 
+    }
   };
+  
 
   return (
     <div
