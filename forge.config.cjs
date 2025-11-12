@@ -12,7 +12,11 @@ module.exports = {
   makers: [
     {
       name: "@electron-forge/maker-squirrel",
-      config: {},
+      config: {
+        name: "projeto-totem",
+        setupIcon: path.join(__dirname, "public", "icon.ico"),
+        iconUrl: path.join(__dirname, "public", "icon.ico"),
+      },
     },
     {
       name: "@electron-forge/maker-zip",
@@ -45,8 +49,8 @@ module.exports = {
 
   hooks: {
     packageAfterCopy: async (forgeConfig, buildPath) => {
-      const src = path.resolve(__dirname, "dist"); 
-      const dest = path.join(buildPath, "dist"); 
+      const src = path.resolve(__dirname, "dist");
+      const dest = path.join(buildPath, "dist");
       if (await fs.pathExists(src)) {
         await fs.copy(src, dest);
       }
