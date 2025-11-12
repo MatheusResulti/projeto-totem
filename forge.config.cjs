@@ -7,6 +7,7 @@ module.exports = {
   packagerConfig: {
     asar: true,
     executableName: "projeto-totem",
+    icon: path.join(__dirname, "public", "icon"),
   },
   rebuildConfig: {},
   makers: [
@@ -24,18 +25,23 @@ module.exports = {
     },
     {
       name: "@electron-forge/maker-deb",
-      config: {},
+      config: {
+        options: {
+          icon: path.join(__dirname, "public", "icon.png"),
+        },
+      },
     },
     {
       name: "@electron-forge/maker-rpm",
-      config: {},
+      config: {
+        options: {
+          icon: path.join(__dirname, "public", "icon.png"),
+        },
+      },
     },
   ],
   plugins: [
-    {
-      name: "@electron-forge/plugin-auto-unpack-natives",
-      config: {},
-    },
+    { name: "@electron-forge/plugin-auto-unpack-natives", config: {} },
     new FusesPlugin({
       version: FuseVersion.V1,
       [FuseV1Options.RunAsNode]: false,
@@ -46,14 +52,11 @@ module.exports = {
       [FuseV1Options.OnlyLoadAppFromAsar]: true,
     }),
   ],
-
   hooks: {
-    packageAfterCopy: async (forgeConfig, buildPath) => {
+    packageAfterCopy: async (_forgeConfig, buildPath) => {
       const src = path.resolve(__dirname, "dist");
       const dest = path.join(buildPath, "dist");
-      if (await fs.pathExists(src)) {
-        await fs.copy(src, dest);
-      }
+      if (await fs.pathExists(src)) await fs.copy(src, dest);
     },
   },
 };
