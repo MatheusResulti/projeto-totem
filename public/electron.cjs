@@ -25,6 +25,7 @@ const preloadPath = isDev
 
 let win;
 let kioskLocked = false;
+let forceQuit = false;
 
 app.on("web-contents-created", (_evt, contents) => {
   contents.on("will-navigate", (_e, url) => console.log("➡️ will-navigate:", url));
@@ -65,11 +66,12 @@ function createWindow() {
   win.once("ready-to-show", () => win.show());
 
   win.on("close", (e) => {
-    if (kioskLocked) {
+    if (kioskLocked && !forceQuit) {  
       e.preventDefault();
       win.webContents.send("app:navigate", "/login");
     }
   });
+  
 
   win.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
   win.webContents.on("context-menu", (e) => e.preventDefault());
@@ -131,7 +133,19 @@ ipcMain.on("auth:logout", () => {
 
 ipcMain.on("app-quit", () => {
   console.log("Recebi app-quit");
-  app.quit();
+  forceQuit = true;               
+  kioskLocked = false;             
+
+  if (win) {
+    try {
+      win.setAlwaysOnTop(false);
+      win.setFullScreen(false);
+      win.setKiosk(false);
+    } catch {}
+    win.close();
+  } else {
+    app.quit();
+  }
 });
 
 
