@@ -299,8 +299,12 @@ export default function Splash() {
         setStepLabel("Finalizando…");
         setProgress(100);
         await wait(250);
-
-        if (isMounted && !controller.signal.aborted) navigate("/home");
+        
+        if (isMounted && !controller.signal.aborted) {
+          window.electronAPI?.loginKiosk?.();
+          navigate("/home");
+        }
+        
       } catch (err: any) {
         if (isMounted) {
           console.error("Erro na sincronização:", err);
