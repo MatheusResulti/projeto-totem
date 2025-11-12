@@ -25,6 +25,4 @@ Principais funcionalidades:
 
 💰 Carrinho dinâmico com valor total atualizado em tempo real.
 
-🌗 Suporte a modo claro/escuro (Dark Mode).
-
 🔒 Execução segura via Electron em modo kiosk (sem acesso ao SO).
