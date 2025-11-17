@@ -12,7 +12,10 @@ app.commandLine.appendSwitch("in-process-gpu");
 app.commandLine.appendSwitch("use-gl", "swiftshader");
 app.commandLine.appendSwitch("disable-gpu");
 app.commandLine.appendSwitch("disable-gpu-sandbox");
-app.commandLine.appendSwitch("disable-features", "VaapiVideoDecoder,CanvasOopRasterization");
+app.commandLine.appendSwitch(
+  "disable-features",
+  "VaapiVideoDecoder,CanvasOopRasterization"
+);
 app.commandLine.appendSwitch("disable-dev-shm-usage");
 app.commandLine.appendSwitch("no-sandbox");
 
@@ -20,32 +23,20 @@ const isDev = !app.isPackaged;
 const DEV_URL = process.env.VITE_DEV_SERVER_URL || "http://localhost:5173";
 
 const preloadPath = isDev
-  ? path.join(__dirname, "preload.cjs")      
-  : path.join(app.getAppPath(), "dist", "preload.cjs"); 
+  ? path.join(__dirname, "preload.cjs")
+  : path.join(app.getAppPath(), "dist", "preload.cjs");
 
 let win;
 let kioskLocked = false;
 let forceQuit = false;
-
-app.on("web-contents-created", (_evt, contents) => {
-  contents.on("will-navigate", (_e, url) => console.log("➡️ will-navigate:", url));
-  contents.on("did-start-navigation", (_e, url, isInPlace, isMainFrame) =>
-    console.log("🚦 did-start-navigation:", { url, isInPlace, isMainFrame })
-  );
-  contents.on("did-finish-load", () => console.log("✅ Página carregada"));
-  contents.on("did-fail-load", (_e, code, desc, url) =>
-    console.error("❌ did-fail-load:", { code, desc, url })
-  );
-  contents.on("crashed", () => console.error("💥 WebContents crashed"));
-});
 
 function createWindow() {
   win = new BrowserWindow({
     width: 1200,
     height: 800,
     show: false,
-    frame: false,           
-    resizable: isDev,             
+    frame: false,
+    resizable: isDev,
     autoHideMenuBar: true,
     webPreferences: {
       preload: preloadPath,
@@ -59,19 +50,17 @@ function createWindow() {
     win.loadURL(DEV_URL);
   } else {
     const indexPath = path.join(app.getAppPath(), "dist", "index.html");
-    console.log("📂 Carregando:", indexPath);
     win.loadFile(indexPath);
   }
 
   win.once("ready-to-show", () => win.show());
 
   win.on("close", (e) => {
-    if (kioskLocked && !forceQuit) {  
+    if (kioskLocked && !forceQuit) {
       e.preventDefault();
       win.webContents.send("app:navigate", "/login");
     }
   });
-  
 
   win.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
   win.webContents.on("context-menu", (e) => e.preventDefault());
@@ -81,7 +70,9 @@ function createWindow() {
     const ctrl = input.control || input.meta;
     const alt = input.alt;
     if (
-      key === "f5" || key === "f11" || key === "escape" ||
+      key === "f5" ||
+      key === "f11" ||
+      key === "escape" ||
       (ctrl && (key === "r" || key === "w" || key === "q" || key === "i")) ||
       (alt && key === "f4")
     ) {
@@ -89,11 +80,13 @@ function createWindow() {
     }
   });
 
-  win.webContents.on("console-message", (_e, level, message, line, sourceId) => {
-    const levels = ["log", "warn", "error", "debug", "info"];
-    const tag = levels[level] || "log";
-    console[tag](`🪵 [renderer:${tag}] ${message} (${sourceId}:${line})`);
-  });
+  win.webContents.on(
+    "console-message",
+    (_e, level, message, line, sourceId) => {
+      const levels = ["log", "warn", "error", "debug", "info"];
+      const tag = levels[level] || "log";
+    }
+  );
 }
 
 app.whenReady().then(() => {
@@ -116,7 +109,7 @@ app.on("will-quit", () => {
 ipcMain.on("auth:logged-in", () => {
   kioskLocked = true;
   if (!win) return;
-  win.setKiosk(true);                   
+  win.setKiosk(true);
   win.setFullScreen(true);
   win.setAlwaysOnTop(true, "screen-saver");
   win.setMenuBarVisibility(false);
@@ -132,9 +125,8 @@ ipcMain.on("auth:logout", () => {
 });
 
 ipcMain.on("app-quit", () => {
-  console.log("Recebi app-quit");
-  forceQuit = true;               
-  kioskLocked = false;             
+  forceQuit = true;
+  kioskLocked = false;
 
   if (win) {
     try {
@@ -147,7 +139,6 @@ ipcMain.on("app-quit", () => {
     app.quit();
   }
 });
-
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();

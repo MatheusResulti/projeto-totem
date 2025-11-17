@@ -1,6 +1,6 @@
 import { X } from "lucide-react";
-import LoginForm from "../components/LoginForm";
-import { asset } from "../utils/asset";
+import LoginForm from "../../components/LoginForm/LoginForm";
+import { asset } from "../../utils/asset";
 
 export default function Login() {
   const logo = asset("/assets/logo.png");
@@ -9,10 +9,9 @@ export default function Login() {
     if (window.electronAPI?.closeApp) {
       window.electronAPI.closeApp();
     } else {
-      window.close(); 
+      window.close();
     }
   };
-  
 
   return (
     <div

@@ -2,18 +2,18 @@
 import { useEffect, useMemo, useState } from "react";
 import { ShoppingBasket } from "lucide-react";
 import toast from "react-hot-toast";
-import { formatToBRL } from "../utils/helpers";
+import { formatToBRL } from "../../utils/helpers";
 import {
   useComplements,
   useOrder,
   useSizes,
   useUserData,
   useCount,
-} from "../utils/store";
-import QuantityCounter from "./QuantityCounter";
-import AditionalItem from "./AditionalItem";
-import type { ItemType, ProductType } from "../types/types";
-import { useTotemColor } from "../utils/useTotemColor";
+} from "../../utils/store";
+import QuantityCounter from "../QuantityCounter/QuantityCounter";
+import AditionalItem from "../AditionalItem/AditionalItem";
+import type { ItemType, ProductType } from "../../types/types";
+import { useTotemColor } from "../../utils/useTotemColor";
 
 type ProductInfoProps = {
   product: ProductType;
@@ -128,7 +128,9 @@ export default function ProductInfo({
   const shouldDeferPrice = hasSizes && noBasePrice && !selectedSize;
   const hasComplements = complementsData.length > 0;
 
-  const basePrice = shouldDeferPrice ? 0 : selectedSize?.price ?? product.price;
+  const basePrice = shouldDeferPrice
+    ? 0
+    : (selectedSize?.price ?? product.price);
   const complementPrice = shouldDeferPrice
     ? 0
     : complementsData

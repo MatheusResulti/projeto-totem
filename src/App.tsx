@@ -3,14 +3,16 @@ import { lazy, Suspense } from "react";
 import { HashRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
 import { useInactivityTimer } from "./utils/useInactivityTimer";
 
-const Home = lazy(() => import("./pages/Home"));
-const Menu = lazy(() => import("./pages/Menu"));
-const Cart = lazy(() => import("./pages/Cart"));
-const Splash = lazy(() => import("./pages/Splash"));
-const Login = lazy(() => import("./pages/Login"));
-const PixPayment = lazy(() => import("./pages/PixPayment"));
-const CardPayment = lazy(() => import("./pages/CardPayment"));
-const TimeExceeded = lazy(() => import("./components/TimeExceeded"));
+const Home = lazy(() => import("./pages/Home/Home"));
+const Menu = lazy(() => import("./pages/Menu/Menu"));
+const Cart = lazy(() => import("./pages/Cart/Cart"));
+const Splash = lazy(() => import("./pages/Splash/Splash"));
+const Login = lazy(() => import("./pages/Login/Login"));
+const PixPayment = lazy(() => import("./pages/PixPayment/PixPayment"));
+const CardPayment = lazy(() => import("./pages/CardPayment/CardPayment"));
+const TimeExceeded = lazy(
+  () => import("./components/TimeExceeded/TimeExceeded")
+);
 
 function RootLayout() {
   useInactivityTimer(30000);

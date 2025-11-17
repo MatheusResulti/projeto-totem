@@ -1,5 +1,5 @@
-import { useCount } from "../utils/store";
-import { useTotemColor } from "../utils/useTotemColor";
+import { useCount } from "../../utils/store";
+import { useTotemColor } from "../../utils/useTotemColor";
 
 export default function QuantityCounter() {
   const { primary } = useTotemColor();

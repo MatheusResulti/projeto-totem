@@ -1,5 +1,5 @@
-import type { GroupType } from "../types/types";
-import { useTotemColor } from "../utils/useTotemColor";
+import type { GroupType } from "../../types/types";
+import { useTotemColor } from "../../utils/useTotemColor";
 
 interface GroupItemProps extends GroupType {
   selected: boolean;

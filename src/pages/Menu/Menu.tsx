@@ -1,21 +1,21 @@
-import ProductCard from "../components/ProductCard";
-import ProductModal from "../components/ProductModal";
+import ProductCard from "../../components/ProductCard/ProductCard";
+import ProductModal from "../../components/ProductModal/ProductModal";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import MenuSideBar from "../components/MenuSideBar";
-import type { ProductType } from "../types/types";
-import ProductInfo from "../components/ProductInfo";
+import MenuSideBar from "../../components/MenuSideBar/MenuSideBar";
+import type { ProductType } from "../../types/types";
+import ProductInfo from "../../components/ProductInfo/ProductInfo";
 import {
   useGroup,
   useOrder,
   useProduct,
   useCount,
   useUserData,
-} from "../utils/store";
-import { formatToBRL } from "../utils/helpers";
-import { useTotemColor } from "../utils/useTotemColor";
+} from "../../utils/store";
+import { formatToBRL } from "../../utils/helpers";
+import { useTotemColor } from "../../utils/useTotemColor";
 import { ShoppingCart } from "lucide-react";
-import { asset } from "../utils/asset";
+import { asset } from "../../utils/asset";
 
 export default function Menu() {
   const navigate = useNavigate();

@@ -1,6 +1,6 @@
-import GroupItem from "../components/GroupItem";
-import { asset } from "../utils/asset";
-import { useGroup, useUserData } from "../utils/store";
+import GroupItem from "../GroupItem/GroupItem";
+import { asset } from "../../utils/asset";
+import { useGroup, useUserData } from "../../utils/store";
 import { useMemo } from "react";
 
 interface MenuSideBarProps {

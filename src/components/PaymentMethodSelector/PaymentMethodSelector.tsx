@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { useTotemColor } from "../utils/useTotemColor";
+import { useTotemColor } from "../../utils/useTotemColor";
 
 type Method = "pix" | "credito" | "debito";
 

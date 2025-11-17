@@ -1,9 +1,9 @@
 import { ChevronLeft } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useOrder, useUserData } from "../utils/store";
-import { useTotemColor } from "../utils/useTotemColor";
-import { formatToBRL } from "../utils/helpers";
-import { asset } from "../utils/asset";
+import { useOrder, useUserData } from "../../utils/store";
+import { useTotemColor } from "../../utils/useTotemColor";
+import { formatToBRL } from "../../utils/helpers";
+import { asset } from "../../utils/asset";
 
 type Tipo = "credito" | "debito";
 

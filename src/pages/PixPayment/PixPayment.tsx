@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useNavigate } from "react-router-dom";
-import { useOrder, useUserData } from "../utils/store";
+import { useOrder, useUserData } from "../../utils/store";
 import { ChevronLeft } from "lucide-react";
 // import { useState } from "react";
-// import type { ResultiPayType } from "../types/types";
+// import type { ResultiPayType } from "../../types/types";
 // import toast from "react-hot-toast";
-// import { Api } from "../api/Api";
-// import { ResultiApi } from "../api/ResultiApi";
-import { formatToBRL } from "../utils/helpers";
-import { useTotemColor } from "../utils/useTotemColor";
-import { asset } from "../utils/asset";
+// import { Api } from "../../api/Api";
+// import { ResultiApi } from "../../api/ResultiApi";
+import { formatToBRL } from "../../utils/helpers";
+import { useTotemColor } from "../../utils/useTotemColor";
+import { asset } from "../../utils/asset";
 
 export default function PixPayment() {
   const navigate = useNavigate();

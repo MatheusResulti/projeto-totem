@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useUserData } from "../utils/store";
+import { useUserData } from "../../utils/store";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import TotemConfigModal from "../components/TotemConfigModal";
+import TotemConfigModal from "../../components/TotemConfigModal/TotemConfigModal";
 import { RefreshCcw, LogOut, Lock, Eye, EyeOff } from "lucide-react";
-import PaymentMethodBadge from "../components/PaymentMethodBadge";
+import PaymentMethodBadge from "../../components/PaymentMethodBadge/PaymentMethodBadge";
 import toast from "react-hot-toast";
-import { asset } from "../utils/asset";
+import { asset } from "../../utils/asset";
 
 export default function Home() {
   const navigate = useNavigate();

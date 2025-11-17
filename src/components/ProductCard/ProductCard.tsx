@@ -1,7 +1,7 @@
-import type { ProductType } from "../types/types";
-import { asset } from "../utils/asset";
-import { formatToBRL } from "../utils/helpers";
-import { useTotemColor } from "../utils/useTotemColor";
+import type { ProductType } from "../../types/types";
+import { asset } from "../../utils/asset";
+import { formatToBRL } from "../../utils/helpers";
+import { useTotemColor } from "../../utils/useTotemColor";
 
 interface Props {
   item: ProductType;

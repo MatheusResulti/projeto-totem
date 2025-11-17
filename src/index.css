@@ -36,10 +36,6 @@
   }
 }
 
-/* (opcional) se quiser definir onde o Tailwind deve buscar classes
-@source "./index.html";
-@source "./src/";*/
-
 html,
 body {
   font-family: "Poppins", "Nunito", ui-sans-serif, system-ui, sans-serif;

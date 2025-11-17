@@ -1,5 +1,5 @@
-import { formatToBRL } from "../utils/helpers";
-import { useTotemColor } from "../utils/useTotemColor";
+import { formatToBRL } from "../../utils/helpers";
+import { useTotemColor } from "../../utils/useTotemColor";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type AditionalItemProps = {
@@ -37,7 +37,7 @@ export default function AditionalItem({
         className={`w-5 h-5 rounded-full border border-border-color touchable`}
         style={{
           backgroundColor: selected
-            ? primary ?? "var(--color-secondary)"
+            ? (primary ?? "var(--color-secondary)")
             : "#d1d5db",
         }}
       ></div>
