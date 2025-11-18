@@ -100,6 +100,7 @@ export default function Splash() {
       setError(null);
       setProgress(0);
       setStepLabel("Iniciando");
+      let serverUnavailable = false;
 
       const timeoutId = setTimeout(() => {
         controller.abort();
@@ -136,6 +137,7 @@ export default function Splash() {
           } catch (e: any) {
             const msg = (e?.message || "").toLowerCase();
             if (msg.includes("failed to fetch")) {
+              serverUnavailable = true;
               setError(
                 "Não foi possível conectar ao servidor (conexão recusada/indisponível). Verifique IP e porta."
               );
@@ -180,6 +182,7 @@ export default function Splash() {
           } catch (e: any) {
             const msg = (e?.message || "").toLowerCase();
             if (msg.includes("failed to fetch")) {
+              serverUnavailable = true;
               setError(
                 "Não foi possível conectar ao servidor. Verifique IP e porta."
               );
@@ -222,6 +225,7 @@ export default function Splash() {
           } catch (e: any) {
             const msg = (e?.message || "").toLowerCase();
             if (msg.includes("failed to fetch")) {
+              serverUnavailable = true;
               setError(
                 "Não foi possível conectar ao servidor (conexão recusada/indisponível). Verifique IP e porta."
               );
@@ -279,6 +283,7 @@ export default function Splash() {
           } catch (e: any) {
             const msg = (e?.message || "").toLowerCase();
             if (msg.includes("failed to fetch")) {
+              serverUnavailable = true;
               setError(
                 "Não foi possível conectar ao servidor (conexão recusada/indisponível). Verifique IP e porta."
               );
@@ -301,6 +306,14 @@ export default function Splash() {
         await wait(250);
 
         if (isMounted && !controller.signal.aborted) {
+          if (serverUnavailable) {
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
+            localStorage.removeItem("route");
+            localStorage.removeItem("door");
+            navigate("/login", { replace: true });
+            return;
+          }
           window.electronAPI?.loginKiosk?.();
           navigate("/home");
         }
@@ -334,13 +347,13 @@ export default function Splash() {
 
   return (
     <div className="bg-splash-bg h-screen w-screen flex flex-col items-center justify-center text-white font-semibold px-4">
-      <img src={logo} className="h-20 object-contain mb-4" alt="Logo" />
+      <img src={logo} className="h-15 object-contain mb-4" alt="Logo" />
 
       {!error ? (
         <div className="flex flex-col items-center gap-4">
           <img
             src={loadingImg}
-            className="h-20 object-contain opacity-80"
+            className="h-80 object-contain opacity-80"
             alt=""
           />
           <div className="flex flex-col items-center w-[360px] sm:w-[420px]">

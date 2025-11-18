@@ -7,7 +7,7 @@ module.exports = {
   packagerConfig: {
     asar: true,
     executableName: "projeto-totem",
-    icon: path.join(__dirname, "public", "icon"),
+    icon: path.join(__dirname, "public", "assets", "expoIcon"),
   },
   rebuildConfig: {},
   makers: [
@@ -15,8 +15,8 @@ module.exports = {
       name: "@electron-forge/maker-squirrel",
       config: {
         name: "projeto-totem",
-        setupIcon: path.join(__dirname, "public", "icon.ico"),
-        iconUrl: path.join(__dirname, "public", "icon.ico"),
+        setupIcon: path.join(__dirname, "public", "assets", "expoIcon.png"),
+        iconUrl: path.join(__dirname, "public", "assets", "expoIcon.png"),
       },
     },
     {
@@ -27,7 +27,7 @@ module.exports = {
       name: "@electron-forge/maker-deb",
       config: {
         options: {
-          icon: path.join(__dirname, "public", "icon.png"),
+          icon: path.join(__dirname, "public", "assets", "expoIcon.png"),
         },
       },
     },
@@ -35,7 +35,7 @@ module.exports = {
       name: "@electron-forge/maker-rpm",
       config: {
         options: {
-          icon: path.join(__dirname, "public", "icon.png"),
+          icon: path.join(__dirname, "public", "assets", "expoIcon.png"),
         },
       },
     },

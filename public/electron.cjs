@@ -1,4 +1,10 @@
-const { app, BrowserWindow, ipcMain, globalShortcut } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  ipcMain,
+  globalShortcut,
+  session,
+} = require("electron");
 const path = require("path");
 
 app.disableHardwareAcceleration();
@@ -29,6 +35,222 @@ const preloadPath = isDev
 let win;
 let kioskLocked = false;
 let forceQuit = false;
+
+const currencyFormatter = new Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL",
+});
+
+const formatCurrency = (value) => {
+  const numeric = Number(value);
+  return currencyFormatter.format(Number.isFinite(numeric) ? numeric : 0);
+};
+
+const escapeHtml = (value = "") =>
+  String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+const buildReceiptHtml = (payload = {}) => {
+  const { company = {}, order = {}, payment = {}, timestamp } = payload;
+  const items = Array.isArray(order.items) ? order.items : [];
+  const companyHtml = [
+    company.name,
+    company.document ? `CNPJ: ${company.document}` : "",
+    company.address,
+  ]
+    .filter(Boolean)
+    .map((line) => `<div>${escapeHtml(line)}</div>`)
+    .join("");
+
+  const itemsHtml =
+    items
+      .map((item) => {
+        const totalValue =
+          item.total ?? (item.unitPrice ?? 0) * (item.quantity ?? 0);
+        const additionals = Array.isArray(item.additionals)
+          ? item.additionals
+              .filter(Boolean)
+              .map((add) => `<div class="muted">+ ${escapeHtml(add)}</div>`)
+              .join("")
+          : "";
+        const observation = item.observation
+          ? `<div class="muted">Obs: ${escapeHtml(item.observation)}</div>`
+          : "";
+        return `<div class="item">
+            <div class="flex">
+              <span>${escapeHtml(`${item.quantity ?? 0}x ${item.name ?? ""}`)}</span>
+              <span>${formatCurrency(totalValue)}</span>
+            </div>
+            <div class="muted">${formatCurrency(item.unitPrice ?? 0)} un</div>
+            ${additionals}${observation}
+          </div>`;
+      })
+      .join("") || `<div class="item">Sem itens registrados.</div>`;
+
+  const pix = payment.pix || {};
+  const pixHtml =
+    pix && (pix.description || pix.key || pix.qrCode)
+      ? `<div class="section">
+          <div><strong>Pagamento PIX</strong></div>
+          ${pix.description ? `<div>${escapeHtml(pix.description)}</div>` : ""}
+          ${pix.key ? `<div>Chave: ${escapeHtml(pix.key)}</div>` : ""}
+          ${
+            pix.qrCode
+              ? `<img class="qrcode" src="${escapeHtml(
+                  pix.qrCode
+                )}" alt="QR Code" />`
+              : ""
+          }
+        </div>`
+      : "";
+
+  const paymentInfo = [
+    payment.document ? `Documento: ${payment.document}` : "",
+    payment.type ? `Tipo: ${payment.type}` : "",
+    order.label ? `Identificador: ${order.label}` : "",
+    order.code ? `Pedido: ${order.code}` : "",
+  ]
+    .filter(Boolean)
+    .map((line) => `<div>${escapeHtml(line)}</div>`)
+    .join("");
+
+  const saleDate = (() => {
+    const dateCandidate = timestamp ? new Date(timestamp) : new Date();
+    if (Number.isNaN(dateCandidate.getTime())) {
+      return new Date().toLocaleString("pt-BR");
+    }
+    return dateCandidate.toLocaleString("pt-BR");
+  })();
+
+  return `<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        font-family: "Roboto Mono", "Courier New", monospace;
+        font-size: 12px;
+        margin: 0;
+        padding: 0;
+      }
+      .receipt {
+        width: 280px;
+        margin: 0 auto;
+        padding: 12px;
+      }
+      .center {
+        text-align: center;
+      }
+      .section {
+        margin-top: 12px;
+        border-top: 1px dashed #777;
+        padding-top: 8px;
+      }
+      .item {
+        margin: 6px 0;
+      }
+      .flex {
+        display: flex;
+        justify-content: space-between;
+      }
+      .muted {
+        color: #555;
+        font-size: 10px;
+      }
+      .total {
+        font-size: 14px;
+        font-weight: bold;
+      }
+      .qrcode {
+        width: 120px;
+        height: 120px;
+        margin: 8px auto 0;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="receipt">
+      <div class="center">
+        ${companyHtml || "<div>Pedido</div>"}
+      </div>
+      <div class="section">
+        <div><strong>Itens</strong></div>
+        ${itemsHtml}
+      </div>
+      <div class="section total">
+        <span>Total: ${formatCurrency(order.total ?? 0)}</span>
+      </div>
+      <div class="section">
+        ${paymentInfo || "<div>Pagamento não informado.</div>"}
+      </div>
+      ${pixHtml}
+      <div class="section center">
+        <div>${escapeHtml(saleDate)}</div>
+      </div>
+    </div>
+  </body>
+</html>`;
+};
+
+const handleReceiptPrint = (payload = {}) => {
+  const html = buildReceiptHtml(payload);
+  const runPrint = () => {
+    const printWindow = new BrowserWindow({
+      show: false,
+      frame: false,
+      skipTaskbar: true,
+      webPreferences: {
+        sandbox: true,
+        contextIsolation: true,
+        nodeIntegration: false,
+      },
+    });
+
+    const cleanup = () => {
+      if (printWindow && !printWindow.isDestroyed()) {
+        printWindow.close();
+      }
+    };
+
+    printWindow.on("closed", () => {});
+
+    printWindow.loadURL(
+      `data:text/html;charset=utf-8,${encodeURIComponent(html)}`
+    );
+
+    printWindow.webContents.on("did-finish-load", () => {
+      printWindow.webContents.print(
+        {
+          silent: true,
+          deviceName: payload?.printerName || undefined,
+          printBackground: true,
+        },
+        (success, failureReason) => {
+          if (!success) {
+            console.error("Erro ao imprimir recibo:", failureReason);
+          }
+          cleanup();
+        }
+      );
+    });
+
+    printWindow.webContents.on("did-fail-load", (_event, code, desc) => {
+      console.error("Erro ao preparar a impressão:", code, desc);
+      cleanup();
+    });
+  };
+
+  if (app.isReady()) {
+    runPrint();
+  } else {
+    app.once("ready", runPrint);
+  }
+};
 
 function createWindow() {
   win = new BrowserWindow({
@@ -94,7 +316,6 @@ app.whenReady().then(() => {
 
   globalShortcut.register("CommandOrControl+R", () => {});
   globalShortcut.register("F5", () => {});
-  globalShortcut.register("CommandOrControl+Shift+I", () => {});
   globalShortcut.register("F11", () => {});
 
   app.on("activate", () => {
@@ -137,6 +358,15 @@ ipcMain.on("app-quit", () => {
     win.close();
   } else {
     app.quit();
+  }
+});
+
+ipcMain.on("printer:receipt", (_event, payload) => {
+  if (!payload || typeof payload !== "object") return;
+  try {
+    handleReceiptPrint(payload);
+  } catch (error) {
+    console.error("Erro durante a impressão do recibo:", error);
   }
 });
 

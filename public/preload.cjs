@@ -7,5 +7,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
 
   logoutKiosk: () => ipcRenderer.send("auth:logout"),
 
+  printReceipt: (payload) => ipcRenderer.send("printer:receipt", payload),
+
   onNavigate: (cb) => ipcRenderer.on("app:navigate", (_e, route) => cb(route)),
 });
