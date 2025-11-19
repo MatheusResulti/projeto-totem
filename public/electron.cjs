@@ -5,6 +5,9 @@ const {
   globalShortcut,
   session,
 } = require("electron");
+if (require("electron-squirrel-startup")) {
+  app.quit();
+}
 const path = require("path");
 
 app.disableHardwareAcceleration();
