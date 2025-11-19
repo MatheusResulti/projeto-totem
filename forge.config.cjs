@@ -3,11 +3,13 @@ const fs = require("fs-extra");
 const { FusesPlugin } = require("@electron-forge/plugin-fuses");
 const { FuseV1Options, FuseVersion } = require("@electron/fuses");
 
+const iconBase = path.join(__dirname, "public", "assets", "expoIcon"); 
+
 module.exports = {
   packagerConfig: {
     asar: true,
     executableName: "projeto-totem",
-    icon: path.join(__dirname, "public", "assets", "expoIcon"),
+    icon: iconBase,
   },
   rebuildConfig: {},
   makers: [
@@ -15,8 +17,9 @@ module.exports = {
       name: "@electron-forge/maker-squirrel",
       config: {
         name: "projeto-totem",
-        setupIcon: path.join(__dirname, "public", "assets", "expoIcon.png"),
-        iconUrl: path.join(__dirname, "public", "assets", "expoIcon.png"),
+        setupIcon: path.join(__dirname, "public", "assets", "expoIcon.ico"),
+        iconUrl:
+          "https://raw.githubusercontent.com/MatheusResulti/projeto-totem/main/public/assets/expoIcon.ico",
       },
     },
     {
