@@ -15,7 +15,7 @@ const TimeExceeded = lazy(
 );
 
 function RootLayout() {
-  useInactivityTimer(30000);
+  useInactivityTimer(60000);
 
   return (
     <div>

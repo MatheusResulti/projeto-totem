@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useOrder, useUserData } from "../../utils/store";
 import { ChevronLeft } from "lucide-react";
 import { formatToBRL } from "../../utils/helpers";
@@ -15,8 +15,14 @@ import { ResultiApi } from "../../api/ResultiApi";
 import { BadgeCheck } from "lucide-react";
 import UseAnimations from "react-useanimations";
 
+const PIX_DATA_KEY = "pixPayment:data";
+const PIX_ITEM_KEY = "pixPayment:item";
+const PIX_PAID_KEY = "pixPayment:paid";
+let pendingHomeTimeout: ReturnType<typeof setTimeout> | null = null;
+
 export default function PixPayment() {
   const navigate = useNavigate();
+  const location = useLocation();
   const icon = asset("/assets/icon.png");
   const rPay = asset("/assets/rPay.png");
   const userData = useUserData((s) => s.userData);
@@ -29,13 +35,22 @@ export default function PixPayment() {
   const [isLoading, setIsLoading] = useState(false);
   const [pixItem, setPixItem] = useState<any>();
   const [pixData, setPixData] = useState<ResultiPayType | null>(null);
-  const homeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hasRequestedPixRef = useRef(false);
 
   const clearHomeTimeout = () => {
-    if (homeTimeoutRef.current) {
-      clearTimeout(homeTimeoutRef.current);
-      homeTimeoutRef.current = null;
+    if (pendingHomeTimeout) {
+      clearTimeout(pendingHomeTimeout);
+      pendingHomeTimeout = null;
     }
+  };
+
+  const clearPixSession = () => {
+    sessionStorage.removeItem(PIX_DATA_KEY);
+    sessionStorage.removeItem(PIX_ITEM_KEY);
+  };
+
+  const clearPaidFlag = () => {
+    sessionStorage.removeItem(PIX_PAID_KEY);
   };
 
   const sendOrder = async (pixI?: any, pixD?: any) => {
@@ -102,6 +117,9 @@ export default function PixPayment() {
 
         window.electronAPI?.printReceipt?.(receiptPayload);
 
+        sessionStorage.setItem(PIX_PAID_KEY, "1");
+
+        clearPixSession();
         setOrder({
           cdEmpresa: 1,
           tpAtendimento: 2,
@@ -113,7 +131,8 @@ export default function PixPayment() {
           itens: [],
         });
         clearHomeTimeout();
-        homeTimeoutRef.current = setTimeout(() => {
+        pendingHomeTimeout = setTimeout(() => {
+          clearPaidFlag();
           navigate("/home");
         }, 10000);
       })
@@ -132,6 +151,11 @@ export default function PixPayment() {
 
     if (!item) {
       toast.error("Nenhuma forma de pagamento PIX configurada.");
+      return;
+    }
+
+    if (!order.total || order.total <= 0) {
+      toast.error("Valor do pedido inválido para gerar PIX.");
       return;
     }
 
@@ -162,6 +186,8 @@ export default function PixPayment() {
           return;
         }
         setPixData(data);
+        sessionStorage.setItem(PIX_DATA_KEY, JSON.stringify(data));
+        sessionStorage.setItem(PIX_ITEM_KEY, JSON.stringify(item));
         setIsLoading(false);
         loop(data, item);
       })
@@ -175,9 +201,10 @@ export default function PixPayment() {
 
   const handleQrCodeDelete = () => {
     ResultiApi.delete(
-      `${pixItem.resultipay.host}/api/v1/Pix/Remover/${pixData?.fmp_idpk}`,
-      pixItem.resultipay.hash
+      `${pixItem?.resultipay.host}/api/v1/Pix/Remover/${pixData?.fmp_idpk}`,
+      pixItem?.resultipay.hash
     );
+    clearPixSession();
   };
 
   const cancelOrder = () => {
@@ -212,6 +239,8 @@ export default function PixPayment() {
         setIsLoading(false);
         setLoadingPix(false);
         setIsPaid(false);
+        clearPixSession();
+        clearPaidFlag();
         navigate("/home");
         toast.success("Pedido cancelado com sucesso!");
       })
@@ -264,9 +293,40 @@ export default function PixPayment() {
   };
 
   useEffect(() => {
+    const wasPaid = sessionStorage.getItem(PIX_PAID_KEY);
+    if (wasPaid === "1") {
+      setIsPaid(true);
+      setIsLoading(false);
+      return;
+    }
+
+    const storedPix = sessionStorage.getItem(PIX_DATA_KEY);
+    const storedItem = sessionStorage.getItem(PIX_ITEM_KEY);
+
+    if (storedPix && storedItem) {
+      try {
+        const parsedPix = JSON.parse(storedPix);
+        const parsedItem = JSON.parse(storedItem);
+        setPixData(parsedPix);
+        setPixItem(parsedItem);
+        setIsLoading(false);
+        loop(parsedPix, parsedItem);
+        return;
+      } catch {
+        clearPixSession();
+      }
+    }
+
+    if (hasRequestedPixRef.current) return;
+    hasRequestedPixRef.current = true;
+
     createPix();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    sessionStorage.setItem("lastRoute", location.pathname);
+  }, [location.pathname]);
 
   useEffect(() => {
     return () => {
@@ -301,6 +361,8 @@ export default function PixPayment() {
             className="h-15 flex justify-center items-center border-2 rounded-xl touchable font-bold px-5"
             onClick={() => {
               clearHomeTimeout();
+              clearPixSession();
+              clearPaidFlag();
               setOrder({
                 cdEmpresa: 1,
                 tpAtendimento: 2,

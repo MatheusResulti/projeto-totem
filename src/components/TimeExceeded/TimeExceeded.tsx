@@ -5,7 +5,7 @@ import { X } from "lucide-react";
 
 export default function TimeExceeded() {
   const navigate = useNavigate();
-  const [count, setCount] = useState(10);
+  const [count, setCount] = useState(30);
 
   const [openCount, setOpenCount] = useState(() => {
     const saved = sessionStorage.getItem("timeExceededOpens");
@@ -42,7 +42,7 @@ export default function TimeExceeded() {
   }, []);
 
   useEffect(() => {
-    if (openCount >= 3) {
+    if (openCount >= 5) {
       setIsCancelling(true);
       const t = setTimeout(() => {
         resetOrderAndGoHome();
@@ -52,14 +52,13 @@ export default function TimeExceeded() {
   }, [openCount, resetOrderAndGoHome]);
 
   useEffect(() => {
-    if (openCount >= 3 || isCancelling) return;
+    if (openCount >= 5 || isCancelling) return;
 
-    setCount(10);
+    setCount(30); // 🔹 antes 10
     const timer = setInterval(() => {
       setCount((prev) => {
-        if (prev <= 1) {
+        if (prev <= 0) {
           clearInterval(timer);
-          resetOrderAndGoHome();
           return 0;
         }
         return prev - 1;
@@ -67,12 +66,24 @@ export default function TimeExceeded() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [openCount, isCancelling, resetOrderAndGoHome]);
+  }, [openCount, isCancelling]);
+
+  useEffect(() => {
+    if (openCount >= 5 || isCancelling) return;
+
+    if (count === 0) {
+      const t = setTimeout(() => {
+        resetOrderAndGoHome();
+      }, 1000);
+
+      return () => clearTimeout(t);
+    }
+  }, [count, openCount, isCancelling, resetOrderAndGoHome]);
 
   const handleReturn = () => {
     if (isCancelling) return;
 
-    if (openCount < 3) {
+    if (openCount < 5) {
       const lastRoute = sessionStorage.getItem("lastRoute");
       if (lastRoute) {
         sessionStorage.removeItem("lastRoute");
@@ -132,7 +143,7 @@ export default function TimeExceeded() {
             strokeWidth="10"
             fill="none"
             strokeDasharray={2 * Math.PI * 90}
-            strokeDashoffset={(2 * Math.PI * 90 * (10 - count)) / 10}
+            strokeDashoffset={(2 * Math.PI * 90 * (30 - count)) / 30}
             strokeLinecap="round"
             className="transition-all duration-1000 ease-linear"
           />
@@ -150,7 +161,7 @@ export default function TimeExceeded() {
         <span className="block text-2xl font-semibold text-gray-700">
           Toque na tela para continuar.
         </span>
-        {openCount === 2 && (
+        {openCount === 4 && (
           <span className="block text-xl font-semibold text-error">
             Uma tentativa restante!
           </span>

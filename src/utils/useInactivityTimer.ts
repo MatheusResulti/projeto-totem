@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-export function useInactivityTimer(timeout = 30000) {
+export function useInactivityTimer(timeout = 60000) {
   const navigate = useNavigate();
   const location = useLocation();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
