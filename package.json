@@ -1,6 +1,6 @@
 {
-  "name": "projeto-totem",
-  "productName": "Projeto Totem",
+  "name": "control-chef-totem",
+  "productName": "Control Chef Totem",
   "version": "0.0.1",
   "description": "Totem de autoatendimento para restaurantes com PDV integrado.",
   "author": "Resulti Sistemas <resultisistemas@gmail.com>",

@@ -8,19 +8,22 @@ const iconBase = path.join(__dirname, "public", "assets", "expoIcon");
 module.exports = {
   packagerConfig: {
     asar: true,
-    executableName: "projeto-totem",
+    executableName: "ControlChefTotem",
     icon: iconBase,
   },
   rebuildConfig: {},
   makers: [
     {
-      name: "@electron-forge/maker-squirrel",
-      config: {
-        name: "projeto-totem",
-        setupIcon: path.join(__dirname, "public", "assets", "expoIcon.ico"),
-        iconUrl:
-          "https://raw.githubusercontent.com/MatheusResulti/projeto-totem/main/public/assets/expoIcon.ico",
-      },
+        name: "@electron-forge/maker-squirrel",
+        config: {
+          name: "ControlChefTotem", 
+          setupIcon: path.join(__dirname, "public", "assets", "expoIcon.ico"),
+          iconUrl:
+            "https://raw.githubusercontent.com/MatheusResulti/projeto-totem/main/public/assets/expoIcon.ico",
+          shortcutName: "Control Chef Totem",
+          noDesktopShortcut: false,
+          noStartMenuShortcut: false,
+        },
     },
     {
       name: "@electron-forge/maker-zip",
