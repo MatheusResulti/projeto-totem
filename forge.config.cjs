@@ -33,7 +33,7 @@ module.exports = {
       name: "@electron-forge/maker-deb",
       config: {
         options: {
-          icon: path.join(__dirname, "public", "assets", "expoIcon.png"),
+          icon: path.join(__dirname, "public", "assets", "expoIcon.ico"),
         },
       },
     },
@@ -41,7 +41,7 @@ module.exports = {
       name: "@electron-forge/maker-rpm",
       config: {
         options: {
-          icon: path.join(__dirname, "public", "assets", "expoIcon.png"),
+          icon: path.join(__dirname, "public", "assets", "expoIcon.ico"),
         },
       },
     },
