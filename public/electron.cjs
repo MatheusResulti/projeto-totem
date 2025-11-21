@@ -95,19 +95,59 @@ const buildReceiptHtml = (payload = {}) => {
       .join("") || `<div class="item">Sem itens registrados.</div>`;
 
   const pix = payment.pix || {};
+  const paidAt =
+    pix.paidAt && !Number.isNaN(new Date(pix.paidAt).getTime())
+      ? new Date(pix.paidAt)
+      : timestamp
+        ? new Date(timestamp)
+        : null;
+  const pixConfirmation = [
+    "Pagamento PIX confirmado",
+    pix.status ? `STATUS: ${escapeHtml(String(pix.status)).toUpperCase()}` : "",
+    pix.pspReceiver ? `Instituição: ${escapeHtml(pix.pspReceiver)}` : "",
+    pix.txId || pix.txid ? `TxId: ${escapeHtml(pix.txId || pix.txid)}` : "",
+    pix.endToEndId
+      ? `EndToEndId: ${escapeHtml(pix.endToEndId)}`
+      : "",
+    pix.authCode ? `Autenticação: ${escapeHtml(pix.authCode)}` : "",
+    pix.description ? `Descrição: ${escapeHtml(pix.description)}` : "",
+    pix.key ? `Chave utilizada: ${escapeHtml(pix.key)}` : "",
+  ]
+    .filter(Boolean)
+    .map((line) => `<div>${line}</div>`)
+    .join("");
+
+  const receiverInfo = [
+    pix.receiverName || company.name
+      ? `Recebedor: ${escapeHtml(pix.receiverName || company.name || "")}`
+      : "",
+    pix.receiverDocument || company.document
+      ? `CNPJ: ${escapeHtml(pix.receiverDocument || company.document || "")}`
+      : "",
+  ]
+    .filter(Boolean)
+    .map((line) => `<div>${line}</div>`)
+    .join("");
+
+  const paidDate =
+    paidAt && !Number.isNaN(paidAt.getTime())
+      ? paidAt.toLocaleString("pt-BR")
+      : null;
+
   const pixHtml =
-    pix && (pix.description || pix.key || pix.qrCode)
+    pixConfirmation || receiverInfo
       ? `<div class="section">
           <div><strong>Pagamento PIX</strong></div>
-          ${pix.description ? `<div>${escapeHtml(pix.description)}</div>` : ""}
-          ${pix.key ? `<div>Chave: ${escapeHtml(pix.key)}</div>` : ""}
+          ${pixConfirmation}
+          ${receiverInfo}
           ${
-            pix.qrCode
-              ? `<img class="qrcode" src="${escapeHtml(
-                  pix.qrCode
-                )}" alt="QR Code" />`
+            paidDate
+              ? `<div class="muted">Data/Hora: ${escapeHtml(paidDate)}</div>`
               : ""
           }
+          <div class="total">Valor: ${formatCurrency(
+            pix.amount ?? order.total ?? 0
+          )}</div>
         </div>`
       : "";
 
