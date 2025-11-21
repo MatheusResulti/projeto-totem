@@ -60,184 +60,102 @@ const escapeHtml = (value = "") =>
 const buildReceiptHtml = (payload = {}) => {
   const { company = {}, order = {}, payment = {}, timestamp } = payload;
   const items = Array.isArray(order.items) ? order.items : [];
-  const companyHtml = [
-    company.name,
-    company.document ? `CNPJ: ${company.document}` : "",
-    company.address,
-  ]
-    .filter(Boolean)
-    .map((line) => `<div>${escapeHtml(line)}</div>`)
-    .join("");
-
-  const itemsHtml =
-    items
-      .map((item) => {
-        const totalValue =
-          item.total ?? (item.unitPrice ?? 0) * (item.quantity ?? 0);
-        const additionals = Array.isArray(item.additionals)
-          ? item.additionals
-              .filter(Boolean)
-              .map((add) => `<div class="muted">+ ${escapeHtml(add)}</div>`)
-              .join("")
-          : "";
-        const observation = item.observation
-          ? `<div class="muted">Obs: ${escapeHtml(item.observation)}</div>`
-          : "";
-        return `<div class="item">
-            <div class="flex">
-              <span>${escapeHtml(`${item.quantity ?? 0}x ${item.name ?? ""}`)}</span>
-              <span>${formatCurrency(totalValue)}</span>
-            </div>
-            <div class="muted">${formatCurrency(item.unitPrice ?? 0)} un</div>
-            ${additionals}${observation}
-          </div>`;
-      })
-      .join("") || `<div class="item">Sem itens registrados.</div>`;
-
   const pix = payment.pix || {};
-  const paidAt =
-    pix.paidAt && !Number.isNaN(new Date(pix.paidAt).getTime())
-      ? new Date(pix.paidAt)
-      : timestamp
-        ? new Date(timestamp)
-        : null;
-  const pixConfirmation = [
-    "Pagamento PIX confirmado",
-    pix.status ? `STATUS: ${escapeHtml(String(pix.status)).toUpperCase()}` : "",
-    pix.pspReceiver ? `Instituição: ${escapeHtml(pix.pspReceiver)}` : "",
-    pix.txId || pix.txid ? `TxId: ${escapeHtml(pix.txId || pix.txid)}` : "",
-    pix.endToEndId
-      ? `EndToEndId: ${escapeHtml(pix.endToEndId)}`
-      : "",
-    pix.authCode ? `Autenticação: ${escapeHtml(pix.authCode)}` : "",
-    pix.description ? `Descrição: ${escapeHtml(pix.description)}` : "",
-    pix.key ? `Chave utilizada: ${escapeHtml(pix.key)}` : "",
-  ]
-    .filter(Boolean)
-    .map((line) => `<div>${line}</div>`)
-    .join("");
-
-  const receiverInfo = [
-    pix.receiverName || company.name
-      ? `Recebedor: ${escapeHtml(pix.receiverName || company.name || "")}`
-      : "",
-    pix.receiverDocument || company.document
-      ? `CNPJ: ${escapeHtml(pix.receiverDocument || company.document || "")}`
-      : "",
-  ]
-    .filter(Boolean)
-    .map((line) => `<div>${line}</div>`)
-    .join("");
-
-  const paidDate =
-    paidAt && !Number.isNaN(paidAt.getTime())
-      ? paidAt.toLocaleString("pt-BR")
-      : null;
-
-  const pixHtml =
-    pixConfirmation || receiverInfo
-      ? `<div class="section">
-          <div><strong>Pagamento PIX</strong></div>
-          ${pixConfirmation}
-          ${receiverInfo}
-          ${
-            paidDate
-              ? `<div class="muted">Data/Hora: ${escapeHtml(paidDate)}</div>`
-              : ""
-          }
-          <div class="total">Valor: ${formatCurrency(
-            pix.amount ?? order.total ?? 0
-          )}</div>
-        </div>`
-      : "";
-
-  const paymentInfo = [
-    payment.document ? `Documento: ${payment.document}` : "",
-    payment.type ? `Tipo: ${payment.type}` : "",
-    order.label ? `Identificador: ${order.label}` : "",
-    order.code ? `Pedido: ${order.code}` : "",
-  ]
-    .filter(Boolean)
-    .map((line) => `<div>${escapeHtml(line)}</div>`)
-    .join("");
+  const paidAtDate = pix.paidAt ? new Date(pix.paidAt) : timestamp ? new Date(timestamp) : null;
 
   const saleDate = (() => {
-    const dateCandidate = timestamp ? new Date(timestamp) : new Date();
+    const dateCandidate = paidAtDate && !Number.isNaN(paidAtDate.getTime()) ? paidAtDate : new Date();
     if (Number.isNaN(dateCandidate.getTime())) {
       return new Date().toLocaleString("pt-BR");
     }
     return dateCandidate.toLocaleString("pt-BR");
   })();
 
-  return `<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <style>
-      body {
-        font-family: "Roboto Mono", "Courier New", monospace;
-        font-size: 12px;
-        margin: 0;
-        padding: 0;
+  const lineWidth = 32;
+  const pad = (str = "", size = lineWidth, align = "left") => {
+    const s = String(str);
+    if (s.length >= size) return s.slice(0, size);
+    const spaces = " ".repeat(size - s.length);
+    return align === "right" ? spaces + s : s + spaces;
+  };
+
+  const formatItemLine = (qty, name, total) => {
+    const left = `${qty}x ${name}`;
+    const right = formatCurrency(total);
+    const space = lineWidth - left.length - right.length;
+    return `${left}${space > 0 ? " ".repeat(space) : ""}${right}`;
+  };
+
+  const lines = [];
+
+  const header = [company.name, company.document ? `CNPJ: ${company.document}` : "", company.address]
+    .filter(Boolean)
+    .map((l) => pad(l, lineWidth, "left"));
+  lines.push(...header);
+  lines.push("-".repeat(lineWidth));
+
+  lines.push("ITENS");
+  if (items.length === 0) {
+    lines.push("Sem itens registrados.");
+  } else {
+    items.forEach((item) => {
+      const qty = item.quantity ?? 0;
+      const name = item.name ?? "";
+      const totalValue = item.total ?? (item.unitPrice ?? 0) * qty;
+      lines.push(formatItemLine(qty, name, totalValue));
+      lines.push(pad(`Unit: ${formatCurrency(item.unitPrice ?? 0)}`, lineWidth));
+      if (Array.isArray(item.additionals)) {
+        item.additionals.filter(Boolean).forEach((add) => lines.push(pad(`+ ${add}`, lineWidth)));
       }
-      .receipt {
-        width: 280px;
-        margin: 0 auto;
-        padding: 12px;
+      if (item.observation) {
+        lines.push(pad(`Obs: ${item.observation}`, lineWidth));
       }
-      .center {
-        text-align: center;
-      }
-      .section {
-        margin-top: 12px;
-        border-top: 1px dashed #777;
-        padding-top: 8px;
-      }
-      .item {
-        margin: 6px 0;
-      }
-      .flex {
-        display: flex;
-        justify-content: space-between;
-      }
-      .muted {
-        color: #555;
-        font-size: 10px;
-      }
-      .total {
-        font-size: 14px;
-        font-weight: bold;
-      }
-      .qrcode {
-        width: 120px;
-        height: 120px;
-        margin: 8px auto 0;
-        display: block;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="receipt">
-      <div class="center">
-        ${companyHtml || "<div>Pedido</div>"}
-      </div>
-      <div class="section">
-        <div><strong>Itens</strong></div>
-        ${itemsHtml}
-      </div>
-      <div class="section total">
-        <span>Total: ${formatCurrency(order.total ?? 0)}</span>
-      </div>
-      <div class="section">
-        ${paymentInfo || "<div>Pagamento não informado.</div>"}
-      </div>
-      ${pixHtml}
-      <div class="section center">
-        <div>${escapeHtml(saleDate)}</div>
-      </div>
-    </div>
-  </body>
-</html>`;
+    });
+  }
+
+  lines.push("-".repeat(lineWidth));
+  lines.push(pad(`TOTAL: ${formatCurrency(order.total ?? 0)}`, lineWidth));
+
+  const paymentInfo = [
+    payment.document ? `Documento: ${payment.document}` : "",
+    payment.type ? `Tipo: ${payment.type}` : "",
+    order.label ? `Identificador: ${order.label}` : "",
+    order.code ? `Pedido: ${order.code}` : "",
+  ].filter(Boolean);
+
+  if (paymentInfo.length) {
+    lines.push("-".repeat(lineWidth));
+    lines.push("PAGAMENTO");
+    paymentInfo.forEach((info) => lines.push(pad(info, lineWidth)));
+  }
+
+  const pixInfo = [
+    "Pagamento PIX confirmado",
+    pix.status ? `STATUS: ${String(pix.status).toUpperCase()}` : "",
+    pix.pspReceiver ? `Instituição: ${pix.pspReceiver}` : "",
+    pix.txId || pix.txid ? `TxId: ${pix.txId || pix.txid}` : "",
+    pix.endToEndId ? `EndToEndId: ${pix.endToEndId}` : "",
+    pix.authCode ? `Autenticação: ${pix.authCode}` : "",
+    pix.description ? `Desc: ${pix.description}` : "",
+    pix.receiverName || company.name ? `Recebedor: ${pix.receiverName || company.name}` : "",
+    pix.receiverDocument || company.document
+      ? `CNPJ: ${pix.receiverDocument || company.document}`
+      : "",
+    `Valor: ${formatCurrency(pix.amount ?? order.total ?? 0)}`,
+    `Pago em: ${saleDate}`,
+  ].filter(Boolean);
+
+  if (pixInfo.length) {
+    lines.push("-".repeat(lineWidth));
+    lines.push("COMPROVANTE PIX");
+    pixInfo.forEach((info) => lines.push(pad(info, lineWidth)));
+  }
+
+  lines.push("-".repeat(lineWidth));
+  lines.push(pad("Obrigado pela preferência!", lineWidth));
+  lines.push("\n\n\x1D\x56\x00");
+
+  return `<pre>${escapeHtml(lines.join("\n"))}</pre>`;
 };
 
 const handleReceiptPrint = (payload = {}) => {
