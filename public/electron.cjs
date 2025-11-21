@@ -57,14 +57,27 @@ const escapeHtml = (value = "") =>
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
 
+const cleanText = (value = "") =>
+  String(value ?? "")
+    .replace(/\r/g, "")      
+    .replace(/\u00C2/g, "")  
+    .trim();
+
 const buildReceiptHtml = (payload = {}) => {
   const { company = {}, order = {}, payment = {}, timestamp } = payload;
   const items = Array.isArray(order.items) ? order.items : [];
   const pix = payment.pix || {};
-  const paidAtDate = pix.paidAt ? new Date(pix.paidAt) : timestamp ? new Date(timestamp) : null;
+  const paidAtDate = pix.paidAt
+    ? new Date(pix.paidAt)
+    : timestamp
+    ? new Date(timestamp)
+    : null;
 
   const saleDate = (() => {
-    const dateCandidate = paidAtDate && !Number.isNaN(paidAtDate.getTime()) ? paidAtDate : new Date();
+    const dateCandidate =
+      paidAtDate && !Number.isNaN(paidAtDate.getTime())
+        ? paidAtDate
+        : new Date();
     if (Number.isNaN(dateCandidate.getTime())) {
       return new Date().toLocaleString("pt-BR");
     }
@@ -88,7 +101,11 @@ const buildReceiptHtml = (payload = {}) => {
 
   const lines = [];
 
-  const header = [company.name, company.document ? `CNPJ: ${company.document}` : "", company.address]
+  const header = [
+    cleanText(company.name),
+    company.document ? cleanText(`CNPJ: ${company.document}`) : "",
+    cleanText(company.address),
+  ]
     .filter(Boolean)
     .map((l) => pad(l, lineWidth, "left"));
   lines.push(...header);
@@ -100,15 +117,17 @@ const buildReceiptHtml = (payload = {}) => {
   } else {
     items.forEach((item) => {
       const qty = item.quantity ?? 0;
-      const name = item.name ?? "";
+      const name = cleanText(item.name ?? "");
       const totalValue = item.total ?? (item.unitPrice ?? 0) * qty;
       lines.push(formatItemLine(qty, name, totalValue));
       lines.push(pad(`Unit: ${formatCurrency(item.unitPrice ?? 0)}`, lineWidth));
       if (Array.isArray(item.additionals)) {
-        item.additionals.filter(Boolean).forEach((add) => lines.push(pad(`+ ${add}`, lineWidth)));
+        item.additionals
+          .filter(Boolean)
+          .forEach((add) => lines.push(pad(`+ ${cleanText(add)}`, lineWidth)));
       }
       if (item.observation) {
-        lines.push(pad(`Obs: ${item.observation}`, lineWidth));
+        lines.push(pad(`Obs: ${cleanText(item.observation)}`, lineWidth));
       }
     });
   }
@@ -121,7 +140,9 @@ const buildReceiptHtml = (payload = {}) => {
     payment.type ? `Tipo: ${payment.type}` : "",
     order.label ? `Identificador: ${order.label}` : "",
     order.code ? `Pedido: ${order.code}` : "",
-  ].filter(Boolean);
+  ]
+    .filter(Boolean)
+    .map((info) => cleanText(info));
 
   if (paymentInfo.length) {
     lines.push("-".repeat(lineWidth));
@@ -129,7 +150,7 @@ const buildReceiptHtml = (payload = {}) => {
     paymentInfo.forEach((info) => lines.push(pad(info, lineWidth)));
   }
 
-  const pixInfo = [
+  const pixInfoRaw = [
     "Pagamento PIX confirmado",
     pix.status ? `STATUS: ${String(pix.status).toUpperCase()}` : "",
     pix.pspReceiver ? `Instituição: ${pix.pspReceiver}` : "",
@@ -137,13 +158,17 @@ const buildReceiptHtml = (payload = {}) => {
     pix.endToEndId ? `EndToEndId: ${pix.endToEndId}` : "",
     pix.authCode ? `Autenticação: ${pix.authCode}` : "",
     pix.description ? `Desc: ${pix.description}` : "",
-    pix.receiverName || company.name ? `Recebedor: ${pix.receiverName || company.name}` : "",
+    pix.receiverName || company.name
+      ? `Recebedor: ${pix.receiverName || company.name}`
+      : "",
     pix.receiverDocument || company.document
       ? `CNPJ: ${pix.receiverDocument || company.document}`
       : "",
     `Valor: ${formatCurrency(pix.amount ?? order.total ?? 0)}`,
     `Pago em: ${saleDate}`,
   ].filter(Boolean);
+
+  const pixInfo = pixInfoRaw.map((i) => cleanText(i));
 
   if (pixInfo.length) {
     lines.push("-".repeat(lineWidth));
@@ -153,7 +178,6 @@ const buildReceiptHtml = (payload = {}) => {
 
   lines.push("-".repeat(lineWidth));
   lines.push(pad("Obrigado pela preferência!", lineWidth));
-  lines.push("\n\n\x1D\x56\x00");
 
   return `<pre>${escapeHtml(lines.join("\n"))}</pre>`;
 };
