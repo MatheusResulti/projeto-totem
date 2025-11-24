@@ -41,23 +41,23 @@ export function VirtualKeyboard({
     () => ({
       default: [
         "1 2 3 4 5 6 7 8 9 0",
-        "q w e r t y u i o p",
-        "a s d f g h j k l ç",
-        "{shift} z x c v b n m {bksp}",
+        "q w e r t y u i o p ;",
+        "a s d f g h j k l ç .",
+        "{shift} z x c v b n m , {bksp}",
         "{acentos} {space} {enter} {limpar}",
       ],
       shift: [
         "! @ # $ % ^ & * ( )",
-        "Q W E R T Y U I O P",
-        "A S D F G H J K L Ç",
-        "{shift} Z X C V B N M {bksp}",
+        "Q W E R T Y U I O P ;",
+        "A S D F G H J K L Ç .",
+        "{shift} Z X C V B N M , {bksp}",
         "{acentos} {space} {enter} {limpar}",
       ],
       accent: [
         ACCENT_KEYS.join(" "),
-        "q w e r t y u i o p",
-        "a s d f g h j k l ç",
-        "{shift} z x c v b n m {bksp}",
+        "q w e r t y u i o p ;",
+        "a s d f g h j k l ç .",
+        "{shift} z x c v b n m , {bksp}",
         "{abc} {space} {enter} {limpar}",
       ],
       numeric: ["1 2 3", "4 5 6", "7 8 9", "{limpar} 0 {enter}"],
@@ -72,7 +72,7 @@ export function VirtualKeyboard({
     "{enter}": "Confirmar",
     "{limpar}": "Limpar",
     "{acentos}": "Acentos",
-    "{abc}": "ABC",
+    "{abc}": "123",
   };
 
   const syncInput = (val: string) => {
@@ -185,6 +185,10 @@ export function VirtualKeyboard({
           {
             class: "kb-accent",
             buttons: "{acentos} {abc}",
+          },
+          {
+            class: "kb-top",
+            buttons: "1 2 3 4 5 6 7 8 9 0 ! @ # $ % ^ & * ( )",
           },
         ]}
       />
