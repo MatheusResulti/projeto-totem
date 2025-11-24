@@ -89,7 +89,6 @@ export default function ProductModal({
         } ${maxWidthClassName} h-full ${maxHeightClassName} rounded-xl overflow-hidden bg-white transition-transform ease-in-out duration-250 ${
           showModal ? "translate-y-0" : "translate-y-[1500px]"
         } ${classNamePanel ?? ""}`}
-        style={{ maxHeight: "calc(100vh - var(--kb-offset, 0px))" }}
       >
         {" "}
         {title && title.length ? (
