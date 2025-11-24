@@ -335,7 +335,7 @@ export default function PixPayment() {
   }, []);
 
   return (
-    <div className="h-svh items-center justify-center flex flex-col gap-3 text-text-color">
+    <div className="h-svh items-center justify-center flex flex-col gap-3 bg-background-color text-text-color">
       <img
         src={
           userData?.cfgTotem?.dsImgLogo && userData.cfgTotem?.dsImgLogo.length
@@ -451,9 +451,7 @@ export default function PixPayment() {
           </div>
         </>
       )}
-      <span className="text-xl text-gray-500">
-        Pagamento disponibilizado por
-      </span>
+      <span className="text-xl text-title">Pagamento disponibilizado por</span>
       <img src={rPay} className="w-75 " />
     </div>
   );

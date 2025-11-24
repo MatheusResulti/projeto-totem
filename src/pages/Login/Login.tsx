@@ -24,7 +24,7 @@ export default function Login() {
       <div className="absolute inset-0 bg-black/35 pointer-events-none" />
       <button
         onClick={handleClose}
-        className="absolute right-3 top-3 sm:right-5 sm:top-5 z-50 no-drag grid place-items-center rounded-full border border-white/70 p-2 touchable"
+        className="absolute right-3 top-3 sm:right-5 sm:top-5 z-50 no-drag grid place-items-center rounded-full border-2 border-border-color/70 p-2 touchable"
       >
         <X size={28} className="text-white" />
       </button>

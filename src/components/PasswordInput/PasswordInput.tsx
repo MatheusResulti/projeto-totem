@@ -6,12 +6,16 @@ import {
   type InputHTMLAttributes,
 } from "react";
 
+type InputExtraProps = InputHTMLAttributes<HTMLInputElement> & {
+  [key: `data-${string}`]: string | undefined;
+};
+
 type PasswordInputProps = {
   placeholder?: string;
   icon?: ReactNode;
   value?: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
-  inputProps?: InputHTMLAttributes<HTMLInputElement>;
+  inputProps?: InputExtraProps;
 };
 
 export default function PasswordInput({
@@ -38,7 +42,7 @@ export default function PasswordInput({
       <button
         type="button"
         onClick={() => setShowPassword((prev) => !prev)}
-        className="absolute right-3 text-gray-400 touchable"
+        className="absolute right-3 text-primary touchable"
       >
         {showPassword ? (
           <Eye className="w-5 h-5" />

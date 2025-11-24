@@ -106,7 +106,7 @@ export default function Menu() {
           Cancelar
         </button>
       </div>
-      <div className="flex-1 min-h-0 w-dvw flex">
+      <div className="flex-1 min-h-0 w-dvw flex bg-background-color">
         <div className="w-1/4 h-full p-5 flex flex-col gap-2">
           <MenuSideBar
             selectedGroup={selectedGroup}

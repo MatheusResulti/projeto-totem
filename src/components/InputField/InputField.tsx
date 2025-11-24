@@ -1,5 +1,9 @@
 import type { ReactNode, ChangeEvent, InputHTMLAttributes } from "react";
 
+type InputExtraProps = InputHTMLAttributes<HTMLInputElement> & {
+  [key: `data-${string}`]: string | undefined;
+};
+
 type InputFieldProps = {
   inputType: string;
   placeholder?: string;
@@ -7,7 +11,7 @@ type InputFieldProps = {
   value?: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   maxLength?: number;
-  inputProps?: InputHTMLAttributes<HTMLInputElement>;
+  inputProps?: InputExtraProps;
 };
 
 export default function InputField({

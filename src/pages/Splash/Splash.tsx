@@ -346,7 +346,7 @@ export default function Splash() {
   const handleRetry = () => window.location.reload();
 
   return (
-    <div className="bg-splash-bg h-screen w-screen flex flex-col items-center justify-center text-white font-semibold px-4">
+    <div className="bg-background-color h-screen w-screen flex flex-col items-center justify-center text-white font-semibold px-4">
       <img src={logo} className="h-15 object-contain mb-4" alt="Logo" />
 
       {!error ? (

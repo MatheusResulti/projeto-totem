@@ -89,16 +89,16 @@ export default function LoginForm() {
     <div
       className="
         mx-auto w-full max-w-[520px]
-        rounded-2xl bg-white/95 shadow-xl backdrop-blur
+        rounded-2xl bg-background-color/95 shadow-xl backdrop-blur
         p-4 sm:p-6 lg:p-8
       "
     >
       <div className="flex flex-col items-center text-center space-y-1 sm:space-y-1.5 mb-4 sm:mb-6">
         <img src={icon} className="h-14 sm:h-16 mb-2" alt="" />
-        <span className="font-semibold text-base sm:text-lg lg:text-xl">
+        <span className="font-semibold text-base text-primary sm:text-lg lg:text-x">
           Bem vindo!
         </span>
-        <span className="font-medium text-sm sm:text-base">
+        <span className="font-medium text-sm sm:text-base text-text-color">
           Agilize seus pedidos. Simples e rápido!
         </span>
       </div>

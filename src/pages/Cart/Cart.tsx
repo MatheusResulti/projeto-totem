@@ -17,7 +17,7 @@ export default function Cart() {
   const [showSelector, setShowSelector] = useState(false);
 
   return (
-    <div className="flex flex-col h-svh overflow-hidden">
+    <div className="flex flex-col h-svh overflow-hidden bg-background-color">
       <div className="px-4 pt-4 pb-6 flex flex-row items-center justify-between border-b border-border-color">
         <div className="flex flex-row items-center text-text-color">
           <img
@@ -68,7 +68,7 @@ export default function Cart() {
           />
         </div>
       ) : null}
-      <div className="sticky bottom-1 flex border-t border-border-color w-full px-4 py-3 gap-2 bg-white">
+      <div className="sticky bottom-1 flex border-t border-border-color w-full px-4 py-3 gap-2 bg-background-color">
         <div
           style={{ color: primary }}
           className="w-1/2 flex items-center justify-center"

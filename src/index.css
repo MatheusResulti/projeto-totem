@@ -3,15 +3,16 @@
 
 @theme {
   --font-inter: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --color-background-color: #1f2937;
   --color-button-color: #50a728;
-  --color-text-color: #343434;
+  --color-title: #ffff;
+  --color-text-color: #e5e5e5;
   --color-basket: #959595;
   --color-primary: #017dd7;
   --color-secondary: #00199c;
   --color-error: #ff0033;
   --color-success: #10b981;
   --color-money: #157811;
-  --color-splash-bg: #1f2937;
   --color-border-color: #e5e5e5;
   --color-placeholder-color: #a3a3a3;
 }
@@ -29,7 +30,6 @@
   .scrollbar-none::-webkit-scrollbar {
     display: none;
   }
-
   .scrollbar-none {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -47,18 +47,7 @@ body {
   bottom: 0;
   z-index: 9999;
   padding: 8px 12px 12px;
-  background: rgba(15, 23, 42, 0.96);
-  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.55);
-}
-
-.cc-virtual-kb-header button {
-  border: none;
-  padding: 4px 8px;
-  border-radius: 6px;
   background: #1f2937;
-  color: #e5e7eb;
-  font-size: 11px;
-  cursor: pointer;
 }
 
 .simple-keyboard {
@@ -66,17 +55,18 @@ body {
 }
 
 .simple-keyboard .hg-button {
-  background-color: #020617;
+  background-color: #0c0c0c;
   color: #f9fafb !important;
   border-radius: 10px;
-  border: 1px solid rgba(148, 163, 184, 0.7);
+  border: 2px solid #e5e5e5;
   margin: 2px;
   padding: 14px 16px;
   min-height: 52px;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 600;
   flex: 1 1 0;
   min-width: 0;
+  font-family: Poppins;
 }
 
 .simple-keyboard .hg-button:active {
@@ -98,7 +88,7 @@ body {
 }
 
 .simple-keyboard .hg-button.kb-accent {
-  background-color: #0f172a !important;
+  background-color: #0c0c0c !important;
   min-width: 120px;
   max-width: 120px;
   flex: 0 0 120px;
