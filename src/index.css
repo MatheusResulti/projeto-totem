@@ -93,12 +93,6 @@ body {
   min-width: 15%;
 }
 
-.simple-keyboard .hg-button.kb-top {
-  flex: 1 1 0;
-  min-width: 0;
-  max-width: none;
-}
-
 .kb-wide {
   min-width: 60%;
 }
@@ -109,10 +103,4 @@ body {
   max-width: 120px;
   flex: 0 0 120px;
   text-align: center;
-}
-
-.simple-keyboard .hg-button.kb-top {
-  flex: 0 0 calc(10% - 6px);
-  max-width: calc(10% - 6px);
-  min-width: calc(10% - 6px);
 }

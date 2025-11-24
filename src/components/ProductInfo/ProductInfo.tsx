@@ -164,7 +164,7 @@ export default function ProductInfo({
       </div>
 
       <div
-        className="px-3 overflow-y-auto"
+        className="px-3 overflow-y-auto scrollbar-none"
         style={{ paddingBottom: "calc(var(--kb-offset, 0px) + 90px)" }}
       >
         {hasSizes && (
