@@ -139,10 +139,7 @@ export default function ProductInfo({
   const totalPrice = Number((basePrice + complementPrice).toFixed(2));
 
   return (
-    <div
-      className="flex flex-col max-h-[80vh]"
-      style={{ maxHeight: "calc(80vh - var(--kb-offset, 0px))" }}
-    >
+    <div className="flex flex-col max-h-[80vh]">
       <div className="flex md:flex-row items-center px-5 gap-6 border-b border-b-gray-200 h-70">
         {product.image ? (
           <img
@@ -165,7 +162,7 @@ export default function ProductInfo({
 
       <div
         className="px-3 overflow-y-auto"
-        style={{ paddingBottom: "calc(var(--kb-offset, 0px) + 90px)" }}
+        style={{ paddingBottom: "calc(var(--kb-offset, 0px) + 140px)" }}
       >
         {hasSizes && (
           <>
