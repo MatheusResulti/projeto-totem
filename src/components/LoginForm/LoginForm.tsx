@@ -120,7 +120,10 @@ export default function LoginForm() {
           onChange={(e) => setApiDoor(e.target.value)}
           placeholder="0000"
           maxLength={5}
-          inputProps={{ "data-enter-target": "#login-submit" }}
+          inputProps={{
+            "data-enter-target": "#login-submit",
+            "data-kb-mode": "numeric",
+          }}
         />
         <InputField
           inputType="text"

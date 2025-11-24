@@ -23,6 +23,7 @@ function RootLayout() {
   const [activeElement, setActiveElement] = useState<
     HTMLInputElement | HTMLTextAreaElement | null
   >(null);
+  const [keyboardMode, setKeyboardMode] = useState<"alpha" | "numeric">("alpha");
 
   useEffect(() => {
     const handleFocusIn = (event: FocusEvent) => {
@@ -35,6 +36,9 @@ function RootLayout() {
       ) {
         setActiveElement(target as HTMLInputElement | HTMLTextAreaElement);
         setKeyboardVisible(true);
+        const modeAttr =
+          (target as HTMLElement).getAttribute("data-kb-mode") ?? "alpha";
+        setKeyboardMode(modeAttr === "numeric" ? "numeric" : "alpha");
       }
     };
 
@@ -98,6 +102,7 @@ function RootLayout() {
         activeElement={activeElement}
         onHeightChange={(h) => setKeyboardHeight(h)}
         onClose={() => setKeyboardVisible(false)}
+        mode={keyboardMode}
       />
     </div>
   );
