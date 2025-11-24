@@ -71,7 +71,6 @@ body {
 
 .simple-keyboard .hg-button:active {
   background-color: #00199c;
-  border-color: #00199c;
 }
 
 .simple-keyboard .hg-button[data-skbtn="{space}"] {
