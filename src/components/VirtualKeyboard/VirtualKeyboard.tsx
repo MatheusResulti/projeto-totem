@@ -60,7 +60,7 @@ export function VirtualKeyboard({
         "{shift} z x c v b n m {bksp}",
         "{abc} {space} {enter} {limpar}",
       ],
-      numeric: ["1 2 3", "4 5 6", "7 8 9", "0 {limpar} {enter}"],
+      numeric: ["1 2 3", "4 5 6", "7 8 9", "{limpar} 0 {enter}"],
     }),
     []
   );
@@ -107,7 +107,9 @@ export function VirtualKeyboard({
 
       const targetSelector = activeElement?.getAttribute("data-enter-target");
       if (targetSelector) {
-        const btn = document.querySelector(targetSelector) as HTMLElement | null;
+        const btn = document.querySelector(
+          targetSelector
+        ) as HTMLElement | null;
         btn?.click();
       }
 
