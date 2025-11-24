@@ -170,6 +170,7 @@ export default function Home() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         className="w-full border-2 text-sm text-text-color border-gray-300/80 rounded-lg pl-10 pr-10 py-4"
+                        data-enter-target="#confirm-print-password"
                       />
                       <button
                         onClick={() => setShowPassword(!showPassword)}
@@ -185,6 +186,7 @@ export default function Home() {
                     </div>
                   </div>
                   <button
+                    id="confirm-print-password"
                     onClick={() => validateGoBack()}
                     className="bg-secondary rounded-lg py-3 text-white font-bold touchable"
                   >

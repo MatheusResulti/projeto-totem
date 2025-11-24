@@ -70,9 +70,11 @@ body {
   color: #f9fafb !important;
   border-radius: 10px;
   border: 1px solid rgba(148, 163, 184, 0.7);
-  margin: 3px;
-  font-size: 16px;
-  font-weight: 500;
+  margin: 2px;
+  padding: 14px 16px;
+  min-height: 52px;
+  font-size: 18px;
+  font-weight: 600;
 }
 
 .simple-keyboard .hg-button:active {
@@ -87,4 +89,16 @@ body {
 .simple-keyboard .hg-button[data-skbtn="{enter}"],
 .simple-keyboard .hg-button[data-skbtn="{bksp}"] {
   min-width: 15%;
+}
+
+.kb-wide {
+  min-width: 60%;
+}
+
+.simple-keyboard .hg-button.kb-accent {
+  background-color: #0f172a !important;
+  min-width: 120px;
+  max-width: 120px;
+  flex: 0 0 120px;
+  text-align: center;
 }

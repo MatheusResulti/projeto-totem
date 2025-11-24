@@ -111,6 +111,7 @@ export default function LoginForm() {
           onChange={(e) => handleIpChange(e.target.value)}
           placeholder="000.000.000.000"
           maxLength={15}
+          inputProps={{ "data-enter-target": "#login-submit" }}
         />
         <InputField
           inputType="text"
@@ -119,6 +120,7 @@ export default function LoginForm() {
           onChange={(e) => setApiDoor(e.target.value)}
           placeholder="0000"
           maxLength={5}
+          inputProps={{ "data-enter-target": "#login-submit" }}
         />
         <InputField
           inputType="text"
@@ -126,17 +128,20 @@ export default function LoginForm() {
           value={login}
           onChange={(e) => setLogin(e.target.value)}
           placeholder="Digite seu login"
+          inputProps={{ "data-enter-target": "#login-submit" }}
         />
         <PasswordInput
           icon={<Lock size={22} />}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Digite sua senha"
+          inputProps={{ "data-enter-target": "#login-submit" }}
         />
       </div>
 
       <div className="mt-5 sm:mt-6">
         <button
+          id="login-submit"
           disabled={loading}
           onClick={handleLogin}
           className="w-full rounded-lg py-3 sm:py-3.5 font-semibold bg-primary text-white touchable disabled:opacity-60"

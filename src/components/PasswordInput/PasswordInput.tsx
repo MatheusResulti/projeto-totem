@@ -1,11 +1,17 @@
 import { Eye, EyeOff } from "lucide-react";
-import { useState, type ReactNode, type ChangeEvent } from "react";
+import {
+  useState,
+  type ReactNode,
+  type ChangeEvent,
+  type InputHTMLAttributes,
+} from "react";
 
 type PasswordInputProps = {
   placeholder?: string;
   icon?: ReactNode;
   value?: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  inputProps?: InputHTMLAttributes<HTMLInputElement>;
 };
 
 export default function PasswordInput({
@@ -13,8 +19,10 @@ export default function PasswordInput({
   icon,
   value,
   onChange,
+  inputProps,
 }: PasswordInputProps) {
   const [showPassword, setShowPassword] = useState(false);
+  const { className: extraClass, ...restProps } = inputProps ?? {};
 
   return (
     <div className="border-2 border-border-color relative rounded-lg w-full h-12 p-3 gap-4 flex flex-row items-center text-sm mb-1">
@@ -24,7 +32,8 @@ export default function PasswordInput({
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        className="flex-1 h-full outline-none focus:outline-none focus:ring-0 placeholder:text-placeholder-color"
+        className={`flex-1 h-full outline-none focus:outline-none focus:ring-0 placeholder:text-placeholder-color ${extraClass ?? ""}`}
+        {...restProps}
       />
       <button
         type="button"

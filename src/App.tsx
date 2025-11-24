@@ -74,10 +74,7 @@ function RootLayout() {
 
   useEffect(() => {
     const offset = keyboardVisible ? keyboardHeight + 24 : 0;
-    document.documentElement.style.setProperty(
-      "--kb-offset",
-      `${offset}px`
-    );
+    document.documentElement.style.setProperty("--kb-offset", `${offset}px`);
     return () => {
       document.documentElement.style.removeProperty("--kb-offset");
     };
@@ -99,8 +96,8 @@ function RootLayout() {
       <VirtualKeyboard
         visible={keyboardVisible}
         activeElement={activeElement}
-        onClose={() => setKeyboardVisible(false)}
         onHeightChange={(h) => setKeyboardHeight(h)}
+        onClose={() => setKeyboardVisible(false)}
       />
     </div>
   );
