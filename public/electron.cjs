@@ -9,6 +9,7 @@ if (require("electron-squirrel-startup")) {
   app.quit();
 }
 const path = require("path");
+const { spawn } = require("child_process");
 
 app.disableHardwareAcceleration();
 process.env.GDK_BACKEND = "x11";
@@ -39,6 +40,10 @@ let win;
 let kioskLocked = false;
 let forceQuit = false;
 
+const TABTIP_PATH =
+  "C:\\Program Files\\Common Files\\microsoft shared\\ink\\TabTip.exe";
+let keyboardVisible = false;
+
 const currencyFormatter = new Intl.NumberFormat("pt-BR", {
   style: "currency",
   currency: "BRL",
@@ -59,8 +64,8 @@ const escapeHtml = (value = "") =>
 
 const cleanText = (value = "") =>
   String(value ?? "")
-    .replace(/\r/g, "")      
-    .replace(/\u00C2/g, "")  
+    .replace(/\r/g, "")
+    .replace(/\u00C2/g, "")
     .trim();
 
 const buildReceiptHtml = (payload = {}) => {
@@ -70,8 +75,8 @@ const buildReceiptHtml = (payload = {}) => {
   const paidAtDate = pix.paidAt
     ? new Date(pix.paidAt)
     : timestamp
-    ? new Date(timestamp)
-    : null;
+      ? new Date(timestamp)
+      : null;
 
   const saleDate = (() => {
     const dateCandidate =
@@ -120,7 +125,9 @@ const buildReceiptHtml = (payload = {}) => {
       const name = cleanText(item.name ?? "");
       const totalValue = item.total ?? (item.unitPrice ?? 0) * qty;
       lines.push(formatItemLine(qty, name, totalValue));
-      lines.push(pad(`Unit: ${formatCurrency(item.unitPrice ?? 0)}`, lineWidth));
+      lines.push(
+        pad(`Unit: ${formatCurrency(item.unitPrice ?? 0)}`, lineWidth)
+      );
       if (Array.isArray(item.additionals)) {
         item.additionals
           .filter(Boolean)
@@ -310,6 +317,36 @@ app.whenReady().then(() => {
 
 app.on("will-quit", () => {
   globalShortcut.unregisterAll();
+});
+
+ipcMain.on("keyboard:open", () => {
+  if (process.platform !== "win32") return;
+  if (keyboardVisible) return;
+  keyboardVisible = true;
+
+  try {
+    spawn("cmd", ["/c", "start", "", `"${TABTIP_PATH}"`], {
+      detached: true,
+      stdio: "ignore",
+    }).unref();
+  } catch (err) {
+    console.error("Erro ao abrir teclado virtual:", err);
+    keyboardVisible = false;
+  }
+});
+
+ipcMain.on("keyboard:close", () => {
+  if (process.platform !== "win32") return;
+  keyboardVisible = false;
+
+  try {
+    spawn("taskkill", ["/IM", "TabTip.exe", "/F"], {
+      detached: true,
+      stdio: "ignore",
+    }).unref();
+  } catch (err) {
+    console.error("Erro ao fechar teclado virtual:", err);
+  }
 });
 
 ipcMain.on("auth:logged-in", () => {

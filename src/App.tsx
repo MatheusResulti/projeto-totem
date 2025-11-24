@@ -1,5 +1,5 @@
 import { Toaster } from "react-hot-toast";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { HashRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
 import { useInactivityTimer } from "./utils/useInactivityTimer";
 
@@ -16,6 +16,40 @@ const TimeExceeded = lazy(
 
 function RootLayout() {
   useInactivityTimer(60000);
+
+  useEffect(() => {
+    const handleFocusIn = (event: FocusEvent) => {
+      const target = event.target as HTMLElement;
+
+      if (
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        (target as any).isContentEditable
+      ) {
+        window.electronAPI?.openKeyboard?.();
+      }
+    };
+
+    const handleFocusOut = (event: FocusEvent) => {
+      const target = event.target as HTMLElement;
+
+      if (
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        (target as any).isContentEditable
+      ) {
+        window.electronAPI?.closeKeyboard?.();
+      }
+    };
+
+    window.addEventListener("focusin", handleFocusIn as any);
+    window.addEventListener("focusout", handleFocusOut as any);
+
+    return () => {
+      window.removeEventListener("focusin", handleFocusIn as any);
+      window.removeEventListener("focusout", handleFocusOut as any);
+    };
+  }, []);
 
   return (
     <div>

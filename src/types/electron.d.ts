@@ -43,6 +43,8 @@ declare global {
       logoutKiosk: () => void;
       onNavigate: (cb: (route: string) => void) => void;
       printReceipt: (payload: ReceiptPayload) => void;
+      openKeyboard: () => void;
+      closeKeyboard: () => void;
     };
   }
 }

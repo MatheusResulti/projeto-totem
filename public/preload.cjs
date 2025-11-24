@@ -10,4 +10,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   printReceipt: (payload) => ipcRenderer.send("printer:receipt", payload),
 
   onNavigate: (cb) => ipcRenderer.on("app:navigate", (_e, route) => cb(route)),
+
+  openKeyboard: () => ipcRenderer.send("keyboard:open"),
+  closeKeyboard: () => ipcRenderer.send("keyboard:close"),
 });

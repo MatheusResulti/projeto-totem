@@ -20,6 +20,19 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const setUserData = useUserData((s) => s.setUserData);
 
+  const formatIp = (value: string) => {
+    const clean = value.replace(/\D/g, "").slice(0, 12);
+    const parts = [];
+    for (let i = 0; i < clean.length && parts.length < 4; i += 3) {
+      parts.push(clean.slice(i, i + 3));
+    }
+    return parts.join(".");
+  };
+
+  const handleIpChange = (value: string) => {
+    setApiRoute(formatIp(value));
+  };
+
   const handleLogin = async () => {
     if (loading) return;
     if (!apiRoute) return toast.error("O campo IP é obrigatório.");
@@ -64,7 +77,7 @@ export default function LoginForm() {
     const route = localStorage.getItem("route");
     const door = localStorage.getItem("door");
 
-    if (route) setApiRoute(route);
+    if (route) setApiRoute(formatIp(route));
     if (door) setApiDoor(door);
     if (user && route && door) {
       window.electronAPI?.loginKiosk?.();
@@ -95,7 +108,7 @@ export default function LoginForm() {
           inputType="text"
           icon={<Cable size={22} />}
           value={apiRoute}
-          onChange={(e) => setApiRoute(e.target.value)}
+          onChange={(e) => handleIpChange(e.target.value)}
           placeholder="000.000.000.000"
           maxLength={15}
         />
