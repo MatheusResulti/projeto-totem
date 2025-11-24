@@ -1,7 +1,8 @@
 import { Toaster } from "react-hot-toast";
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { HashRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
 import { useInactivityTimer } from "./utils/useInactivityTimer";
+import { VirtualKeyboard } from "./components/VirtualKeyboard/VirtualKeyboard";
 
 const Home = lazy(() => import("./pages/Home/Home"));
 const Menu = lazy(() => import("./pages/Menu/Menu"));
@@ -17,6 +18,12 @@ const TimeExceeded = lazy(
 function RootLayout() {
   useInactivityTimer(60000);
 
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [activeElement, setActiveElement] = useState<
+    HTMLInputElement | HTMLTextAreaElement | null
+  >(null);
+
   useEffect(() => {
     const handleFocusIn = (event: FocusEvent) => {
       const target = event.target as HTMLElement;
@@ -26,7 +33,8 @@ function RootLayout() {
         target.tagName === "TEXTAREA" ||
         (target as any).isContentEditable
       ) {
-        window.electronAPI?.openKeyboard?.();
+        setActiveElement(target as HTMLInputElement | HTMLTextAreaElement);
+        setKeyboardVisible(true);
       }
     };
 
@@ -38,7 +46,7 @@ function RootLayout() {
         target.tagName === "TEXTAREA" ||
         (target as any).isContentEditable
       ) {
-        window.electronAPI?.closeKeyboard?.();
+        setKeyboardVisible(false);
       }
     };
 
@@ -51,12 +59,49 @@ function RootLayout() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!keyboardVisible || !activeElement) return;
+    activeElement.scrollIntoView({ block: "center", behavior: "smooth" });
+  }, [keyboardVisible, activeElement]);
+
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = keyboardVisible ? "hidden" : prev || "";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [keyboardVisible]);
+
+  useEffect(() => {
+    const offset = keyboardVisible ? keyboardHeight + 24 : 0;
+    document.documentElement.style.setProperty(
+      "--kb-offset",
+      `${offset}px`
+    );
+    return () => {
+      document.documentElement.style.removeProperty("--kb-offset");
+    };
+  }, [keyboardVisible, keyboardHeight]);
+
   return (
-    <div>
+    <div className="relative h-full w-full">
       <Toaster position="top-center" reverseOrder={false} />
-      <main>
+      <main
+        style={{
+          paddingBottom: keyboardVisible ? keyboardHeight + 24 : 0,
+          minHeight: "100vh",
+          overflow: keyboardVisible ? "hidden" : undefined,
+        }}
+      >
         <Outlet />
       </main>
+
+      <VirtualKeyboard
+        visible={keyboardVisible}
+        activeElement={activeElement}
+        onClose={() => setKeyboardVisible(false)}
+        onHeightChange={(h) => setKeyboardHeight(h)}
+      />
     </div>
   );
 }

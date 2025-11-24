@@ -16,7 +16,10 @@ export default function Login() {
   return (
     <div
       className="relative min-h-dvh bg-cover bg-center"
-      style={{ backgroundImage: `url(${capa})` }}
+      style={{
+        backgroundImage: `url(${capa})`,
+        minHeight: "calc(100dvh - var(--kb-offset, 0px))",
+      }}
     >
       <div className="absolute inset-0 bg-black/35 pointer-events-none" />
       <button
@@ -26,7 +29,10 @@ export default function Login() {
         <X size={28} className="text-white" />
       </button>
 
-      <div className="relative z-10 mx-auto flex min-h-dvh max-w-7xl items-center justify-center px-3 sm:px-6">
+      <div
+        className="relative z-10 mx-auto flex max-w-7xl items-center justify-center px-3 sm:px-6"
+        style={{ minHeight: "calc(100dvh - var(--kb-offset, 0px))" }}
+      >
         <div className="w-full">
           <div className="mb-6 flex justify-center">
             <img

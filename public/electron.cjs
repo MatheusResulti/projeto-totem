@@ -4,13 +4,11 @@ const {
   ipcMain,
   globalShortcut,
   session,
-  shell,
 } = require("electron");
 if (require("electron-squirrel-startup")) {
   app.quit();
 }
 const path = require("path");
-const { spawn } = require("child_process");
 
 app.disableHardwareAcceleration();
 process.env.GDK_BACKEND = "x11";
@@ -40,53 +38,6 @@ const preloadPath = isDev
 let win;
 let kioskLocked = false;
 let forceQuit = false;
-
-function openWindowsKeyboard() {
-  if (process.platform !== "win32") return;
-
-  const tabTipPath =
-    "C:\\Program Files\\Common Files\\microsoft shared\\ink\\TabTip.exe";
-  console.log("[keyboard] tentando abrir TabTip...");
-
-  shell.openPath(tabTipPath).then((result) => {
-    if (result) {
-      console.warn("[keyboard] TabTip falhou:", result);
-      console.log("[keyboard] tentando abrir OSK...");
-      shell.openPath("osk.exe").then((oskResult) => {
-        if (oskResult) {
-          console.error("[keyboard] OSK também falhou:", oskResult);
-        } else {
-          console.log("[keyboard] OSK aberto com sucesso");
-        }
-      });
-    } else {
-      console.log("[keyboard] TabTip aberto com sucesso");
-    }
-  });
-}
-
-function closeWindowsKeyboard() {
-  if (process.platform !== "win32") return;
-
-  console.log("[keyboard] tentando fechar teclados virtuais...");
-  try {
-    spawn("taskkill", ["/IM", "TabTip.exe", "/F"], {
-      detached: true,
-      stdio: "ignore",
-    }).unref();
-  } catch (err) {
-    console.error("[keyboard] erro ao fechar TabTip:", err);
-  }
-
-  try {
-    spawn("taskkill", ["/IM", "osk.exe", "/F"], {
-      detached: true,
-      stdio: "ignore",
-    }).unref();
-  } catch (err) {
-    console.error("[keyboard] erro ao fechar OSK:", err);
-  }
-}
 
 const currencyFormatter = new Intl.NumberFormat("pt-BR", {
   style: "currency",
@@ -361,16 +312,6 @@ app.whenReady().then(() => {
 
 app.on("will-quit", () => {
   globalShortcut.unregisterAll();
-});
-
-ipcMain.on("keyboard:open", () => {
-  console.log("[keyboard] IPC keyboard:open recebido");
-  openWindowsKeyboard();
-});
-
-ipcMain.on("keyboard:close", () => {
-  console.log("[keyboard] IPC keyboard:close recebido");
-  closeWindowsKeyboard();
 });
 
 ipcMain.on("auth:logged-in", () => {

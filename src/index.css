@@ -40,3 +40,51 @@ html,
 body {
   font-family: "Poppins", "Nunito", ui-sans-serif, system-ui, sans-serif;
 }
+
+.cc-virtual-kb-wrapper {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 50;
+  padding: 8px 12px 12px;
+  background: rgba(15, 23, 42, 0.96);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.55);
+}
+
+.cc-virtual-kb-header button {
+  border: none;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #1f2937;
+  color: #e5e7eb;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.simple-keyboard {
+  background: transparent;
+}
+
+.simple-keyboard .hg-button {
+  background-color: #020617;
+  color: #f9fafb !important;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  margin: 3px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.simple-keyboard .hg-button:active {
+  background-color: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+.simple-keyboard .hg-button[data-skbtn="{space}"] {
+  min-width: 40%;
+}
+
+.simple-keyboard .hg-button[data-skbtn="{enter}"],
+.simple-keyboard .hg-button[data-skbtn="{bksp}"] {
+  min-width: 15%;
+}
