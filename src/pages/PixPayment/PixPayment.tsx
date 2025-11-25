@@ -347,7 +347,7 @@ export default function PixPayment() {
       />
       {isPaid ? (
         <>
-          <span style={{ color: primary }} className="text-3xl font-extrabold">
+          <span className="text-3xl font-extrabold">
             PIX pago!
           </span>
           <span className="text-text-color font-bold text-2xl">
@@ -357,7 +357,6 @@ export default function PixPayment() {
             <BadgeCheck size={220} color={"#FFF"} />
           </div>
           <button
-            style={{ color: primary }}
             className="h-15 flex justify-center items-center border-2 rounded-xl touchable font-bold px-5"
             onClick={() => {
               clearHomeTimeout();
@@ -403,9 +402,8 @@ export default function PixPayment() {
                 animation={loadingAnimation}
                 size={122}
                 strokeColor={primary}
-                style={{ color: primary }}
               />
-              <span style={{ color: primary }} className="font-bold text-3xl">
+              <span className="font-bold text-3xl">
                 Gerando PIX...
               </span>
               <span className="font-semibold text-2xl">
@@ -414,7 +412,7 @@ export default function PixPayment() {
             </>
           ) : (
             <>
-              <span style={{ color: primary }} className="font-bold text-3xl">
+              <span className="font-bold text-3xl">
                 Seu PIX está pronto!
               </span>
               <span className="font-semibold text-2xl">
@@ -428,22 +426,22 @@ export default function PixPayment() {
             </>
           )}
 
-          <div className="flex flex-col w-120 border border-border-color text-xl p-4 gap-3">
+          <div className="flex flex-col w-120 border border-border-color text-xl p-4 gap-3 text-text-color">
             <div className="flex flex-row gap-2">
-              <span style={{ color: primary }} className="font-semibold ">
+              <span className="font-semibold">
                 Empresa:
               </span>
               <span>{userData?.empresa?.dsFantasia}</span>
             </div>
             <div className="flex flex-row gap-2">
-              <span style={{ color: primary }} className="font-semibold">
+              <span className="font-semibold">
                 Valor do pedido:
               </span>
               <span>{formatToBRL(order.total)}</span>
             </div>
             <button
               onClick={cancelOrder}
-              className="w-full h-12 border-2 border-error text-error font-semibold rounded-lg touchable"
+              className="w-full h-12 bg-error font-semibold rounded-lg touchable"
               disabled={loadingPix}
             >
               {loadingPix ? "Cancelando..." : "Cancelar"}

@@ -42,11 +42,7 @@ export default function Cart() {
         </div>
         <button
           onClick={() => navigate("/menu")}
-          style={{
-            borderColor: primary,
-            color: primary,
-          }}
-          className="border-3 rounded-full h-11 w-35 font-semibold touchable"
+          className="border-3 rounded-full h-11 w-35 font-semibold touchable bg-border-color text-card-color"
         >
           Ver cardápio
         </button>
@@ -57,7 +53,7 @@ export default function Cart() {
         ))}
       </div>
       {showSelector ? (
-        <div className="flex w-full px-4 pt-2 border-t border-border-color">
+        <div className="flex w-full px-4 pt-2">
           <PaymentMethodSelector
             open={showSelector}
             onClose={(e?: any) => {
@@ -68,12 +64,11 @@ export default function Cart() {
           />
         </div>
       ) : null}
-      <div className="sticky bottom-1 flex border-t border-border-color w-full px-4 py-3 gap-2 bg-background-color">
+      <div className="sticky bottom-1 flex border-t border-border-color w-full px-4 py-3 gap-10 bg-background-color">
         <div
-          style={{ color: primary }}
           className="w-1/2 flex items-center justify-center"
         >
-          <span className="text-3xl font-bold">
+          <span className="text-3xl font-bold text-text-color whitespace-nowrap">
             Total: {formatToBRL(total)}
           </span>
         </div>

@@ -103,10 +103,10 @@ export default function LoginForm() {
         </span>
       </div>
 
-      <div className="space-y-3 sm:space-y-4 text-text-color font-medium">
+      <div className="flex flex-col gap-1 text-text-color">
         <InputField
           inputType="text"
-          icon={<Cable size={22} />}
+          icon={<Cable size={22} color="#0EA5E9"/>}
           value={apiRoute}
           onChange={(e) => handleIpChange(e.target.value)}
           placeholder="000.000.000.000"
@@ -115,7 +115,7 @@ export default function LoginForm() {
         />
         <InputField
           inputType="text"
-          icon={<Network size={22} />}
+          icon={<Network size={22} color="#0EA5E9" />}
           value={apiDoor}
           onChange={(e) => setApiDoor(e.target.value)}
           placeholder="0000"
@@ -127,14 +127,14 @@ export default function LoginForm() {
         />
         <InputField
           inputType="text"
-          icon={<User size={22} />}
+          icon={<User size={22} color="#0EA5E9"/>}
           value={login}
           onChange={(e) => setLogin(e.target.value)}
           placeholder="Digite seu login"
           inputProps={{ "data-enter-target": "#login-submit" }}
         />
         <PasswordInput
-          icon={<Lock size={22} />}
+          icon={<Lock size={22} color="#0EA5E9"/>}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Digite sua senha"

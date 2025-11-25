@@ -145,44 +145,45 @@ export default function Home() {
             <div className="w-full flex flex-col gap-3 pt-7">
               <button
                 onClick={() => navigate("/")}
-                className="bg-error rounded-lg flex items-center justify-center h-16 text-white font-bold gap-2 active:opacity-30 transition-opacity duration-200"
+                className="bg-primary rounded-lg flex flex-row items-center justify-start px-4 h-16  gap-4 active:opacity-30 transition-opacity duration-200"
               >
-                <RefreshCcw />
-                Sincronizar
+                <RefreshCcw size={24} color="#FFF" />
+                <span className="text-white font-bold">Sincronizar</span>
               </button>
               <button
                 onClick={() => setModalValidate(!modalValidate)}
-                className="bg-success rounded-lg flex items-center justify-center h-16 text-white font-bold gap-2 active:opacity-30 transition-opacity duration-200"
+                className="bg-gray-800 rounded-lg flex flex-row items-center justify-start px-4 h-16  gap-4 active:opacity-30 transition-opacity duration-200"
               >
-                <LogOut />
-                Voltar para o login
+                <LogOut size={24} color="#FFF" />
+                <span className="text-white font-bold">Voltar para o login</span>
               </button>
               {modalValidate ? (
                 <>
-                  <div className="relative flex flex-col items-center w-full mt-2">
+                  <div className="relative flex flex-col items-center w-full mt-2 text-text-color">
                     <span className="self-start mb-2 font-medium">
                       Informe a contra senha
                     </span>
-                    <div className="w-full flex items-center">
+                    <div className="flex flex-row items-center w-full border text-sm text-text-color border-border-color rounded-lg pl-4 h-14 gap-4">
+                       <Lock size={24} color="#FFF" />
                       <input
                         type={showPassword ? "text" : "password"}
                         placeholder="Digite sua senha"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="w-full border-2 text-sm text-text-color border-gray-300/80 rounded-lg pl-10 pr-10 py-4"
+                        className="bg-transparent flex w-full h-full outline-none"
                         data-enter-target="#confirm-print-password"
                       />
                       <button
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 text-gray-600 touchable"
+                        className="h-full px-4"
                       >
                         {showPassword ? (
-                          <Eye className="w-5 h-5" />
+                          <Eye size={22} color="#FFF" />
                         ) : (
-                          <EyeOff className="w-5 h-5" />
+                          <EyeOff size={22} color="#FFF" />
                         )}
                       </button>
-                      <Lock className="absolute left-3 text-secondary w-5 h-5" />
+                     
                     </div>
                   </div>
                   <button

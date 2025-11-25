@@ -262,7 +262,14 @@ function createWindow() {
     win.loadFile(indexPath);
   }
 
-  win.once("ready-to-show", () => win.show());
+  win.once("ready-to-show", () => {
+    win.show();
+    win.setFullScreen(true);
+  });
+
+  win.webContents.once("did-finish-load", () => {
+    win.webContents.send("app:navigate", "/login");
+  });
 
   win.on("close", (e) => {
     if (kioskLocked && !forceQuit) {
@@ -278,6 +285,8 @@ function createWindow() {
     const key = input.key?.toLowerCase();
     const ctrl = input.control || input.meta;
     const alt = input.alt;
+    const allowDevtools = ctrl && input.shift && key === "i";
+    if (allowDevtools) return;
     if (
       key === "f5" ||
       key === "f11" ||
@@ -327,8 +336,8 @@ ipcMain.on("auth:logout", () => {
   kioskLocked = false;
   if (!win) return;
   win.setAlwaysOnTop(false);
-  win.setFullScreen(false);
   win.setKiosk(false);
+  win.setFullScreen(true);
   win.webContents.send("app:navigate", "/login");
 });
 

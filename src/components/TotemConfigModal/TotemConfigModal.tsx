@@ -11,9 +11,6 @@ interface TotemConfigModalProps {
   onClose?: () => void;
   closeOnBackdrop?: boolean;
   showCloseButton?: boolean;
-  size?: "auto" | "full";
-  maxWidthClassName?: string;
-  maxHeightClassName?: string;
   classNameWrapper?: string;
   classNamePanel?: string;
   classNameTitle?: string;
@@ -31,9 +28,6 @@ export default function TotemConfigModal({
   onClose,
   closeOnBackdrop = false,
   showCloseButton,
-  size = "full",
-  maxWidthClassName = "max-w-[1200px]",
-  maxHeightClassName = "lg:max-h-[800px]",
   classNameWrapper,
   classNamePanel,
   classNameTitle,
@@ -86,24 +80,26 @@ export default function TotemConfigModal({
 
   const content = (
     <div
-      className={`fixed inset-0 z-30 flex justify-center items-center overflow-hidden pt-30 ${
+      className={`fixed inset-0 z-30 flex justify-center items-center overflow-hidden ${
         classNameWrapper ?? ""
       }`}
       onMouseDown={handleBackdropClick}
     >
-      <div className="absolute inset-0 bg-black/20" />
+      <div className="absolute inset-0 bg-black/60" />
       <div
         ref={panelRef}
-        className={`z-50 p-4 flex flex-col relative gap-4 ${
-          size === "auto" ? "w-auto" : "w-full"
-        } ${maxWidthClassName} h-full ${maxHeightClassName} rounded-lg bg-white transition-transform ease-in-out duration-300 ${
+        className={`p-4 flex flex-col absolute bottom-0 gap-4 w-full rounded-lg bg-background-color transition-transform ease-in-out duration-300 ${
           showModal ? "translate-y-0" : "translate-y-[1500px]"
         } ${classNamePanel ?? ""}`}
+        style={{
+          height: "calc(50% + (var(--kb-offset, 0px) * 0.6))",
+          paddingBottom: `calc(1rem + (var(--kb-offset, 0px) * 0.6))`,
+        }}
       >
         {title && title.length ? (
           <div className="flex items-center justify-between pr-10">
             <span
-              className={`text-xl text-text-color font-medium w-full ${
+              className={`text-xl text-text-color font-bold w-full ${
                 classNameTitle ?? ""
               }`}
             >

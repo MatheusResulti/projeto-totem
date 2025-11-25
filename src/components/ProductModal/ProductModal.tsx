@@ -77,16 +77,16 @@ export default function ProductModal({
 
   const content = (
     <div
-      className={`fixed inset-0 z-150 flex justify-center items-center overflow-hidden p-10 ${
+      className={`fixed inset-0 z-150 flex justify-center items-center overflow-hidden p-4 ${
         classNameWrapper ?? ""
       }`}
     >
       <div className="absolute inset-0 bg-black/70" />
       <div
         ref={panelRef}
-        className={`z-160 flex flex-col relative gap-4 ${
+        className={`flex flex-col relative gap-4 ${
           size === "auto" ? "w-auto" : "w-full"
-        } ${maxWidthClassName} h-full ${maxHeightClassName} rounded-xl overflow-hidden bg-white transition-transform ease-in-out duration-250 ${
+        } ${maxWidthClassName} h-full ${maxHeightClassName} rounded-xl overflow-hidden bg-background-color transition-transform ease-in-out duration-250 ${
           showModal ? "translate-y-0" : "translate-y-[1500px]"
         } ${classNamePanel ?? ""}`}
       >
@@ -105,7 +105,7 @@ export default function ProductModal({
         ) : null}
         {shouldShowCloseButton && (
           <button
-            className="p-1 rounded-full outline-none text-gray-500 absolute top-3 right-3 border-2 border-gray-300 touchable"
+            className="p-1 outline-none text-gray-500 absolute top-3 right-3 touchable"
             onClick={closeModal}
           >
             <X size={26} />

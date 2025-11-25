@@ -101,7 +101,7 @@ export default function Menu() {
       >
         <button
           onClick={handleCancel}
-          className="bg-error text-2xl font-semibold border-2 border-white rounded-lg text-white p-2 h-15 touchable contain-content"
+          className="bg-gray-800 text-xl font-medium border border-white rounded-lg text-white px-4 h-12 touchable contain-content"
         >
           Cancelar
         </button>
@@ -113,12 +113,12 @@ export default function Menu() {
             onSelectGroup={setSelectedGroup}
           />
         </div>
-        <div className="bg-background-color relative flex-1 p-5 flex flex-col min-h-0">
-          <h1 className="font-bold text-2xl">
+        <div className="bg-background-color relative flex-1 p-3 flex flex-col min-h-0">
+          <h1 className="font-bold text-xl">
             {GroupArr.find((g) => g.id === selectedGroup)?.name}
           </h1>
           <div className="flex-1 min-h-0 overflow-auto pb-24 scrollbar-none">
-            <div className="grid grid-cols-2 gap-5 pt-2">
+            <div className="grid grid-cols-3 gap-3 pt-2">
               {filteredProducts.map((product) => (
                 <ProductCard
                   key={product.id}
@@ -159,7 +159,7 @@ export default function Menu() {
           setOpenModal={handleToggleProductModal}
           showCloseButton
           size="auto"
-          maxWidthClassName="w-full max-w-3xl"
+          maxWidthClassName="w-full"
           maxHeightClassName="max-h-[90vh]"
         >
           <ProductInfo

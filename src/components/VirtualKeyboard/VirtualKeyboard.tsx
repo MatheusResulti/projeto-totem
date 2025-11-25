@@ -128,6 +128,12 @@ export function VirtualKeyboard({
       setLayoutName("default");
       return true;
     }
+    if (button === "{space}") {
+      const next = `${input} `;
+      syncInput(next);
+      keyboardRef.current?.setInput?.(next);
+      return true;
+    }
     return false;
   };
 

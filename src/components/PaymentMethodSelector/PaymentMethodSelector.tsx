@@ -17,7 +17,6 @@ export default function PaymentMethodSelector({
   onConfirm,
 }: Props) {
   const navigate = useNavigate();
-  const { primary } = useTotemColor();
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -46,23 +45,18 @@ export default function PaymentMethodSelector({
   return (
     <div
       ref={wrapperRef}
-      style={{ borderColor: primary }}
-      className={
-        "w-full h-fit self-center rounded-xl border mb-4 overflow-hidden flex flex-col text-text-color bg-white"
-      }
+      className="w-full h-fit self-center rounded-xl overflow-hidden flex flex-col text-text-color bg-white mb-3"
     >
-      <div className="flex flex-col h-full w-full">
+      <div className="flex flex-col">
         <div
-          style={{ backgroundColor: primary }}
-          className="w-full p-5 text-center"
+          className="w-full p-5 text-center bg-card-color"
         >
           <span className="text-4xl font-extrabold text-white">
             MÉTODO DE PAGAMENTO
           </span>
         </div>
         <div
-          style={{ color: primary }}
-          className="flex justify-between text-4xl font-bold gap-3 p-3"
+          className="flex justify-between text-4xl font-bold gap-3 p-3 text-card-color"
         >
           <button
             onClick={() => selectAndGo("pix")}

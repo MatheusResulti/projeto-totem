@@ -41,7 +41,7 @@ export default function MenuSideBar({
         <h1 className="font-bold text-2xl pb-3">Menu</h1>
       </div>
 
-      <div className="flex flex-col items-start">
+      <div className="flex flex-col items-start gap-2">
         {sortedGroups.map((group) => (
           <GroupItem
             key={group.id}

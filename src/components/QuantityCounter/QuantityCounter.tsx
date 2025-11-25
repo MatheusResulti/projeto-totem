@@ -8,7 +8,7 @@ export default function QuantityCounter() {
   const isDisabled = quantity <= 1;
 
   return (
-    <div className="flex w-36 h-12 items-center justify-between rounded-md border border-gray-300 overflow-hidden shadow-sm bg-white">
+    <div className="flex w-36 h-12 items-center justify-between rounded-md border border-gray-300 overflow-hidden shadow-sm bg-card-color">
       <button
         onClick={dec}
         disabled={isDisabled}
@@ -22,7 +22,7 @@ export default function QuantityCounter() {
         −
       </button>
 
-      <span className="w-1/3 text-center font-semibold text-2xl select-none">
+      <span className="w-1/3 text-center font-semibold text-2xl select-none text-text-color">
         {quantity}
       </span>
 

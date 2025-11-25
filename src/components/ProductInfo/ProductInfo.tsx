@@ -31,6 +31,7 @@ export default function ProductInfo({
   const userData = useUserData((s: any) => s.userData);
   const { quantity, setQuantity } = useCount();
   const { primary } = useTotemColor();
+  const [keyboardOpen, setKeyboardOpen] = useState(false);
 
   const [selectedSize, setSelectedSize] = useState<any>(null);
   const [obs, setObs] = useState("");
@@ -139,13 +140,13 @@ export default function ProductInfo({
   const totalPrice = Number((basePrice + complementPrice).toFixed(2));
 
   return (
-    <div className="flex flex-col max-h-[80vh]">
-      <div className="flex md:flex-row items-center px-5 gap-6 border-b border-b-gray-200 h-70">
+    <div className="flex flex-col min-h-[80vh] pb-8">
+      <div className="flex flex-row items-center px-5 gap-6 border-b border-b-gray-800 h-60">
         {product.image ? (
           <img
             src={product.image}
             alt={product.name}
-            className="w-50 h-50 rounded-lg object-contain"
+            className="w-50 h-50 rounded-lg object-fill"
           />
         ) : (
           <div className="flex items-center justify-center w-50 h-50 rounded-lg bg-gray-200">
@@ -160,14 +161,14 @@ export default function ProductInfo({
         </div>
       </div>
 
-      <div className="px-3 overflow-y-auto scrollbar-none">
+      <div className="px-3 py-2 scrollbar-none flex flex-col gap-1 flex-1 overflow-y-auto pb-20" style={{ paddingBottom: keyboardOpen ? 260 : 80 }}>
         {hasSizes && (
           <>
-            <div className="w-full bg-gray-200 p-2 rounded-lg flex flex-col mt-4">
-              <span className="text-sm text-text-color font-bold ml-1">
+            <div className="w-full bg-card-color p-2 rounded-lg flex flex-col">
+              <span className="text-sm text-text-color font-bold">
                 Qual o tamanho da sua fome?
               </span>
-              <span className="text-sm text-text-color ml-1">
+              <span className="text-sm text-text-color">
                 Escolha 1 tamanho.
               </span>
             </div>
@@ -185,11 +186,11 @@ export default function ProductInfo({
 
         {hasComplements && (
           <>
-            <div className="mt-4 w-full bg-gray-200 p-2 rounded-lg flex flex-col">
-              <span className="text-sm text-text-color font-bold ml-1">
+            <div className="w-full bg-card-color p-2 rounded-lg flex flex-col">
+              <span className="text-sm text-text-color font-bold">
                 Turbine seu pedido!
               </span>
-              <span className="text-sm text-text-color ml-1">
+              <span className="text-sm text-text-color">
                 Escolha até {complementsData.length} opções
               </span>
             </div>
@@ -204,8 +205,8 @@ export default function ProductInfo({
             ))}
           </>
         )}
-
-        <div className="flex flex-row justify-between px-1 mt-3">
+        <div className="flex flex-col gap-3">
+        <div className="flex flex-row justify-between px-1">
           <span className="text-sm text-gray-600/70 font-semibold">
             Observação
           </span>
@@ -220,11 +221,14 @@ export default function ProductInfo({
         <textarea
           value={obs}
           onChange={(e) => setObs(e.target.value.slice(0, maxChars))}
+          onFocus={() => setKeyboardOpen(true)}
+          onBlur={() => setKeyboardOpen(false)}
           maxLength={maxChars}
           placeholder="Ex: remover alface e tomate"
-          className="border border-gray-300 rounded-lg mt-3 pl-2 pt-2.5 text-text-color w-full resize-none overflow-hidden h-12"
+          className="border border-gray-300 rounded-lg pl-2 pt-2.5 text-text-color w-full resize-none overflow-hidden h-12"
           data-enter-action="close-keyboard"
         />
+      </div>
       </div>
 
       <div className="absolute left-0 right-0 bottom-0 flex justify-between items-center h-20 p-4">

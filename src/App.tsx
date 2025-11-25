@@ -16,7 +16,7 @@ const TimeExceeded = lazy(
 );
 
 function RootLayout() {
-  useInactivityTimer(60000);
+  /*useInactivityTimer(60000);*/
 
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [keyboardHeight, setKeyboardHeight] = useState(0);

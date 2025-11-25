@@ -49,7 +49,7 @@ export default function CartItem({ item, index }: CartItemProps) {
 
       <div className="flex flex-col ml-5 text-text-color justify-center gap-1 flex-1 min-w-0 pr-28">
         <div className="flex flex-row gap-2">
-          <span className="text-gray-600">{item.quantidade}x</span>
+          <span className="text-gray-500">{item.quantidade}x</span>
           <span className="font-semibold">{item.dsProduto}</span>
         </div>
 
@@ -81,8 +81,7 @@ export default function CartItem({ item, index }: CartItemProps) {
       </div>
 
       <span
-        style={{ color: primary }}
-        className="text-lg absolute right-10 font-semibold"
+        className="text-lg text-text-color absolute right-10 font-semibold"
       >
         {formatToBRL(item.price)}
       </span>

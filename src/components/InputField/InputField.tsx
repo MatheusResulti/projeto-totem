@@ -26,8 +26,8 @@ export default function InputField({
   const { className: extraClass, ...restProps } = inputProps ?? {};
 
   return (
-    <div className="border-2 border-border-color rounded-lg w-full h-12 p-3 gap-4 flex flex-row items-center text-sm mb-1">
-      {icon && <span className="text-primary">{icon}</span>}
+    <div className="border border-border-color rounded-md w-full h-12 p-3 gap-4 flex flex-row items-center">
+      {icon && <span>{icon}</span>}
       <input
         type={inputType}
         placeholder={placeholder}

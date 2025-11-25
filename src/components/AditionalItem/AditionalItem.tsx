@@ -20,21 +20,21 @@ export default function AditionalItem({
   return (
     <button
       onClick={() => action(item, i)}
-      className="w-full h-14 p-3 border-b border-border-color flex items-center justify-between touchable"
+      className="w-full h-14 px-2 py-4 border-b border-gray-800 flex items-center justify-between touchable"
     >
       <span className="text-text-color font-medium">
         {item.name}
         {item.price !== 0 && (
           <>
             {" - "}
-            <span style={{ color: primary }} className="font-semibold">
+            <span className="font-light text-text-color">
               {formatToBRL(item.price)}
             </span>
           </>
         )}
       </span>
       <div
-        className={`w-5 h-5 rounded-full border border-border-color touchable`}
+        className={`w-5 h-5 rounded-full touchable`}
         style={{
           backgroundColor: selected
             ? (primary ?? "var(--color-secondary)")

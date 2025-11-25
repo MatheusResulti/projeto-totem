@@ -15,16 +15,11 @@ export default function GroupItem({
   const { primary } = useTotemColor();
 
   return (
-    <button onClick={() => onSelect(id)}>
+    <button className="h-11 flex w-full justify-center items-center transition-all ease-in-out duration-300" onClick={() => onSelect(id)}>
       <p
-        className={`h-15 mb-3 text-2xl flex items-center justify-center transition-all ${
+        className={`text-lg ${
           selected ? "font-bold" : "font-semibold text-gray-500"
         }`}
-        style={{
-          borderBottom: selected
-            ? `5px solid ${primary}`
-            : "5px solid transparent",
-        }}
       >
         {name}
       </p>

@@ -9,13 +9,21 @@
   --color-title: #ffff;
   --color-text-color: #e5e5e5;
   --color-basket: #959595;
-  --color-primary: #017dd7;
-  --color-secondary: #00199c;
+  --color-primary: #0EA5E9;
+  --color-secondary: #0284C7;
   --color-error: #ff0033;
   --color-success: #10b981;
   --color-money: #157811;
   --color-border-color: #e5e5e5;
   --color-placeholder-color: #a3a3a3;
+}
+
+@layer base {
+  input,
+  textarea,
+  select {
+    @apply outline-none focus:outline-none ring-0 focus:ring-0;
+  }
 }
 
 @layer components {
@@ -58,9 +66,9 @@ body {
 .simple-keyboard .hg-button {
   background-color: #1f2937;
   color: #f9fafb !important;
-  border-radius: 10px;
-  border: 2px solid #e5e5e5;
-  margin: 2px;
+  border-radius: 5px;
+  border: 1px solid #e5e5e5;
+  margin: 1px;
   padding: 14px 16px;
   min-height: 52px;
   font-size: 22px;
@@ -71,16 +79,21 @@ body {
 }
 
 .simple-keyboard .hg-button:active {
-  background-color: #00199c;
+  background-color: #0EA5E9;
 }
 
 .simple-keyboard .hg-button[data-skbtn="{space}"] {
   min-width: 40%;
+  font-size: 15px;
 }
 
 .simple-keyboard .hg-button[data-skbtn="{enter}"],
-.simple-keyboard .hg-button[data-skbtn="{bksp}"] {
+.simple-keyboard .hg-button[data-skbtn="{bksp}"],
+.simple-keyboard .hg-button[data-skbtn="{shift}"],
+.simple-keyboard .hg-button[data-skbtn="{limpar}"]
+{
   min-width: 15%;
+  font-size: 15px;
 }
 
 .kb-wide {
@@ -93,4 +106,5 @@ body {
   max-width: 120px;
   flex: 0 0 120px;
   text-align: center;
+  font-size: 15px;
 }
