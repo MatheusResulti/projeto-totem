@@ -181,7 +181,9 @@ const buildReceiptHtml = (payload = {}) => {
   lines.push("-".repeat(lineWidth));
   lines.push(pad("Obrigado pela preferência!", lineWidth));
 
-  return `<pre>${escapeHtml(lines.join("\n"))}</pre>`;
+  return `<div style="display:flex;justify-content:center;align-items:center;margin:0;padding:0;"><pre style="margin:0;">${escapeHtml(
+    lines.join("\n")
+  )}</pre></div>`;
 };
 
 const handleReceiptPrint = (payload = {}) => {
