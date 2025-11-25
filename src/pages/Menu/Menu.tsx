@@ -97,7 +97,7 @@ export default function Menu() {
         style={{
           backgroundImage: `url(${userData?.capa || defaultCapa})`,
         }}
-        className="bg-cover bg-center bg-no-repeat h-40 flex justify-end px-2 py-2"
+        className="bg-cover bg-center bg-no-repeat h-40 flex justify-end px-2 py-2 bg-float-y"
       >
         <button
           onClick={handleCancel}

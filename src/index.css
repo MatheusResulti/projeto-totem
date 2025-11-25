@@ -45,6 +45,23 @@
   }
 }
 
+@layer utilities {
+  @keyframes bg-float-y {
+    0%, 100% {
+      background-position-y: 30%;
+    }
+    50% {
+      background-position-y: 75%;
+    }
+  }
+
+  .bg-float-y {
+    background-size: 100% auto;
+    animation: bg-float-y 13s ease-in-out infinite;
+  }
+}
+
+
 html,
 body {
   font-family: "Poppins", "Nunito", ui-sans-serif, system-ui, sans-serif;
