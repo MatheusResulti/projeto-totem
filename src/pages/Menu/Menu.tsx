@@ -106,18 +106,18 @@ export default function Menu() {
           Cancelar
         </button>
       </div>
-      <div className="flex-1 min-h-0 w-dvw flex bg-background-color">
+      <div className="flex-1 min-h-0 w-dvw flex bg-card-color">
         <div className="w-1/4 h-full p-5 flex flex-col gap-2">
           <MenuSideBar
             selectedGroup={selectedGroup}
             onSelectGroup={setSelectedGroup}
           />
         </div>
-        <div className="bg-gray-200 relative flex-1 p-5 flex flex-col min-h-0">
+        <div className="bg-background-color relative flex-1 p-5 flex flex-col min-h-0">
           <h1 className="font-bold text-2xl">
             {GroupArr.find((g) => g.id === selectedGroup)?.name}
           </h1>
-          <div className="flex-1 min-h-0 overflow-auto pb-24">
+          <div className="flex-1 min-h-0 overflow-auto pb-24 scrollbar-none">
             <div className="grid grid-cols-2 gap-5 pt-2">
               {filteredProducts.map((product) => (
                 <ProductCard
@@ -128,7 +128,7 @@ export default function Menu() {
               ))}
             </div>
           </div>
-          <div className="absolute left-0 right-0 bottom-0 bg-white h-25 p-4">
+          <div className="absolute left-0 right-0 bottom-0 bg-background-color h-25 p-4">
             <button
               disabled={!order.itens.length}
               onClick={() => navigate("/cart")}

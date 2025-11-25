@@ -35,7 +35,7 @@ export default function PaymentMethodBadge({ method }: PaymentMethodProps) {
   const cfg = paymentConfig[key];
 
   return (
-    <div className="flex items-center gap-2 px-4 py-2 rounded-xl shadow-md bg-white">
+    <div className="flex items-center gap-2 px-4 py-2 rounded-xl shadow-md bg-background-color">
       <img src={cfg.icon} alt={method} className="w-5 h-5" />
       <p className="font-semibold">{cfg.label ?? method}</p>
     </div>

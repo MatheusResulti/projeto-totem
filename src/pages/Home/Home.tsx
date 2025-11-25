@@ -118,7 +118,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="bg-gray-800 w-full flex items-center justify-center h-15 px-6">
+        <div className="bg-background-color w-full flex items-center justify-center h-15 px-6">
           <span className="text-sm font-semibold text-white flex items-center gap-3 mt-1">
             Um produto disponibilizado por
           </span>
