@@ -181,9 +181,31 @@ const buildReceiptHtml = (payload = {}) => {
   lines.push("-".repeat(lineWidth));
   lines.push(pad("Obrigado pela preferência!", lineWidth));
 
-  return `<div style="display:flex;justify-content:center;align-items:center;margin:0;padding:0;"><pre style="margin:0;">${escapeHtml(
-    lines.join("\n")
-  )}</pre></div>`;
+  return `
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <style>
+    @page {
+      margin: 0;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
+    pre {
+      margin: 0;
+      padding: 0;
+      font-family: monospace;
+      font-size: 10pt;
+    }
+  </style>
+</head>
+<body>
+  <pre>${escapeHtml(lines.join("\n"))}</pre>
+</body>
+</html>`;
 };
 
 const handleReceiptPrint = (payload = {}) => {
