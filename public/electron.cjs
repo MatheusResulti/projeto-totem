@@ -9,6 +9,9 @@ if (require("electron-squirrel-startup")) {
   app.quit();
 }
 const path = require("path");
+const escpos = require("escpos");
+escpos.USB = require("escpos-usb");
+const { createCanvas, loadImage } = require("canvas");
 
 app.disableHardwareAcceleration();
 process.env.GDK_BACKEND = "x11";
@@ -72,7 +75,7 @@ const cleanText = (value = "") =>
     .replace(/\u00C2/g, "")
     .trim();
 
-const buildReceiptHtml = (payload = {}) => {
+const buildReceiptLines = (payload = {}) => {
   const { company = {}, order = {}, payment = {}, timestamp } = payload;
   const items = Array.isArray(order.items) ? order.items : [];
   const pix = payment.pix || {};
@@ -162,6 +165,7 @@ const buildReceiptHtml = (payload = {}) => {
   }
 
   const pixInfoRaw = [
+    "COMPROVANTE PIX",
     "Pagamento PIX confirmado",
     pix.status ? `STATUS: ${String(pix.status).toUpperCase()}` : "",
     pix.pspReceiver ? `Instituição: ${pix.pspReceiver}` : "",
@@ -180,15 +184,20 @@ const buildReceiptHtml = (payload = {}) => {
   ].filter(Boolean);
 
   const pixInfo = pixInfoRaw.map((i) => cleanText(i));
-
   if (pixInfo.length) {
     lines.push("-".repeat(lineWidth));
-    lines.push("COMPROVANTE PIX");
     pixInfo.forEach((info) => lines.push(pad(info, lineWidth)));
   }
 
   lines.push("-".repeat(lineWidth));
   lines.push(pad("Obrigado pela preferência!", lineWidth));
+
+  return lines;
+};
+
+const buildReceiptHtml = (payload = {}) => {
+  const { company = {} } = payload;
+  const lines = buildReceiptLines(payload);
 
   const logoSrc = company.logoBase64 || company.logoUrl || "";
   console.log("LOGO SRC NO RECIBO:", logoSrc);
@@ -232,6 +241,7 @@ const buildReceiptHtml = (payload = {}) => {
 </html>`;
 };
 
+// HTML (fallback / dev)
 const handleReceiptPrint = (payload = {}) => {
   const html = buildReceiptHtml(payload);
   const runPrint = () => {
@@ -267,7 +277,7 @@ const handleReceiptPrint = (payload = {}) => {
         },
         (success, failureReason) => {
           if (!success) {
-            console.error("Erro ao imprimir recibo:", failureReason);
+            console.error("Erro ao imprimir recibo (HTML):", failureReason);
           }
           cleanup();
         }
@@ -275,7 +285,7 @@ const handleReceiptPrint = (payload = {}) => {
     });
 
     printWindow.webContents.on("did-fail-load", (_event, code, desc) => {
-      console.error("Erro ao preparar a impressão:", code, desc);
+      console.error("Erro ao preparar a impressão (HTML):", code, desc);
       cleanup();
     });
   };
@@ -285,6 +295,78 @@ const handleReceiptPrint = (payload = {}) => {
   } else {
     app.once("ready", runPrint);
   }
+};
+
+const loadEscposImageFromSrc = async (src) => {
+  if (!src) return null;
+  try {
+    let normalized = src;
+
+    if (typeof normalized === "string" && normalized.startsWith("file:///")) {
+      normalized = normalized.replace("file:///", "");
+    }
+
+    const img = await loadImage(normalized);
+    const canvas = createCanvas(img.width, img.height);
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+    const image = new escpos.Image(canvas);
+    return image;
+  } catch (err) {
+    console.error("Erro ao preparar imagem ESC/POS:", err);
+    return null;
+  }
+};
+
+const printReceiptEscPos = async (payload = {}) => {
+  const lines = buildReceiptLines(payload);
+  const company = payload.company || {};
+
+  const logoCandidates = [];
+  if (company.logoBase64) logoCandidates.push(company.logoBase64);
+  if (company.logoUrl) logoCandidates.push(company.logoUrl);
+  logoCandidates.push(resultiLogoPath);
+
+  const device = new escpos.USB();
+  const printer = new escpos.Printer(device, {
+    encoding: "CP860",
+  });
+
+  device.open(async (error) => {
+    if (error) {
+      console.error("Erro ao abrir USB da impressora ESC/POS:", error);
+      return;
+    }
+
+    try {
+      let escposImage = null;
+      for (const src of logoCandidates) {
+        escposImage = await loadEscposImageFromSrc(src);
+        if (escposImage) break;
+      }
+
+      if (escposImage) {
+        printer.align("ct");
+        printer.raster(escposImage, "s8");
+        printer.newLine();
+      }
+
+      printer.align("lt");
+      lines.forEach((line) => {
+        printer.text(line);
+      });
+
+      printer.newLine();
+      printer.newLine();
+      printer.cut();
+      printer.close();
+    } catch (err) {
+      console.error("Erro durante impressão ESC/POS:", err);
+      try {
+        printer.close();
+      } catch {}
+    }
+  });
 };
 
 function createWindow() {
@@ -405,7 +487,7 @@ ipcMain.on("app-quit", () => {
   }
 });
 
-ipcMain.on("printer:receipt", (_event, payload) => {
+ipcMain.on("printer:receipt", async (_event, payload) => {
   if (!payload || typeof payload !== "object") return;
   if (!payload.company) payload.company = {};
 
@@ -416,9 +498,17 @@ ipcMain.on("printer:receipt", (_event, payload) => {
   }
 
   try {
-    handleReceiptPrint(payload);
+    await printReceiptEscPos(payload);
   } catch (error) {
-    console.error("Erro durante a impressão do recibo:", error);
+    console.error(
+      "Erro durante a impressão ESC/POS, fallback para HTML:",
+      error
+    );
+    try {
+      handleReceiptPrint(payload);
+    } catch (errHtml) {
+      console.error("Erro durante a impressão HTML de fallback:", errHtml);
+    }
   }
 });
 

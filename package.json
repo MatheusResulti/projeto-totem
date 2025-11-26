@@ -19,8 +19,11 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.14",
+    "canvas": "^3.2.0",
     "electron-squirrel-startup": "^1.0.1",
     "esc-pos-encoder": "^3.0.0",
+    "escpos": "^3.0.0-alpha.6",
+    "escpos-usb": "^3.0.0-alpha.4",
     "framer-motion": "^12.23.24",
     "lucide": "^0.546.0",
     "lucide-react": "^0.546.0",
