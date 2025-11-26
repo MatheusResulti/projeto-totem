@@ -87,6 +87,16 @@ export default function PixPayment() {
             ]
               .filter(Boolean)
               .join(" - "),
+            logoBase64:
+              userData?.cfgTotem?.dsImgLogo &&
+              userData.cfgTotem.dsImgLogo.length
+                ? userData.cfgTotem.dsImgLogo
+                : undefined,
+            logoUrl:
+              userData?.cfgTotem?.dsImgLogo &&
+              userData.cfgTotem.dsImgLogo.length
+                ? userData.cfgTotem.dsImgLogo
+                : undefined,
           },
           order: {
             total: order.total,
@@ -347,9 +357,7 @@ export default function PixPayment() {
       />
       {isPaid ? (
         <>
-          <span className="text-3xl font-extrabold">
-            PIX pago!
-          </span>
+          <span className="text-3xl font-extrabold">PIX pago!</span>
           <span className="text-text-color font-bold text-2xl">
             Retire sua notinha e aguarde seu pedido.
           </span>
@@ -403,18 +411,14 @@ export default function PixPayment() {
                 size={122}
                 strokeColor={primary}
               />
-              <span className="font-bold text-3xl">
-                Gerando PIX...
-              </span>
+              <span className="font-bold text-3xl">Gerando PIX...</span>
               <span className="font-semibold text-2xl">
                 Aguarde um instante
               </span>
             </>
           ) : (
             <>
-              <span className="font-bold text-3xl">
-                Seu PIX está pronto!
-              </span>
+              <span className="font-bold text-3xl">Seu PIX está pronto!</span>
               <span className="font-semibold text-2xl">
                 Para continuar, leia o QrCode
               </span>
@@ -428,15 +432,11 @@ export default function PixPayment() {
 
           <div className="flex flex-col w-120 border border-border-color text-xl p-4 gap-3 text-text-color">
             <div className="flex flex-row gap-2">
-              <span className="font-semibold">
-                Empresa:
-              </span>
+              <span className="font-semibold">Empresa:</span>
               <span>{userData?.empresa?.dsFantasia}</span>
             </div>
             <div className="flex flex-row gap-2">
-              <span className="font-semibold">
-                Valor do pedido:
-              </span>
+              <span className="font-semibold">Valor do pedido:</span>
               <span>{formatToBRL(order.total)}</span>
             </div>
             <button

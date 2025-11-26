@@ -181,6 +181,8 @@ const buildReceiptHtml = (payload = {}) => {
   lines.push("-".repeat(lineWidth));
   lines.push(pad("Obrigado pela preferência!", lineWidth));
 
+  const logoSrc = company.logoBase64 || company.logoUrl || "";
+
   return `
 <!doctype html>
 <html>
@@ -193,16 +195,26 @@ const buildReceiptHtml = (payload = {}) => {
     html, body {
       margin: 0;
       padding: 0;
+      text-align: center;
+    }
+    img.logo {
+      display: block;
+      margin: 8px auto 12px auto;
+      width: 200px;       /* ajusta se precisar (58mm/80mm) */
+      image-rendering: pixelated;
     }
     pre {
       margin: 0;
-      padding: 0;
+      padding: 0 8px;
       font-family: monospace;
       font-size: 10pt;
+      text-align: left;
+      white-space: pre;
     }
   </style>
 </head>
 <body>
+  ${logoSrc ? `<img class="logo" src="${logoSrc}" />` : ""}
   <pre>${escapeHtml(lines.join("\n"))}</pre>
 </body>
 </html>`;
