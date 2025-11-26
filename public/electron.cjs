@@ -352,7 +352,12 @@ const printReceiptEscPos = async (payload = {}) => {
   lines.forEach((line) => console.log(line));
   console.log("===== FIM RECIBO ESC/POS =====");
 
-  const logoCandidates = [resultiLogoPath];
+  const logoCandidates = [
+    company.logoBase64,
+    company.logoUrl,
+    resultiLogoPath,
+    resultiLogoUrl,
+  ].filter(Boolean);
 
   console.log("Caminho da logo local (resultiLogoPath):", resultiLogoPath);
 
