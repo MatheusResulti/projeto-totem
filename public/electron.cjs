@@ -191,6 +191,7 @@ const buildReceiptHtml = (payload = {}) => {
   lines.push(pad("Obrigado pela preferência!", lineWidth));
 
   const logoSrc = company.logoBase64 || company.logoUrl || "";
+  console.log("LOGO SRC NO RECIBO:", logoSrc);
 
   return `
 <!doctype html>
@@ -227,8 +228,6 @@ const buildReceiptHtml = (payload = {}) => {
   <pre>${escapeHtml(lines.join("\n"))}</pre>
 
   ${logoSrc ? `<img class="logo" src="${logoSrc}" />` : ""}
-
-  <pre>${escapeHtml(lines.join("\n"))}</pre>
 </body>
 </html>`;
 };
@@ -405,12 +404,17 @@ ipcMain.on("app-quit", () => {
     app.quit();
   }
 });
+
 ipcMain.on("printer:receipt", (_event, payload) => {
   if (!payload || typeof payload !== "object") return;
   if (!payload.company) payload.company = {};
+
+  console.log("PAYLOAD COMPANY:", payload.company);
+
   if (!payload.company.logoBase64 && !payload.company.logoUrl) {
     payload.company.logoUrl = resultiLogoUrl;
   }
+
   try {
     handleReceiptPrint(payload);
   } catch (error) {
