@@ -31,6 +31,15 @@ app.commandLine.appendSwitch("no-sandbox");
 const isDev = !app.isPackaged;
 const DEV_URL = process.env.VITE_DEV_SERVER_URL || "http://localhost:5173";
 
+const resultiLogoPath = path.join(
+  app.getAppPath(),
+  isDev ? "public" : "dist",
+  "assets",
+  "resultiLogo.png"
+);
+
+const resultiLogoUrl = `file:///${resultiLogoPath.replace(/\\/g, "/")}`;
+
 const preloadPath = isDev
   ? path.join(__dirname, "preload.cjs")
   : path.join(app.getAppPath(), "dist", "preload.cjs");
@@ -195,26 +204,30 @@ const buildReceiptHtml = (payload = {}) => {
     html, body {
       margin: 0;
       padding: 0;
-      text-align: center;
-    }
-    img.logo {
-      display: block;
-      margin: 8px auto 12px auto;
-      width: 200px;       /* ajusta se precisar (58mm/80mm) */
-      image-rendering: pixelated;
     }
     pre {
       margin: 0;
-      padding: 0 8px;
+      padding: 0;
       font-family: monospace;
       font-size: 10pt;
-      text-align: left;
-      white-space: pre;
+      white-space: pre-wrap;
+    }
+    img.logo {
+      display: block;
+      margin: 12px auto;
+      max-width: 180px;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      image-rendering: smooth;
     }
   </style>
 </head>
 <body>
+  <pre>${escapeHtml(lines.join("\n"))}</pre>
+
   ${logoSrc ? `<img class="logo" src="${logoSrc}" />` : ""}
+
   <pre>${escapeHtml(lines.join("\n"))}</pre>
 </body>
 </html>`;
@@ -392,9 +405,12 @@ ipcMain.on("app-quit", () => {
     app.quit();
   }
 });
-
 ipcMain.on("printer:receipt", (_event, payload) => {
   if (!payload || typeof payload !== "object") return;
+  if (!payload.company) payload.company = {};
+  if (!payload.company.logoBase64 && !payload.company.logoUrl) {
+    payload.company.logoUrl = resultiLogoUrl;
+  }
   try {
     handleReceiptPrint(payload);
   } catch (error) {

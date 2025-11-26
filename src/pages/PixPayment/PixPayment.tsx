@@ -87,11 +87,6 @@ export default function PixPayment() {
             ]
               .filter(Boolean)
               .join(" - "),
-            logoBase64:
-              userData?.cfgTotem?.dsImgLogo &&
-              userData.cfgTotem.dsImgLogo.length
-                ? userData.cfgTotem.dsImgLogo
-                : undefined,
             logoUrl:
               userData?.cfgTotem?.dsImgLogo &&
               userData.cfgTotem.dsImgLogo.length
