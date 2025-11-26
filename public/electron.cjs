@@ -299,8 +299,29 @@ const handleReceiptPrint = (payload = {}) => {
 
 const loadEscposImageFromSrc = async (src) => {
   if (!src) return null;
+
+  console.log("Tentando carregar imagem ESC/POS a partir de:", src);
+
   try {
     let normalized = src;
+
+    if (typeof normalized === "string" && normalized.startsWith("data:")) {
+      const commaIndex = normalized.indexOf(",");
+      const base64 = normalized.slice(commaIndex + 1);
+      const buffer = Buffer.from(base64, "base64");
+      const img = await loadImage(buffer);
+      const canvas = createCanvas(img.width, img.height);
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+      const image = new escpos.Image(canvas);
+      console.log(
+        "Imagem ESC/POS carregada via dataURL, tamanho:",
+        img.width,
+        "x",
+        img.height
+      );
+      return image;
+    }
 
     if (typeof normalized === "string" && normalized.startsWith("file:///")) {
       normalized = normalized.replace("file:///", "");
@@ -311,9 +332,15 @@ const loadEscposImageFromSrc = async (src) => {
     const ctx = canvas.getContext("2d");
     ctx.drawImage(img, 0, 0);
     const image = new escpos.Image(canvas);
+    console.log(
+      "Imagem ESC/POS carregada, tamanho:",
+      img.width,
+      "x",
+      img.height
+    );
     return image;
   } catch (err) {
-    console.error("Erro ao preparar imagem ESC/POS:", err);
+    console.error("Erro ao preparar imagem ESC/POS para src:", src, err);
     return null;
   }
 };
@@ -325,15 +352,27 @@ const printReceiptEscPos = async (payload = {}) => {
   lines.forEach((line) => console.log(line));
   console.log("===== FIM RECIBO ESC/POS =====");
 
-  const logoCandidates = [];
-  if (company.logoBase64) logoCandidates.push(company.logoBase64);
-  if (company.logoUrl) logoCandidates.push(company.logoUrl);
-  logoCandidates.push(resultiLogoPath);
+  const logoCandidates = [resultiLogoPath];
+
+  console.log("Caminho da logo local (resultiLogoPath):", resultiLogoPath);
 
   const device = new escpos.USB();
   const printer = new escpos.Printer(device, {
     encoding: "CP860",
   });
+
+  const originalWrite = device.write.bind(device);
+  device.write = (data, cb) => {
+    try {
+      console.log("===== ESC/POS RAW (bytes) =====");
+      console.log("Tamanho:", data.length);
+      console.log("HEX:", data.toString("hex"));
+      console.log("===== FIM ESC/POS =====");
+    } catch (e) {
+      console.error("Erro ao logar ESC/POS:", e);
+    }
+    return originalWrite(data, cb);
+  };
 
   device.open(async (error) => {
     if (error) {
@@ -342,6 +381,7 @@ const printReceiptEscPos = async (payload = {}) => {
     }
 
     try {
+      console.log("Candidatos de logo ESC/POS:", logoCandidates);
       let escposImage = null;
       for (const src of logoCandidates) {
         escposImage = await loadEscposImageFromSrc(src);
@@ -349,9 +389,12 @@ const printReceiptEscPos = async (payload = {}) => {
       }
 
       if (escposImage) {
+        console.log("Logo ESC/POS preparada, enviando para a impressora...");
         printer.align("ct");
         printer.raster(escposImage, "s8");
         printer.newLine();
+      } else {
+        console.warn("Nenhuma imagem ESC/POS carregada, imprimindo só texto.");
       }
 
       printer.align("lt");
