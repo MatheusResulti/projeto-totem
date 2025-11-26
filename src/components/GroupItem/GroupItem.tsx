@@ -1,5 +1,4 @@
 import type { GroupType } from "../../types/types";
-import { useTotemColor } from "../../utils/useTotemColor";
 
 interface GroupItemProps extends GroupType {
   selected: boolean;
@@ -12,7 +11,6 @@ export default function GroupItem({
   selected,
   onSelect,
 }: GroupItemProps) {
-  const { primary } = useTotemColor();
 
   return (
     <button className="h-11 flex w-full justify-center items-center transition-all ease-in-out duration-300" onClick={() => onSelect(id)}>

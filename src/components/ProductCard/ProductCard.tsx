@@ -1,7 +1,6 @@
 import type { ProductType } from "../../types/types";
 import { asset } from "../../utils/asset";
 import { formatToBRL } from "../../utils/helpers";
-import { useTotemColor } from "../../utils/useTotemColor";
 
 interface Props {
   item: ProductType;
@@ -9,7 +8,6 @@ interface Props {
 }
 export default function ProductCard({ item, onSelect }: Props) {
   const semFoto = asset("/assets/sem-foto.png");
-  const { primary } = useTotemColor();
   const handleClick = () => {
     onSelect?.(item);
   };

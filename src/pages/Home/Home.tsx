@@ -175,12 +175,12 @@ export default function Home() {
                       />
                       <button
                         onClick={() => setShowPassword(!showPassword)}
-                        className="h-full px-4"
+                        className="h-full px-4 touchable"
                       >
                         {showPassword ? (
                           <Eye size={22} color="#FFF" />
                         ) : (
-                          <EyeOff size={22} color="#FFF" />
+                          <EyeOff size={22} color="#a3a3a3" />
                         )}
                       </button>
                      

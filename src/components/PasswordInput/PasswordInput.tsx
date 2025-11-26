@@ -29,25 +29,25 @@ export default function PasswordInput({
   const { className: extraClass, ...restProps } = inputProps ?? {};
 
   return (
-    <div className="border border-border-color relative rounded-lg w-full h-12 p-3 gap-4 flex flex-row items-center text-sm mb-1">
+    <div className="flex flex-row items-center w-full border text-sm text-text-color border-border-color rounded-lg pl-4 h-12 gap-4">
       {icon && <span>{icon}</span>}
       <input
         type={showPassword ? "text" : "password"}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        className={`flex-1 h-full outline-none focus:outline-none focus:ring-0 placeholder:text-placeholder-color ${extraClass ?? ""}`}
+        className={`bg-transparent flex w-full h-full outline-none ${extraClass ?? ""}`}
         {...restProps}
       />
       <button
         type="button"
         onClick={() => setShowPassword((prev) => !prev)}
-        className="absolute right-3 touchable"
+        className="h-full px-4 touchable"
       >
         {showPassword ? (
-          <Eye className="w-5 h-5" />
+          <Eye size={22} color="#FFF" />
         ) : (
-          <EyeOff className="w-5 h-5" />
+          <EyeOff size={22} color="#a3a3a3" />
         )}
       </button>
     </div>

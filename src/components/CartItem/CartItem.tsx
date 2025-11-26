@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import type { ItemType } from "../../types/types";
 import { formatToBRL } from "../../utils/helpers";
 import { useOrder, useProduct } from "../../utils/store";
-import { useTotemColor } from "../../utils/useTotemColor";
 
 type CartItemProps = {
   item: ItemType;
@@ -17,7 +16,6 @@ export default function CartItem({ item, index }: CartItemProps) {
   const order = useOrder((s) => s.order);
   const setOrder = useOrder((s) => s.setOrder);
   const adicionaisFiltrados = (item.adicionais ?? []).filter((a) => a?.name);
-  const { primary } = useTotemColor();
 
   const removeItem = () => {
     const itemObj = { ...item, delete: true };
