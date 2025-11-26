@@ -321,6 +321,9 @@ const loadEscposImageFromSrc = async (src) => {
 const printReceiptEscPos = async (payload = {}) => {
   const lines = buildReceiptLines(payload);
   const company = payload.company || {};
+  console.log("===== RECIBO ESC/POS - LINHAS =====");
+  lines.forEach((line) => console.log(line));
+  console.log("===== FIM RECIBO ESC/POS =====");
 
   const logoCandidates = [];
   if (company.logoBase64) logoCandidates.push(company.logoBase64);
