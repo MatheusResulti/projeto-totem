@@ -180,7 +180,10 @@ const buildReceiptHtml = (payload = {}) => {
 <head>
   <meta charset="utf-8" />
   <style>
-    @page { margin: 0; }
+    @page {
+      margin: 0;
+      size: 80mm auto;   /* força a largura da página para o rolo de 80mm */
+    }
 
     html, body {
       margin: 0;
@@ -188,12 +191,12 @@ const buildReceiptHtml = (payload = {}) => {
     }
 
     body {
-      display: flex;
-      justify-content: center;
+      /* remove o flex/center */
+      font-family: monospace;
     }
 
     .ticket {
-      width: 80mm;
+      width: 100%;       /* ocupa toda a largura da página */
       font-family: monospace;
     }
 
@@ -213,9 +216,9 @@ const buildReceiptHtml = (payload = {}) => {
     .header-text {
       font-size: 10pt;
       line-height: 1.2;
-      max-width: calc(80mm - 80px);
+      max-width: 100%;
       overflow-wrap: anywhere;
-      white-space: normal; 
+      white-space: normal;
     }
 
     pre {
@@ -230,11 +233,7 @@ const buildReceiptHtml = (payload = {}) => {
   <div class="ticket">
 
     <div class="header-flex">
-      ${
-        logoUrl
-          ? `<img src="${escapeHtml(logoUrl)}" alt="Logo" />`
-          : ""
-      }
+      ${logoUrl ? `<img src="${escapeHtml(logoUrl)}" alt="Logo" />` : ""}
       <div class="header-text">
         ${escapeHtml(cleanText(company.name))}<br />
         ${
