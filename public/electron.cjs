@@ -86,7 +86,7 @@ const buildReceiptHtml = (payload = {}) => {
     return dateCandidate.toLocaleString("pt-BR");
   })();
 
-  const lineWidth = 32;
+  const lineWidth = 48;
   const pad = (str = "", size = lineWidth, align = "left") => {
     const s = String(str);
     if (s.length >= size) return s.slice(0, size);
@@ -182,7 +182,7 @@ const buildReceiptHtml = (payload = {}) => {
   <style>
     @page {
       margin: 0;
-      size: 80mm auto;   /* força a largura da página para o rolo de 80mm */
+      size: 80mm auto;
     }
 
     html, body {
@@ -196,7 +196,7 @@ const buildReceiptHtml = (payload = {}) => {
     }
 
     .ticket {
-      width: 100%;       /* ocupa toda a largura da página */
+      width: 100%;
       font-family: monospace;
     }
 
