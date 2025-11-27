@@ -143,7 +143,9 @@ const buildReceiptHtml = (payload = {}) => {
 
   const paymentInfo = [
     payment.document ? `Documento: ${payment.document}` : "",
-    payment.type ? `Tipo: ${payment.type}` : "",
+    payment.typeLabel || payment.type
+      ? `Tipo: ${payment.typeLabel || payment.type}`
+      : "",
     order.label ? `Identificador: ${order.label}` : "",
     order.code ? `Pedido: ${order.code}` : "",
   ]
