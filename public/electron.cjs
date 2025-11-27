@@ -63,6 +63,17 @@ const cleanText = (value = "") =>
     .replace(/\u00C2/g, "")
     .trim();
 
+const splitInLines = (text, maxLen = 28) => {
+  const clean = cleanText(text ?? "");
+  const result = [];
+
+  for (let i = 0; i < clean.length; i += maxLen) {
+    result.push(clean.slice(i, i + maxLen));
+  }
+
+  return result;
+};
+
 const buildReceiptHtml = (payload = {}) => {
   const { company = {}, order = {}, payment = {}, timestamp } = payload;
   const items = Array.isArray(order.items) ? order.items : [];
@@ -165,6 +176,11 @@ const buildReceiptHtml = (payload = {}) => {
 
   const pixInfo = pixInfoRaw.map((i) => cleanText(i));
 
+  const addressLines = splitInLines(
+    "1234567890123456789012345678901234567890123456789012345678901234567890",
+    28
+  );
+
   if (pixInfo.length) {
     lines.push("-".repeat(lineWidth));
     lines.push("COMPROVANTE PIX");
@@ -241,7 +257,7 @@ const buildReceiptHtml = (payload = {}) => {
             ? "CNPJ: " + escapeHtml(cleanText(company.document)) + "<br />"
             : ""
         }
-        ${escapeHtml(cleanText("123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"))}
+        ${addressLines.map((l) => escapeHtml(l)).join("<br/>")}
       </div>
     </div>
 
