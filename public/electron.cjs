@@ -73,6 +73,9 @@ const buildReceiptHtml = (payload = {}) => {
       ? new Date(timestamp)
       : null;
 
+  // 👇 pega o logo (enviado pelo React)
+  const logoUrl = company.logoUrl;
+
   const saleDate = (() => {
     const dateCandidate =
       paidAtDate && !Number.isNaN(paidAtDate.getTime())
@@ -194,15 +197,37 @@ const buildReceiptHtml = (payload = {}) => {
       margin: 0;
       padding: 0;
     }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .logo-wrapper {
+      text-align: center;
+      margin: 4px 0 2px 0;
+    }
+    .logo-wrapper img {
+      max-width: 100%;
+      width: 180px;
+      image-rendering: pixelated;
+    }
     pre {
       margin: 0;
       padding: 0;
       font-family: monospace;
       font-size: 10pt;
+      white-space: pre;
     }
   </style>
 </head>
 <body>
+  ${
+    logoUrl
+      ? `<div class="logo-wrapper">
+          <img src="${escapeHtml(logoUrl)}" alt="Logo" />
+        </div>`
+      : ""
+  }
   <pre>${escapeHtml(lines.join("\n"))}</pre>
 </body>
 </html>`;
