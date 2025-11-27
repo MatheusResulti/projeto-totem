@@ -162,7 +162,7 @@ const buildReceiptHtml = (payload = {}) => {
   const pixInfo = pixInfoRaw.map((i) => cleanText(i));
 
   const addressLines = splitInLines(
-    "1234567890123456789012345678901234567890123456789012345678901234567890",
+    company.adress,
     28
   );
 
