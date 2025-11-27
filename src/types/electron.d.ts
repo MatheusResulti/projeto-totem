@@ -24,7 +24,6 @@ type ReceiptPayload = {
   payment?: {
     document?: string;
     type?: string;
-    typeLabel?: string;
     pix?: {
       id?: number;
       description?: string;

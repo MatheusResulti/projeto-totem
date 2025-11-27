@@ -110,8 +110,6 @@ export default function PixPayment() {
           payment: {
             document: pixI?.cdDocumento,
             type: pixI?.tpDocumento,
-            typeLabel:
-              pixI?.dsDocumento || pixI?.dsReduzida || pixI?.tpDocumento,
             pix: {
               id: pixD?.fmp_idpk,
               description: pixD?.fmp_descricao,
