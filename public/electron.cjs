@@ -9,9 +9,6 @@ if (require("electron-squirrel-startup")) {
   app.quit();
 }
 const path = require("path");
-const escpos = require("escpos");
-escpos.USB = require("escpos-usb");
-const { createCanvas, loadImage } = require("canvas");
 
 app.disableHardwareAcceleration();
 process.env.GDK_BACKEND = "x11";
@@ -33,15 +30,6 @@ app.commandLine.appendSwitch("no-sandbox");
 
 const isDev = !app.isPackaged;
 const DEV_URL = process.env.VITE_DEV_SERVER_URL || "http://localhost:5173";
-
-const resultiLogoPath = path.join(
-  app.getAppPath(),
-  isDev ? "public" : "dist",
-  "assets",
-  "resultiLogo.png"
-);
-
-const resultiLogoUrl = `file:///${resultiLogoPath.replace(/\\/g, "/")}`;
 
 const preloadPath = isDev
   ? path.join(__dirname, "preload.cjs")
@@ -75,7 +63,7 @@ const cleanText = (value = "") =>
     .replace(/\u00C2/g, "")
     .trim();
 
-const buildReceiptLines = (payload = {}) => {
+const buildReceiptHtml = (payload = {}) => {
   const { company = {}, order = {}, payment = {}, timestamp } = payload;
   const items = Array.isArray(order.items) ? order.items : [];
   const pix = payment.pix || {};
@@ -84,6 +72,9 @@ const buildReceiptLines = (payload = {}) => {
     : timestamp
       ? new Date(timestamp)
       : null;
+
+  // 👇 pega o logo (enviado pelo React)
+  const logoUrl = company.logoUrl;
 
   const saleDate = (() => {
     const dateCandidate =
@@ -165,7 +156,6 @@ const buildReceiptLines = (payload = {}) => {
   }
 
   const pixInfoRaw = [
-    "COMPROVANTE PIX",
     "Pagamento PIX confirmado",
     pix.status ? `STATUS: ${String(pix.status).toUpperCase()}` : "",
     pix.pspReceiver ? `Instituição: ${pix.pspReceiver}` : "",
@@ -184,23 +174,15 @@ const buildReceiptLines = (payload = {}) => {
   ].filter(Boolean);
 
   const pixInfo = pixInfoRaw.map((i) => cleanText(i));
+
   if (pixInfo.length) {
     lines.push("-".repeat(lineWidth));
+    lines.push("COMPROVANTE PIX");
     pixInfo.forEach((info) => lines.push(pad(info, lineWidth)));
   }
 
   lines.push("-".repeat(lineWidth));
   lines.push(pad("Obrigado pela preferência!", lineWidth));
-
-  return lines;
-};
-
-const buildReceiptHtml = (payload = {}) => {
-  const { company = {} } = payload;
-  const lines = buildReceiptLines(payload);
-
-  const logoSrc = company.logoBase64 || company.logoUrl || "";
-  console.log("LOGO SRC NO RECIBO:", logoSrc);
 
   return `
 <!doctype html>
@@ -215,33 +197,42 @@ const buildReceiptHtml = (payload = {}) => {
       margin: 0;
       padding: 0;
     }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .logo-wrapper {
+      text-align: center;
+      margin: 4px 0 2px 0;
+    }
+    .logo-wrapper img {
+      max-width: 100%;
+      width: 180px;
+      image-rendering: pixelated;
+    }
     pre {
       margin: 0;
       padding: 0;
       font-family: monospace;
       font-size: 10pt;
-      white-space: pre-wrap;
-    }
-    img.logo {
-      display: block;
-      margin: 12px auto;
-      max-width: 180px;
-      width: 100%;
-      height: auto;
-      object-fit: contain;
-      image-rendering: smooth;
+      white-space: pre;
     }
   </style>
 </head>
 <body>
+  ${
+    logoUrl
+      ? `<div class="logo-wrapper">
+          <img src="${escapeHtml(logoUrl)}" alt="Logo" />
+        </div>`
+      : ""
+  }
   <pre>${escapeHtml(lines.join("\n"))}</pre>
-
-  ${logoSrc ? `<img class="logo" src="${logoSrc}" />` : ""}
 </body>
 </html>`;
 };
 
-// HTML (fallback / dev)
 const handleReceiptPrint = (payload = {}) => {
   const html = buildReceiptHtml(payload);
   const runPrint = () => {
@@ -277,7 +268,7 @@ const handleReceiptPrint = (payload = {}) => {
         },
         (success, failureReason) => {
           if (!success) {
-            console.error("Erro ao imprimir recibo (HTML):", failureReason);
+            console.error("Erro ao imprimir recibo:", failureReason);
           }
           cleanup();
         }
@@ -285,7 +276,7 @@ const handleReceiptPrint = (payload = {}) => {
     });
 
     printWindow.webContents.on("did-fail-load", (_event, code, desc) => {
-      console.error("Erro ao preparar a impressão (HTML):", code, desc);
+      console.error("Erro ao preparar a impressão:", code, desc);
       cleanup();
     });
   };
@@ -295,129 +286,6 @@ const handleReceiptPrint = (payload = {}) => {
   } else {
     app.once("ready", runPrint);
   }
-};
-
-const loadEscposImageFromSrc = async (src) => {
-  if (!src) return null;
-
-  console.log("Tentando carregar imagem ESC/POS a partir de:", src);
-
-  try {
-    let normalized = src;
-
-    if (typeof normalized === "string" && normalized.startsWith("data:")) {
-      const commaIndex = normalized.indexOf(",");
-      const base64 = normalized.slice(commaIndex + 1);
-      const buffer = Buffer.from(base64, "base64");
-      const img = await loadImage(buffer);
-      const canvas = createCanvas(img.width, img.height);
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0);
-      const image = new escpos.Image(canvas);
-      console.log(
-        "Imagem ESC/POS carregada via dataURL, tamanho:",
-        img.width,
-        "x",
-        img.height
-      );
-      return image;
-    }
-
-    if (typeof normalized === "string" && normalized.startsWith("file:///")) {
-      normalized = normalized.replace("file:///", "");
-    }
-
-    const img = await loadImage(normalized);
-    const canvas = createCanvas(img.width, img.height);
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(img, 0, 0);
-    const image = new escpos.Image(canvas);
-    console.log(
-      "Imagem ESC/POS carregada, tamanho:",
-      img.width,
-      "x",
-      img.height
-    );
-    return image;
-  } catch (err) {
-    console.error("Erro ao preparar imagem ESC/POS para src:", src, err);
-    return null;
-  }
-};
-
-const printReceiptEscPos = async (payload = {}) => {
-  const lines = buildReceiptLines(payload);
-  const company = payload.company || {};
-  console.log("===== RECIBO ESC/POS - LINHAS =====");
-  lines.forEach((line) => console.log(line));
-  console.log("===== FIM RECIBO ESC/POS =====");
-
-  const logoCandidates = [
-    company.logoBase64,
-    company.logoUrl,
-    resultiLogoPath,
-    resultiLogoUrl,
-  ].filter(Boolean);
-
-  console.log("Caminho da logo local (resultiLogoPath):", resultiLogoPath);
-
-  const device = new escpos.USB();
-  const printer = new escpos.Printer(device, {
-    encoding: "CP860",
-  });
-
-  const originalWrite = device.write.bind(device);
-  device.write = (data, cb) => {
-    try {
-      console.log("===== ESC/POS RAW (bytes) =====");
-      console.log("Tamanho:", data.length);
-      console.log("HEX:", data.toString("hex"));
-      console.log("===== FIM ESC/POS =====");
-    } catch (e) {
-      console.error("Erro ao logar ESC/POS:", e);
-    }
-    return originalWrite(data, cb);
-  };
-
-  device.open(async (error) => {
-    if (error) {
-      console.error("Erro ao abrir USB da impressora ESC/POS:", error);
-      return;
-    }
-
-    try {
-      console.log("Candidatos de logo ESC/POS:", logoCandidates);
-      let escposImage = null;
-      for (const src of logoCandidates) {
-        escposImage = await loadEscposImageFromSrc(src);
-        if (escposImage) break;
-      }
-
-      if (escposImage) {
-        console.log("Logo ESC/POS preparada, enviando para a impressora...");
-        printer.align("ct");
-        printer.raster(escposImage, "s8");
-        printer.newLine();
-      } else {
-        console.warn("Nenhuma imagem ESC/POS carregada, imprimindo só texto.");
-      }
-
-      printer.align("lt");
-      lines.forEach((line) => {
-        printer.text(line);
-      });
-
-      printer.newLine();
-      printer.newLine();
-      printer.cut();
-      printer.close();
-    } catch (err) {
-      console.error("Erro durante impressão ESC/POS:", err);
-      try {
-        printer.close();
-      } catch {}
-    }
-  });
 };
 
 function createWindow() {
@@ -538,28 +406,12 @@ ipcMain.on("app-quit", () => {
   }
 });
 
-ipcMain.on("printer:receipt", async (_event, payload) => {
+ipcMain.on("printer:receipt", (_event, payload) => {
   if (!payload || typeof payload !== "object") return;
-  if (!payload.company) payload.company = {};
-
-  console.log("PAYLOAD COMPANY:", payload.company);
-
-  if (!payload.company.logoBase64 && !payload.company.logoUrl) {
-    payload.company.logoUrl = resultiLogoUrl;
-  }
-
   try {
-    await printReceiptEscPos(payload);
+    handleReceiptPrint(payload);
   } catch (error) {
-    console.error(
-      "Erro durante a impressão ESC/POS, fallback para HTML:",
-      error
-    );
-    try {
-      handleReceiptPrint(payload);
-    } catch (errHtml) {
-      console.error("Erro durante a impressão HTML de fallback:", errHtml);
-    }
+    console.error("Erro durante a impressão do recibo:", error);
   }
 });
 
