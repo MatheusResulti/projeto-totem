@@ -87,11 +87,54 @@ const buildReceiptHtml = (payload = {}) => {
   })();
 
   const lineWidth = 32;
+  const headerTextWidth = 26; // keeps header text within the logical ticket width next to the logo
   const pad = (str = "", size = lineWidth, align = "left") => {
     const s = String(str);
     if (s.length >= size) return s.slice(0, size);
     const spaces = " ".repeat(size - s.length);
     return align === "right" ? spaces + s : s + spaces;
+  };
+
+  const wrapText = (text = "", width = lineWidth) => {
+    const normalized = cleanText(text);
+    if (!normalized) return [];
+
+    const words = normalized.split(/\s+/);
+    const wrapped = [];
+    let current = "";
+
+    words.forEach((word) => {
+      if (!current.length) {
+        if (word.length > width) {
+          for (let i = 0; i < word.length; i += width) {
+            wrapped.push(word.slice(i, i + width));
+          }
+        } else {
+          current = word;
+        }
+        return;
+      }
+
+      if (`${current} ${word}`.length <= width) {
+        current = `${current} ${word}`;
+      } else {
+        wrapped.push(current);
+        if (word.length > width) {
+          for (let i = 0; i < word.length; i += width) {
+            wrapped.push(word.slice(i, i + width));
+          }
+          current = "";
+        } else {
+          current = word;
+        }
+      }
+    });
+
+    if (current.length) {
+      wrapped.push(current);
+    }
+
+    return wrapped;
   };
 
   const formatItemLine = (qty, name, total) => {
@@ -174,6 +217,14 @@ const buildReceiptHtml = (payload = {}) => {
   lines.push("-".repeat(lineWidth));
   lines.push(pad("Obrigado pela preferência!", lineWidth));
 
+  const headerTextLines = [
+    ...wrapText(company.name, headerTextWidth),
+    ...(company.document
+      ? wrapText(`CNPJ: ${company.document}`, headerTextWidth)
+      : []),
+    ...wrapText(company.address, headerTextWidth),
+  ];
+
   return `
 <!doctype html>
 <html>
@@ -236,13 +287,7 @@ const buildReceiptHtml = (payload = {}) => {
           : ""
       }
       <div class="header-text">
-        ${escapeHtml(cleanText(company.name))}<br />
-        ${
-          company.document
-            ? "CNPJ: " + escapeHtml(cleanText(company.document)) + "<br />"
-            : ""
-        }
-        ${escapeHtml(cleanText(company.address))}
+        ${headerTextLines.map((text) => escapeHtml(text)).join("<br />")}
       </div>
     </div>
 
