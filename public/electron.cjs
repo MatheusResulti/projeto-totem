@@ -241,7 +241,7 @@ const buildReceiptHtml = (payload = {}) => {
             ? "CNPJ: " + escapeHtml(cleanText(company.document)) + "<br />"
             : ""
         }
-        ${escapeHtml(cleanText(company.address))}
+        ${escapeHtml(cleanText("123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"))}
       </div>
     </div>
 
