@@ -63,7 +63,7 @@ const cleanText = (value = "") =>
     .replace(/\u00C2/g, "")
     .trim();
 
-const splitInLines = (text, maxLen = 28) => {
+const splitInLines = (text, maxLen = 26) => {
   const clean = cleanText(text ?? "");
   const result = [];
 
@@ -163,7 +163,7 @@ const buildReceiptHtml = (payload = {}) => {
 
   const addressLines = splitInLines(
     company.address,
-    28
+    26
   );
 
   if (pixInfo.length) {
@@ -192,7 +192,6 @@ const buildReceiptHtml = (payload = {}) => {
     }
 
     body {
-      /* remove o flex/center */
       font-family: monospace;
     }
 
@@ -210,7 +209,7 @@ const buildReceiptHtml = (payload = {}) => {
     }
 
     .header-flex img {
-      width: 60px;
+      width: 70px;
       height: auto;
     }
 
