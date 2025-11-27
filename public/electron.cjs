@@ -73,7 +73,6 @@ const buildReceiptHtml = (payload = {}) => {
       ? new Date(timestamp)
       : null;
 
-  // 👇 pega o logo (enviado pelo React)
   const logoUrl = company.logoUrl;
 
   const saleDate = (() => {
@@ -104,16 +103,7 @@ const buildReceiptHtml = (payload = {}) => {
 
   const lines = [];
 
-  const header = [
-    cleanText(company.name),
-    company.document ? cleanText(`CNPJ: ${company.document}`) : "",
-    cleanText(company.address),
-  ]
-    .filter(Boolean)
-    .map((l) => pad(l, lineWidth, "left"));
-  lines.push(...header);
   lines.push("-".repeat(lineWidth));
-
   lines.push("ITENS");
   if (items.length === 0) {
     lines.push("Sem itens registrados.");
@@ -190,45 +180,78 @@ const buildReceiptHtml = (payload = {}) => {
 <head>
   <meta charset="utf-8" />
   <style>
-    @page {
-      margin: 0;
-    }
+    @page { margin: 0; }
+
     html, body {
       margin: 0;
       padding: 0;
     }
+
     body {
       display: flex;
-      flex-direction: column;
-      align-items: stretch;
+      justify-content: center;
     }
-    .logo-wrapper {
-      text-align: center;
-      margin: 4px 0 2px 0;
+
+    .ticket {
+      width: 80mm;
+      font-family: monospace;
     }
-    .logo-wrapper img {
-      max-width: 100%;
-      width: 180px;
-      image-rendering: pixelated;
+
+    .header-flex {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 6px;
+      margin: 4px 0 6px 0;
     }
+
+    .header-flex img {
+      width: 60px;
+      height: auto;
+    }
+
+    .header-text {
+      flex: 1;
+      min-width: 0;
+      font-size: 10pt;
+      line-height: 1.2;
+      max-width: calc(80mm - 80px);
+      word-wrap: break-word;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      white-space: normal; 
+    }
+
     pre {
       margin: 0;
       padding: 0;
-      font-family: monospace;
       font-size: 10pt;
       white-space: pre;
     }
   </style>
 </head>
 <body>
-  ${
-    logoUrl
-      ? `<div class="logo-wrapper">
-          <img src="${escapeHtml(logoUrl)}" alt="Logo" />
-        </div>`
-      : ""
-  }
-  <pre>${escapeHtml(lines.join("\n"))}</pre>
+  <div class="ticket">
+
+    <div class="header-flex">
+      ${
+        logoUrl
+          ? `<img src="${escapeHtml(logoUrl)}" alt="Logo" />`
+          : ""
+      }
+      <div class="header-text">
+        ${escapeHtml(cleanText(company.name))}<br />
+        ${
+          company.document
+            ? "CNPJ: " + escapeHtml(cleanText(company.document)) + "<br />"
+            : ""
+        }
+        ${escapeHtml(cleanText(company.address))}
+      </div>
+    </div>
+
+    <pre>${escapeHtml(lines.join("\n"))}</pre>
+  </div>
 </body>
 </html>`;
 };
