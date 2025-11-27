@@ -141,21 +141,6 @@ const buildReceiptHtml = (payload = {}) => {
   lines.push("-".repeat(lineWidth));
   lines.push(pad(`TOTAL: ${formatCurrency(order.total ?? 0)}`, lineWidth));
 
-  const paymentInfo = [
-    payment.document ? `Documento: ${payment.document}` : "",
-    payment.type ? `Tipo: ${payment.type}` : "",
-    order.label ? `Identificador: ${order.label}` : "",
-    order.code ? `Pedido: ${order.code}` : "",
-  ]
-    .filter(Boolean)
-    .map((info) => cleanText(info));
-
-  if (paymentInfo.length) {
-    lines.push("-".repeat(lineWidth));
-    lines.push("PAGAMENTO");
-    paymentInfo.forEach((info) => lines.push(pad(info, lineWidth)));
-  }
-
   const pixInfoRaw = [
     "Pagamento PIX confirmado",
     pix.status ? `STATUS: ${String(pix.status).toUpperCase()}` : "",
