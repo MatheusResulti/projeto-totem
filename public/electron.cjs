@@ -211,13 +211,9 @@ const buildReceiptHtml = (payload = {}) => {
     }
 
     .header-text {
-      flex: 1;
-      min-width: 0;
       font-size: 10pt;
       line-height: 1.2;
       max-width: calc(80mm - 80px);
-      word-wrap: break-word;
-      word-break: break-word;
       overflow-wrap: anywhere;
       white-space: normal; 
     }
