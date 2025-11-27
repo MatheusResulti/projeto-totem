@@ -94,41 +94,6 @@ const buildReceiptHtml = (payload = {}) => {
     return align === "right" ? spaces + s : s + spaces;
   };
 
-  const wrapText = (text = "", maxLen = 26) => {
-    const words = cleanText(text)
-      .split(/\s+/)
-      .filter(Boolean);
-    if (words.length === 0) return [];
-
-    const linesWrapped = [];
-    let current = "";
-
-    words.forEach((word) => {
-      let part = word;
-      // Break very long words/chunks
-      while (part.length > maxLen) {
-        const chunk = part.slice(0, maxLen);
-        if (current) {
-          linesWrapped.push(current);
-          current = "";
-        }
-        linesWrapped.push(chunk);
-        part = part.slice(maxLen);
-      }
-
-      const candidate = current ? `${current} ${part}` : part;
-      if (candidate.length > maxLen) {
-        if (current) linesWrapped.push(current);
-        current = part;
-      } else {
-        current = candidate;
-      }
-    });
-
-    if (current) linesWrapped.push(current);
-    return linesWrapped;
-  };
-
   const formatItemLine = (qty, name, total) => {
     const left = `${qty}x ${name}`;
     const right = formatCurrency(total);
@@ -209,16 +174,6 @@ const buildReceiptHtml = (payload = {}) => {
   lines.push("-".repeat(lineWidth));
   lines.push(pad("Obrigado pela preferência!", lineWidth));
 
-  const headerTextWidth = 26;
-  const headerLines = [
-    ...wrapText(company.name ?? "", headerTextWidth),
-    ...(company.document
-      ? wrapText(`CNPJ: ${company.document}`, headerTextWidth)
-      : []),
-    ...wrapText(company.address ?? "", headerTextWidth),
-  ];
-  const headerPreText = escapeHtml(headerLines.join("\n"));
-
   return `
 <!doctype html>
 <html>
@@ -242,29 +197,25 @@ const buildReceiptHtml = (payload = {}) => {
       font-family: monospace;
     }
 
-    .header-table {
-      width: 100%;
-      border-collapse: collapse;
+    .header-flex {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 6px;
       margin: 4px 0 6px 0;
     }
 
-    .header-logo {
-      width: 60px;
-      vertical-align: top;
-    }
-
-    .header-logo img {
+    .header-flex img {
       width: 60px;
       height: auto;
-      display: block;
     }
 
     .header-text {
       font-size: 10pt;
       line-height: 1.2;
-      padding-left: 6px;
-      vertical-align: top;
-      font-family: monospace;
+      max-width: calc(80mm - 80px);
+      overflow-wrap: anywhere;
+      white-space: normal; 
     }
 
     pre {
@@ -278,20 +229,22 @@ const buildReceiptHtml = (payload = {}) => {
 <body>
   <div class="ticket">
 
-    <table class="header-table">
-      <tr>
-        <td class="header-logo">
-          ${
-            logoUrl
-              ? `<img src="${escapeHtml(logoUrl)}" alt="Logo" />`
-              : ""
-          }
-        </td>
-        <td class="header-text">
-          <pre>${headerPreText}</pre>
-        </td>
-      </tr>
-    </table>
+    <div class="header-flex">
+      ${
+        logoUrl
+          ? `<img src="${escapeHtml(logoUrl)}" alt="Logo" />`
+          : ""
+      }
+      <div class="header-text">
+        ${escapeHtml(cleanText(company.name))}<br />
+        ${
+          company.document
+            ? "CNPJ: " + escapeHtml(cleanText(company.document)) + "<br />"
+            : ""
+        }
+        ${escapeHtml(cleanText(company.address))}
+      </div>
+    </div>
 
     <pre>${escapeHtml(lines.join("\n"))}</pre>
   </div>
