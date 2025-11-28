@@ -65,14 +65,24 @@ const cleanText = (value = "") =>
 
 const splitInLines = (text, maxLen = 26) => {
   const clean = cleanText(text ?? "");
-  const result = [];
+  const words = clean.split(/\s+/); 
+  const lines = [];
+  let currentLine = "";
 
-  for (let i = 0; i < clean.length; i += maxLen) {
-    result.push(clean.slice(i, i + maxLen));
+  for (const word of words) {
+    if ((currentLine + " " + word).trim().length > maxLen) {
+      lines.push(currentLine);
+      currentLine = word; 
+    } else {
+      currentLine += (currentLine ? " " : "") + word;
+    }
   }
 
-  return result;
+  if (currentLine) lines.push(currentLine);
+
+  return lines;
 };
+
 
 const buildReceiptHtml = (payload = {}) => {
   const { company = {}, order = {}, payment = {}, timestamp } = payload;
@@ -163,7 +173,7 @@ const buildReceiptHtml = (payload = {}) => {
 
   const addressLines = splitInLines(
     company.address,
-    26
+    25
   );
 
   if (pixInfo.length) {
@@ -209,7 +219,7 @@ const buildReceiptHtml = (payload = {}) => {
     }
 
     .header-flex img {
-      width: 70px;
+      width: 80px;
       height: auto;
     }
 
