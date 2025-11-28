@@ -275,6 +275,23 @@ const buildReceiptHtmlFromImpressao = (payload = {}) => {
   const companyDocument = company.document || "";
   const addressLines = splitInLines(company.address, 26);
 
+  const normalizeSkip = (value) =>
+    cleanText(String(value ?? ""))
+      .replace(/\s+/g, " ")
+      .trim()
+      .toUpperCase();
+
+  const skipSet = new Set(
+    [
+      companyName,
+      companyDocument,
+      companyDocument ? `CNPJ: ${companyDocument}` : "",
+      ...addressLines,
+    ]
+      .filter(Boolean)
+      .map((v) => normalizeSkip(v))
+  );
+
   const headerHtml =
     logoUrl || companyName || companyDocument || addressLines.length
       ? `
@@ -300,6 +317,9 @@ const buildReceiptHtmlFromImpressao = (payload = {}) => {
     if (item.emptyLine) return "";
     if (item.text == null) return null;
 
+    const normalizedText = normalizeSkip(item.text);
+    if (skipSet.has(normalizedText)) return null;
+
     const fontSize = Number.isFinite(item.size)
       ? baseSize + (item.size - 6) * 1
       : baseSize;
@@ -308,7 +328,7 @@ const buildReceiptHtmlFromImpressao = (payload = {}) => {
     if (item.bold) content = `<b>${content}</b>`;
     if (item.size) content = `<span style="font-size:${fontSize}pt">${content}</span>`;
     if (item.center) {
-      return `<div style="text-align:center">${content}</div>`;
+      return `<span style="display:block;text-align:center">${content}</span>`;
     }
     return content;
   };
