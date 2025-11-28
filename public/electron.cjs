@@ -5,9 +5,11 @@ const {
   globalShortcut,
   session,
 } = require("electron");
+
 if (require("electron-squirrel-startup")) {
   app.quit();
 }
+
 const path = require("path");
 
 app.disableHardwareAcceleration();
@@ -65,14 +67,14 @@ const cleanText = (value = "") =>
 
 const splitInLines = (text, maxLen = 26) => {
   const clean = cleanText(text ?? "");
-  const words = clean.split(/\s+/); 
+  const words = clean.split(/\s+/);
   const lines = [];
   let currentLine = "";
 
   for (const word of words) {
     if ((currentLine + " " + word).trim().length > maxLen) {
       lines.push(currentLine);
-      currentLine = word; 
+      currentLine = word;
     } else {
       currentLine += (currentLine ? " " : "") + word;
     }
@@ -83,190 +85,12 @@ const splitInLines = (text, maxLen = 26) => {
   return lines;
 };
 
-
-const buildReceiptHtml = (payload = {}) => {
-  const { company = {}, order = {}, payment = {}, timestamp } = payload;
-  const items = Array.isArray(order.items) ? order.items : [];
-  const pix = payment.pix || {};
-  const paidAtDate = pix.paidAt
-    ? new Date(pix.paidAt)
-    : timestamp
-      ? new Date(timestamp)
-      : null;
-
-  const logoUrl = company.logoUrl;
-
-  const saleDate = (() => {
-    const dateCandidate =
-      paidAtDate && !Number.isNaN(paidAtDate.getTime())
-        ? paidAtDate
-        : new Date();
-    if (Number.isNaN(dateCandidate.getTime())) {
-      return new Date().toLocaleString("pt-BR");
-    }
-    return dateCandidate.toLocaleString("pt-BR");
-  })();
-
-  const lineWidth = 48;
-  const pad = (str = "", size = lineWidth, align = "left") => {
-    const s = String(str);
-    if (s.length >= size) return s.slice(0, size);
-    const spaces = " ".repeat(size - s.length);
-    return align === "right" ? spaces + s : s + spaces;
-  };
-
-  const formatItemLine = (qty, name, total) => {
-    const left = `${qty}x ${name}`;
-    const right = formatCurrency(total);
-    const space = lineWidth - left.length - right.length;
-    return `${left}${space > 0 ? " ".repeat(space) : ""}${right}`;
-  };
-
-  const lines = [];
-
-  lines.push("-".repeat(lineWidth));
-  lines.push("ITENS");
-  if (items.length === 0) {
-    lines.push("Sem itens registrados.");
-  } else {
-    items.forEach((item) => {
-      const qty = item.quantity ?? 0;
-      const name = cleanText(item.name ?? "");
-      const totalValue = item.total ?? (item.unitPrice ?? 0) * qty;
-      lines.push(formatItemLine(qty, name, totalValue));
-      lines.push(
-        pad(`Unit: ${formatCurrency(item.unitPrice ?? 0)}`, lineWidth)
-      );
-      if (Array.isArray(item.additionals)) {
-        item.additionals
-          .filter(Boolean)
-          .forEach((add) => lines.push(pad(`+ ${cleanText(add)}`, lineWidth)));
-      }
-      if (item.observation) {
-        lines.push(pad(`Obs: ${cleanText(item.observation)}`, lineWidth));
-      }
-    });
-  }
-
-  lines.push("-".repeat(lineWidth));
-  lines.push(pad(`TOTAL: ${formatCurrency(order.total ?? 0)}`, lineWidth));
-
-  const pixInfoRaw = [
-    "Pagamento PIX confirmado",
-    pix.status ? `STATUS: ${String(pix.status).toUpperCase()}` : "",
-    pix.pspReceiver ? `Instituição: ${pix.pspReceiver}` : "",
-    pix.txId || pix.txid ? `TxId: ${pix.txId || pix.txid}` : "",
-    pix.endToEndId ? `EndToEndId: ${pix.endToEndId}` : "",
-    pix.authCode ? `Autenticação: ${pix.authCode}` : "",
-    pix.description ? `Desc: ${pix.description}` : "",
-    pix.receiverName || company.name
-      ? `Recebedor: ${pix.receiverName || company.name}`
-      : "",
-    pix.receiverDocument || company.document
-      ? `CNPJ: ${pix.receiverDocument || company.document}`
-      : "",
-    `Valor: ${formatCurrency(pix.amount ?? order.total ?? 0)}`,
-    `Pago em: ${saleDate}`,
-  ].filter(Boolean);
-
-  const pixInfo = pixInfoRaw.map((i) => cleanText(i));
-
-  const addressLines = splitInLines(
-    company.address,
-    25
-  );
-
-  if (pixInfo.length) {
-    lines.push("-".repeat(lineWidth));
-    lines.push("COMPROVANTE PIX");
-    pixInfo.forEach((info) => lines.push(pad(info, lineWidth)));
-  }
-
-  lines.push("-".repeat(lineWidth));
-  lines.push(pad("Obrigado pela preferência!", lineWidth));
-
-  return `
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <style>
-    @page {
-      margin: 0;
-      size: 80mm auto;
-    }
-
-    html, body {
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: monospace;
-    }
-
-    .ticket {
-      width: 100%;
-      font-family: monospace;
-    }
-
-    .header-flex {
-      display: flex;
-      flex-direction: row;
-      align-items: flex-start;
-      gap: 6px;
-      margin: 4px 0 6px 0;
-    }
-
-    .header-flex img {
-      width: 80px;
-      height: auto;
-    }
-
-    .header-text {
-      font-size: 10pt;
-      line-height: 1.2;
-      max-width: 100%;
-      overflow-wrap: anywhere;
-      white-space: normal;
-    }
-
-    pre {
-      margin: 0;
-      padding: 0;
-      font-size: 10pt;
-      white-space: pre;
-    }
-  </style>
-</head>
-<body>
-  <div class="ticket">
-
-    <div class="header-flex">
-      ${logoUrl ? `<img src="${escapeHtml(logoUrl)}" alt="Logo" />` : ""}
-      <div class="header-text">
-        ${escapeHtml(cleanText(company.name))}<br />
-        ${
-          company.document
-            ? "CNPJ: " + escapeHtml(cleanText(company.document)) + "<br />"
-            : ""
-        }
-        ${addressLines.map((l) => escapeHtml(l)).join("<br/>")}
-      </div>
-    </div>
-
-    <pre>${escapeHtml(lines.join("\n"))}</pre>
-  </div>
-</body>
-</html>`;
-};
-
-// Constrói o HTML usando o cabeçalho existente e o script de impressão retornado pela API (payload.data.impressao).
 const buildReceiptHtmlFromImpressao = (payload = {}) => {
   const impressao = Array.isArray(payload?.data?.impressao)
     ? payload.data.impressao
     : [];
   const { company = {} } = payload;
+
   const lineWidth = 48;
   const baseSize = 10;
 
@@ -311,25 +135,36 @@ const buildReceiptHtmlFromImpressao = (payload = {}) => {
       : "";
 
   const renderLine = (item = {}) => {
-    if (item.cutt) return null; // marcador lógico; nada é impresso.
+    if (item.cutt) return null;
     if (item.line) return "-".repeat(lineWidth);
     if (item.doubleLine) return "=".repeat(lineWidth);
     if (item.emptyLine) return "";
     if (item.text == null) return null;
 
     const normalizedText = normalizeSkip(item.text);
-    if (skipSet.has(normalizedText)) return null;
+
+    if (!item.bold && !item.center && skipSet.has(normalizedText)) {
+      return null;
+    }
 
     const fontSize = Number.isFinite(item.size)
       ? baseSize + (item.size - 6) * 1
       : baseSize;
 
     let content = escapeHtml(String(item.text ?? ""));
-    if (item.bold) content = `<b>${content}</b>`;
-    if (item.size) content = `<span style="font-size:${fontSize}pt">${content}</span>`;
+
+    if (item.bold) {
+      content = `<b>${content}</b>`;
+    }
+
+    if (item.size) {
+      content = `<span style="font-size:${fontSize}pt">${content}</span>`;
+    }
+
     if (item.center) {
       return `<span style="display:block;text-align:center">${content}</span>`;
     }
+
     return content;
   };
 
@@ -338,7 +173,7 @@ const buildReceiptHtmlFromImpressao = (payload = {}) => {
     .filter((l) => l !== null);
 
   if (lines.length === 0) {
-    lines.push("Recibo indisponivel.");
+    lines.push("Recibo indisponível.");
   }
 
   const body = lines.join("\n");
@@ -409,6 +244,7 @@ const buildReceiptHtmlFromImpressao = (payload = {}) => {
 
 const handleReceiptPrint = (payload = {}) => {
   const html = buildReceiptHtmlFromImpressao(payload);
+
   const runPrint = () => {
     const printWindow = new BrowserWindow({
       show: false,
