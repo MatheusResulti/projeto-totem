@@ -20,6 +20,13 @@ const PIX_ITEM_KEY = "pixPayment:item";
 const PIX_PAID_KEY = "pixPayment:paid";
 let pendingHomeTimeout: ReturnType<typeof setTimeout> | null = null;
 
+const generateHash = (length = 40) => {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const array = new Uint32Array(length);
+  crypto.getRandomValues(array);
+  return Array.from(array, (v) => chars[v % chars.length]).join("");
+};
+
 export default function PixPayment() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -35,6 +42,7 @@ export default function PixPayment() {
   const [isLoading, setIsLoading] = useState(false);
   const [pixItem, setPixItem] = useState<any>();
   const [pixData, setPixData] = useState<ResultiPayType | null>(null);
+  const hashRef = useRef<string | null>(null);
   const hasRequestedPixRef = useRef(false);
 
   const clearHomeTimeout = () => {
@@ -54,10 +62,32 @@ export default function PixPayment() {
   };
 
   const sendOrder = async (pixI?: any, pixD?: any) => {
-    let data: any = null;
-    data = {
-      ...order,
+    if (!hashRef.current) {
+      hashRef.current = generateHash(40);
+    }
+    const hash = hashRef.current;
+    const data = {
+      cdEmpresa: order.cdEmpresa ?? 1,
+      tpAtendimento: order.tpAtendimento ?? 2,
+      dsAtendimento: order.dsAtendimento ?? "TOTEM",
+      tpLocal: order.tpLocal ?? 1,
+      cdUsuario: order.cdUsuario ?? userData?.cdUsuario ?? 0,
+      cdAtendente: order.cdAtendente ?? userData?.cdAtendente ?? 0,
+      dsRotulo: order.dsRotulo ?? "",
+      total: order.total ?? 0,
+      vlAcrescimo: order.vlAcrescimo ?? 0,
+      dsHash: hash,
       tpOrigemPed: 8,
+      itens: order.itens.map((item) => ({
+        dsProduto: item.dsProduto,
+        tamanho_id: (item as any).tamanho_id ?? "",
+        produto_id: item.produto_id,
+        quantidade: item.quantidade,
+        valor_unitario: item.valor_unitario,
+        observacao: item.observacao ?? "",
+        tpProduto: item.tpProduto ?? "",
+        adicionais: item.adicionais ?? [],
+      })),
       pagamento: [
         {
           cdDocumento: pixI.cdDocumento,
@@ -76,7 +106,7 @@ export default function PixPayment() {
           toast.error(res.error);
           return;
         }
-
+        console.log("Resposta atendimento: ", res);
         const receiptPayload = {
           company: {
             name: userData?.empresa?.dsFantasia ?? "",

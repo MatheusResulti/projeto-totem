@@ -156,8 +156,11 @@ interface IOrder {
     dsAtendimento: string;
     tpLocal: number;
     cdUsuario: number;
+    cdAtendente?: number;
     dsRotulo: string;
     total: number;
+    vlAcrescimo?: number;
+    dsHash?: string;
     itens: ItemType[];
   };
   setOrder: (value: any) => void;
@@ -170,8 +173,11 @@ export const useOrder = create<IOrder>((set) => ({
     dsAtendimento: "TOTEM",
     tpLocal: 1,
     cdUsuario: 0,
+    cdAtendente: 0,
     dsRotulo: "",
     total: 0,
+    vlAcrescimo: 0,
+    dsHash: "",
     itens: [],
   },
   setOrder: (value: any) => set({ order: value }),

@@ -261,8 +261,134 @@ const buildReceiptHtml = (payload = {}) => {
 </html>`;
 };
 
+// Constrói o HTML usando o cabeçalho existente e o script de impressão retornado pela API (payload.data.impressao).
+const buildReceiptHtmlFromImpressao = (payload = {}) => {
+  const impressao = Array.isArray(payload?.data?.impressao)
+    ? payload.data.impressao
+    : [];
+  const { company = {} } = payload;
+  const lineWidth = 48;
+  const baseSize = 10;
+
+  const logoUrl = company.logoUrl;
+  const companyName = company.name || "";
+  const companyDocument = company.document || "";
+  const addressLines = splitInLines(company.address, 26);
+
+  const headerHtml =
+    logoUrl || companyName || companyDocument || addressLines.length
+      ? `
+    <div class="header-flex">
+      ${logoUrl ? `<img src="${escapeHtml(logoUrl)}" alt="Logo" />` : ""}
+      <div class="header-text">
+        ${escapeHtml(cleanText(companyName))}<br />
+        ${
+          companyDocument
+            ? "CNPJ: " + escapeHtml(cleanText(companyDocument)) + "<br />"
+            : ""
+        }
+        ${addressLines.map((l) => escapeHtml(l)).join("<br/>")}
+      </div>
+    </div>
+  `
+      : "";
+
+  const renderLine = (item = {}) => {
+    if (item.cutt) return null; // marcador lógico; nada é impresso.
+    if (item.line) return "-".repeat(lineWidth);
+    if (item.doubleLine) return "=".repeat(lineWidth);
+    if (item.emptyLine) return "";
+    if (item.text == null) return null;
+
+    const fontSize = Number.isFinite(item.size)
+      ? baseSize + (item.size - 6) * 1
+      : baseSize;
+
+    let content = escapeHtml(String(item.text ?? ""));
+    if (item.bold) content = `<b>${content}</b>`;
+    if (item.size) content = `<span style="font-size:${fontSize}pt">${content}</span>`;
+    if (item.center) {
+      return `<div style="text-align:center">${content}</div>`;
+    }
+    return content;
+  };
+
+  const lines = impressao
+    .map((item) => renderLine(item))
+    .filter((l) => l !== null);
+
+  if (lines.length === 0) {
+    lines.push("Recibo indisponivel.");
+  }
+
+  const body = lines.join("\n");
+
+  return `
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <style>
+    @page {
+      margin: 0;
+      size: 80mm auto;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: monospace;
+    }
+
+    .ticket {
+      width: 100%;
+      font-family: monospace;
+    }
+
+    .header-flex {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 6px;
+      margin: 4px 0 6px 0;
+      padding: 0 4px;
+    }
+
+    .header-flex img {
+      width: 70px;
+      height: auto;
+    }
+
+    .header-text {
+      font-size: 10pt;
+      line-height: 1.2;
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      white-space: normal;
+    }
+
+    pre {
+      margin: 0;
+      padding: 4px;
+      font-size: 10pt;
+      white-space: pre;
+    }
+  </style>
+</head>
+<body>
+  <div class="ticket">
+    ${headerHtml}
+    <pre>${body}</pre>
+  </div>
+</body>
+</html>`;
+};
+
 const handleReceiptPrint = (payload = {}) => {
-  const html = buildReceiptHtml(payload);
+  const html = buildReceiptHtmlFromImpressao(payload);
   const runPrint = () => {
     const printWindow = new BrowserWindow({
       show: false,

@@ -20,19 +20,6 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const setUserData = useUserData((s) => s.setUserData);
 
-  const formatIp = (value: string) => {
-    const clean = value.replace(/\D/g, "").slice(0, 12);
-    const parts = [];
-    for (let i = 0; i < clean.length && parts.length < 4; i += 3) {
-      parts.push(clean.slice(i, i + 3));
-    }
-    return parts.join(".");
-  };
-
-  const handleIpChange = (value: string) => {
-    setApiRoute(formatIp(value));
-  };
-
   const handleLogin = async () => {
     if (loading) return;
     if (!apiRoute) return toast.error("O campo IP é obrigatório.");
@@ -46,16 +33,17 @@ export default function LoginForm() {
     try {
       setLoading(true);
 
-      const resp = await Api.post("auth", {
-        cdEmpresa: 1,
+      const resp = await Api.post(`auth`, {
+        cdEmpresa: "1",
         dsLogin: login.toUpperCase(),
-        dsSenha: password,
+        dsSenha: password.toUpperCase(),
+        tpPapel: 8,
       });
 
       const payload = resp?.data?.data ?? resp?.data ?? {};
 
-      const fakeToken = btoa(`${payload.dsLogin}:${Date.now()}`);
-      setAuthToken(fakeToken);
+      // const fakeToken = btoa(`${payload.dsLogin}:${Date.now()}`);
+      // setAuthToken(fakeToken);
 
       localStorage.setItem("user", JSON.stringify(payload));
       setUserData?.(payload);
@@ -77,7 +65,7 @@ export default function LoginForm() {
     const route = localStorage.getItem("route");
     const door = localStorage.getItem("door");
 
-    if (route) setApiRoute(formatIp(route));
+    if (route) setApiRoute(route);
     if (door) setApiDoor(door);
     if (user && route && door) {
       window.electronAPI?.loginKiosk?.();
@@ -106,9 +94,9 @@ export default function LoginForm() {
       <div className="flex flex-col gap-1 text-text-color">
         <InputField
           inputType="text"
-          icon={<Cable size={22} color="#0EA5E9"/>}
+          icon={<Cable size={22} color="#0EA5E9" />}
           value={apiRoute}
-          onChange={(e) => handleIpChange(e.target.value)}
+          onChange={(e) => setApiRoute(e.target.value)}
           placeholder="000.000.000.000"
           maxLength={15}
           inputProps={{ "data-enter-target": "#login-submit" }}
@@ -127,14 +115,14 @@ export default function LoginForm() {
         />
         <InputField
           inputType="text"
-          icon={<User size={22} color="#0EA5E9"/>}
+          icon={<User size={22} color="#0EA5E9" />}
           value={login}
           onChange={(e) => setLogin(e.target.value)}
           placeholder="Digite seu login"
           inputProps={{ "data-enter-target": "#login-submit" }}
         />
         <PasswordInput
-          icon={<Lock size={22} color="#0EA5E9"/>}
+          icon={<Lock size={22} color="#0EA5E9" />}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Digite sua senha"

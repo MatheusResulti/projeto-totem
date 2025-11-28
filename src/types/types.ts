@@ -19,8 +19,11 @@ export type OrderType = {
   tpAtendimento: number;
   dsAtendimento: string;
   cdUsuario: number;
+  cdAtendente?: number;
   dsRotulo: string;
   total: number;
+  vlAcrescimo?: number;
+  dsHash?: string;
   itens: any[];
 };
 
