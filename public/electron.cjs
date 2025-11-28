@@ -106,7 +106,11 @@ const buildReceiptHtml = (payload = {}) => {
     return dateCandidate.toLocaleString("pt-BR");
   })();
 
-  const lineWidth = 48;
+  // Largura efetiva (colunas) da bobina. Usa o valor enviado pela API (lineWidth)
+  // ou 48 colunas por padrão.
+  const lineWidthRaw = Number(payload?.data?.lineWidth);
+  const lineWidth =
+    Number.isFinite(lineWidthRaw) && lineWidthRaw > 0 ? lineWidthRaw : 48;
   const pad = (str = "", size = lineWidth, align = "left") => {
     const s = String(str);
     if (s.length >= size) return s.slice(0, size);
@@ -257,7 +261,6 @@ const buildReceiptHtml = (payload = {}) => {
 </html>`;
 };
 
-// Constrói o HTML usando o cabeçalho existente e o script de impressão retornado pela API (payload.data.impressao).
 const buildReceiptHtmlFromImpressao = (payload = {}) => {
   const impressao = Array.isArray(payload?.data?.impressao)
     ? payload.data.impressao
@@ -303,15 +306,6 @@ const buildReceiptHtmlFromImpressao = (payload = {}) => {
   `
       : "";
 
-  const padCenter = (str = "", size = lineWidth) => {
-    const s = String(str ?? "");
-    if (s.length >= size) return s.slice(0, size);
-    const totalSpaces = size - s.length;
-    const left = Math.floor(totalSpaces / 2);
-    const right = totalSpaces - left;
-    return `${" ".repeat(left)}${s}${" ".repeat(right)}`;
-  };
-
   const renderLine = (item = {}) => {
     if (item.cutt) return null;
     if (item.line) return "-".repeat(lineWidth);
@@ -320,10 +314,14 @@ const buildReceiptHtmlFromImpressao = (payload = {}) => {
     if (item.text == null) return null;
 
     const normalizedText = normalizeSkip(item.text);
-    // Avoid skipping lines unless they match a header value exactly.
-    // Using "includes" was causing accidental drops when the text shared digits
-    // with the CNPJ or address (ex.: the senha containing the address number).
-    if (skipSet.has(normalizedText)) return null;
+    if (
+      skipSet.has(normalizedText) ||
+      headerParts.some((part) => {
+        const normPart = normalizeSkip(part);
+        return normPart && normalizedText.includes(normPart);
+      })
+    )
+      return null;
 
     const fontSize = Number.isFinite(item.size)
       ? baseSize + (item.size - 6) * 1
@@ -331,22 +329,11 @@ const buildReceiptHtmlFromImpressao = (payload = {}) => {
 
     let content = escapeHtml(String(item.text ?? ""));
     if (item.bold) content = `<b>${content}</b>`;
-    if (item.size) {
+    if (item.size)
       content = `<span style="font-size:${fontSize}pt">${content}</span>`;
-    }
-
     if (item.center) {
-      // Centraliza usando padding de espaços para respeitar a largura fixa
-      // da impressora mesmo quando o driver ignora CSS de alinhamento.
-      const centeredText = padCenter(cleanText(item.text ?? ""), lineWidth);
-      let centeredContent = escapeHtml(centeredText);
-      if (item.bold) centeredContent = `<b>${centeredContent}</b>`;
-      if (item.size) {
-        centeredContent = `<span style="font-size:${fontSize}pt">${centeredContent}</span>`;
-      }
-      return centeredContent;
+      return `<span style="display:block;text-align:center">${content}</span>`;
     }
-
     return content;
   };
 
