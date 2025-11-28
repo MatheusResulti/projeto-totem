@@ -277,16 +277,13 @@ const buildReceiptHtmlFromImpressao = (payload = {}) => {
       .trim()
       .toUpperCase();
 
-  const skipSet = new Set(
-    [
-      companyName,
-      companyDocument,
-      companyDocument ? `CNPJ: ${companyDocument}` : "",
-      ...addressLines,
-    ]
-      .filter(Boolean)
-      .map((v) => normalizeSkip(v))
-  );
+  const headerParts = [
+    companyName,
+    companyDocument,
+    companyDocument ? `CNPJ: ${companyDocument}` : "",
+    ...addressLines,
+  ].filter(Boolean);
+  const skipSet = new Set(headerParts.map((v) => normalizeSkip(v)));
 
   const headerHtml =
     logoUrl || companyName || companyDocument || addressLines.length
@@ -306,6 +303,15 @@ const buildReceiptHtmlFromImpressao = (payload = {}) => {
   `
       : "";
 
+  const padCenter = (str = "", size = lineWidth) => {
+    const s = String(str ?? "");
+    if (s.length >= size) return s.slice(0, size);
+    const totalSpaces = size - s.length;
+    const left = Math.floor(totalSpaces / 2);
+    const right = totalSpaces - left;
+    return `${" ".repeat(left)}${s}${" ".repeat(right)}`;
+  };
+
   const renderLine = (item = {}) => {
     if (item.cutt) return null;
     if (item.line) return "-".repeat(lineWidth);
@@ -314,24 +320,31 @@ const buildReceiptHtmlFromImpressao = (payload = {}) => {
     if (item.text == null) return null;
 
     const normalizedText = normalizeSkip(item.text);
-
-    if (!item.bold && !item.center && skipSet.has(normalizedText)) {
-      return null;
-    }
+    // Avoid skipping lines unless they match a header value exactly.
+    // Using "includes" was causing accidental drops when the text shared digits
+    // with the CNPJ or address (ex.: the senha containing the address number).
+    if (skipSet.has(normalizedText)) return null;
 
     const fontSize = Number.isFinite(item.size)
       ? baseSize + (item.size - 6) * 1
       : baseSize;
 
     let content = escapeHtml(String(item.text ?? ""));
-    if (item.bold) {
-      content = `<b>${content}</b>`;
-    }
+    if (item.bold) content = `<b>${content}</b>`;
     if (item.size) {
       content = `<span style="font-size:${fontSize}pt">${content}</span>`;
     }
+
     if (item.center) {
-      return `<span style="display:block;text-align:center">${content}</span>`;
+      // Centraliza usando padding de espaços para respeitar a largura fixa
+      // da impressora mesmo quando o driver ignora CSS de alinhamento.
+      const centeredText = padCenter(cleanText(item.text ?? ""), lineWidth);
+      let centeredContent = escapeHtml(centeredText);
+      if (item.bold) centeredContent = `<b>${centeredContent}</b>`;
+      if (item.size) {
+        centeredContent = `<span style="font-size:${fontSize}pt">${centeredContent}</span>`;
+      }
+      return centeredContent;
     }
 
     return content;
