@@ -123,31 +123,13 @@ export default function PixPayment() {
                 ? userData.cfgTotem.dsImgLogo
                 : undefined,
           },
-          order: {
-            total: order.total,
-            label: order.dsRotulo,
-            code: res?.cdPedido ?? res?.data?.cdPedido ?? "",
-            items: order.itens.map((item) => ({
-              name: item.dsProduto ?? `Produto ${item.produto_id}`,
-              quantity: item.quantidade,
-              unitPrice: item.valor_unitario,
-              total: item.valor_unitario * item.quantidade,
-              observation: item.observacao,
-              additionals:
-                item.adicionais?.map((adicional) => adicional.name) ?? [],
-            })),
+          data: {
+            impressao:
+              res?.data?.impressao ||
+              res?.impressao ||
+              res?.data?.data?.impressao ||
+              [],
           },
-          payment: {
-            document: pixI?.cdDocumento,
-            type: pixI?.tpDocumento,
-            pix: {
-              id: pixD?.fmp_idpk,
-              description: pixD?.fmp_descricao,
-              key: pixD?.fmp_chave,
-              qrCode: pixD?.fmp_link_qrcode,
-            },
-          },
-          timestamp: new Date().toISOString(),
         };
 
         window.electronAPI?.printReceipt?.(receiptPayload);
