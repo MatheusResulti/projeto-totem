@@ -266,13 +266,16 @@ const buildReceiptHtmlFromImpressao = (payload = {}) => {
     ? payload.data.impressao
     : [];
   const { company = {} } = payload;
-  const lineWidth = 48;
+  const lineWidthRaw = Number(payload?.data?.lineWidth);
+  const lineWidth =
+    Number.isFinite(lineWidthRaw) && lineWidthRaw > 0 ? lineWidthRaw : 48;
   const baseSize = 10;
 
   const logoUrl = company.logoUrl;
   const companyName = company.name || "";
   const companyDocument = company.document || "";
   const addressLines = splitInLines(company.address, 26);
+  const fullAddress = cleanText(company.address || "");
 
   const normalizeSkip = (value) =>
     cleanText(String(value ?? ""))
@@ -284,9 +287,24 @@ const buildReceiptHtmlFromImpressao = (payload = {}) => {
     companyName,
     companyDocument,
     companyDocument ? `CNPJ: ${companyDocument}` : "",
+    fullAddress,
     ...addressLines,
   ].filter(Boolean);
-  const skipSet = new Set(headerParts.map((v) => normalizeSkip(v)));
+  const normalizedHeaderParts = headerParts
+    .map((v) => normalizeSkip(v))
+    .filter(Boolean);
+
+  const shouldSkipLine = (text) => {
+    const normalizedText = normalizeSkip(text);
+    if (!normalizedText) return false;
+    return normalizedHeaderParts.some((part) => {
+      return (
+        part === normalizedText ||
+        part.includes(normalizedText) ||
+        normalizedText.includes(part)
+      );
+    });
+  };
 
   const headerHtml =
     logoUrl || companyName || companyDocument || addressLines.length
@@ -313,27 +331,18 @@ const buildReceiptHtmlFromImpressao = (payload = {}) => {
     if (item.emptyLine) return "";
     if (item.text == null) return null;
 
-    const normalizedText = normalizeSkip(item.text);
-    if (
-      skipSet.has(normalizedText) ||
-      headerParts.some((part) => {
-        const normPart = normalizeSkip(part);
-        return normPart && normalizedText.includes(normPart);
-      })
-    )
-      return null;
+    const rawText = String(item.text ?? "");
+
+    if (!item.bold && !item.center && shouldSkipLine(rawText)) return null;
 
     const fontSize = Number.isFinite(item.size)
       ? baseSize + (item.size - 6) * 1
       : baseSize;
 
-    let content = escapeHtml(String(item.text ?? ""));
+    let content = escapeHtml(rawText);
     if (item.bold) content = `<b>${content}</b>`;
     if (item.size)
       content = `<span style="font-size:${fontSize}pt">${content}</span>`;
-    if (item.center) {
-      return `<span style="display:block;text-align:center">${content}</span>`;
-    }
     return content;
   };
 
