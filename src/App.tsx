@@ -11,19 +11,22 @@ const Splash = lazy(() => import("./pages/Splash/Splash"));
 const Login = lazy(() => import("./pages/Login/Login"));
 const PixPayment = lazy(() => import("./pages/PixPayment/PixPayment"));
 const CardPayment = lazy(() => import("./pages/CardPayment/CardPayment"));
+const NameEntry = lazy(() => import("./pages/NameEntry/NameEntry"));
 const TimeExceeded = lazy(
   () => import("./components/TimeExceeded/TimeExceeded")
 );
 
 function RootLayout() {
-  /*useInactivityTimer(60000);*/
+  // useInactivityTimer(60000);
 
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const [activeElement, setActiveElement] = useState<
     HTMLInputElement | HTMLTextAreaElement | null
   >(null);
-  const [keyboardMode, setKeyboardMode] = useState<"alpha" | "numeric">("alpha");
+  const [keyboardMode, setKeyboardMode] = useState<"alpha" | "numeric">(
+    "alpha"
+  );
 
   useEffect(() => {
     const handleFocusIn = (event: FocusEvent) => {
@@ -121,6 +124,7 @@ export default function App() {
             <Route path="cart" element={<Cart />} />
             <Route path="/pagamento/pix" element={<PixPayment />} />
             <Route path="/pagamento/cartao/:tipo" element={<CardPayment />} />
+            <Route path="nameEntry" element={<NameEntry />} />
             <Route path="timeExceeded" element={<TimeExceeded />} />
           </Route>
 

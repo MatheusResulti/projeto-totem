@@ -365,7 +365,7 @@ export default function PixPayment() {
       {isPaid ? (
         <>
           <span className="text-3xl font-extrabold">PIX pago!</span>
-          <span className="text-text-color font-bold text-2xl">
+          <span className="text-text-color font-bold text-2xl text-center">
             Retire sua notinha e aguarde seu pedido.
           </span>
           <div style={{ backgroundColor: primary }} className="p-5 rounded-xl">

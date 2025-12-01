@@ -106,7 +106,6 @@ interface IUserData {
   setUserData: (value: any) => void;
 }
 
-// 1 = Administrador / 2 = Operador / 3 = Garçom / 6 = Vendedor / 7 = Caixa
 export const useUserData = create<IUserData>((set) => ({
   userData: {
     cdUsuario: 0,
@@ -181,6 +180,44 @@ export const useOrder = create<IOrder>((set) => ({
     itens: [],
   },
   setOrder: (value: any) => set({ order: value }),
+}));
+
+interface IPayment {
+  payment: {
+    cdDocumento: number;
+    tpDocumento: number;
+    dsDocumento: string;
+    dsReduzida: string;
+    dispositivo: {
+      cdDispositivo: string;
+      tpDispositivo: string;
+      dsDescricao: string;
+      dsDocumento: string;
+      dsToken: string;
+      dsDevicetoken: string;
+      dsVersao: string;
+    };
+  };
+  setPayment: (value: any) => void;
+}
+
+export const usePayment = create<IPayment>((set) => ({
+  payment: {
+    cdDocumento: 0,
+    tpDocumento: 0,
+    dsDocumento: "",
+    dsReduzida: "",
+    dispositivo: {
+      cdDispositivo: "",
+      tpDispositivo: "",
+      dsDescricao: "",
+      dsDocumento: "",
+      dsToken: "",
+      dsDevicetoken: "",
+      dsVersao: "",
+    },
+  },
+  setPayment: (value: any) => set({ payment: value }),
 }));
 
 type CountState = {

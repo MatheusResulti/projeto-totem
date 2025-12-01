@@ -65,9 +65,7 @@ export default function Cart() {
         </div>
       ) : null}
       <div className="sticky bottom-1 flex border-t border-border-color w-full px-4 py-3 gap-10 bg-background-color">
-        <div
-          className="w-1/2 flex items-center justify-center"
-        >
+        <div className="w-1/2 flex items-center justify-center">
           <span className="text-3xl font-bold text-text-color whitespace-nowrap">
             Total: {formatToBRL(total)}
           </span>
@@ -84,6 +82,17 @@ export default function Cart() {
           className="rounded-2xl touchable flex flex-col justify-center items-center cart-text font-bold text-xl h-20 w-full p-4"
         >
           <span className="text-2xl tracking-wider">Fazer pagamento</span>
+        </button>
+        <button
+          onClick={() => {
+            navigate("/nameEntry");
+          }}
+          style={{
+            backgroundColor: primary,
+          }}
+          className="rounded-2xl touchable flex flex-col justify-center items-center cart-text font-bold text-xl h-20 w-full p-4"
+        >
+          <span className="text-2xl tracking-wider">Nome</span>
         </button>
       </div>
     </div>

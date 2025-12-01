@@ -82,7 +82,7 @@ export default function Home() {
 
   return (
     <div
-      className="flex flex-col h-screen w-screen bg-cover bg-center"
+      className="flex flex-col h-screen w-screen bg-cover bg-center bg-background-color"
       style={{
         backgroundImage: `url(${
           userData?.cfgTotem?.dsImgCapa || defaultHomeImage
@@ -118,7 +118,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="bg-background-color w-full flex items-center justify-center h-15 px-6">
+        <div className="bg-card-color w-full flex items-center justify-center h-15 px-6">
           <span className="text-sm font-semibold text-white flex items-center gap-3 mt-1">
             Um produto disponibilizado por
           </span>
@@ -155,7 +155,9 @@ export default function Home() {
                 className="bg-gray-800 rounded-lg flex flex-row items-center justify-start px-4 h-16  gap-4 active:opacity-30 transition-opacity duration-200"
               >
                 <LogOut size={24} color="#FFF" />
-                <span className="text-white font-bold">Voltar para o login</span>
+                <span className="text-white font-bold">
+                  Voltar para o login
+                </span>
               </button>
               {modalValidate ? (
                 <>
@@ -164,7 +166,7 @@ export default function Home() {
                       Informe a contra senha
                     </span>
                     <div className="flex flex-row items-center w-full border text-sm text-text-color border-border-color rounded-lg pl-4 h-14 gap-4">
-                       <Lock size={24} color="#FFF" />
+                      <Lock size={24} color="#FFF" />
                       <input
                         type={showPassword ? "text" : "password"}
                         placeholder="Digite sua senha"
@@ -183,7 +185,6 @@ export default function Home() {
                           <EyeOff size={22} color="#a3a3a3" />
                         )}
                       </button>
-                     
                     </div>
                   </div>
                   <button
