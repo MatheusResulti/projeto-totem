@@ -1,6 +1,6 @@
-import type { ProductType } from "../../types/types";
-import { asset } from "../../utils/asset";
-import { formatToBRL } from "../../utils/helpers";
+import type { ProductType } from "../../../types/types";
+import { asset } from "../../../utils/asset";
+import { formatToBRL } from "../../../utils/helpers";
 
 interface Props {
   item: ProductType;

@@ -1,4 +1,4 @@
-import type { GroupType } from "../../types/types";
+import type { GroupType } from "../../../types/types";
 
 interface GroupItemProps extends GroupType {
   selected: boolean;

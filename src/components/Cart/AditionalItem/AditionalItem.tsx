@@ -1,5 +1,5 @@
-import { formatToBRL } from "../../utils/helpers";
-import { useTotemColor } from "../../utils/useTotemColor";
+import { formatToBRL } from "../../../utils/helpers";
+import { useTotemColor } from "../../../utils/useTotemColor";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type AditionalItemProps = {

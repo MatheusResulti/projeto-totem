@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useNavigate } from "react-router-dom";
-import type { ItemType } from "../../types/types";
-import { formatToBRL } from "../../utils/helpers";
-import { useOrder, useProduct } from "../../utils/store";
+import type { ItemType } from "../../../types/types";
+import { formatToBRL } from "../../../utils/helpers";
+import { useOrder, useProduct } from "../../../utils/store";
 
 type CartItemProps = {
   item: ItemType;

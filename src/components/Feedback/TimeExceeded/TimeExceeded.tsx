@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCount, useOrder } from "../../utils/store";
+import { useCount, useOrder } from "../../../utils/store";
 import { X } from "lucide-react";
 
 export default function TimeExceeded() {

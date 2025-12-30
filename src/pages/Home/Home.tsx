@@ -2,9 +2,9 @@
 import { useUserData } from "../../utils/store";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import TotemConfigModal from "../../components/TotemConfigModal/TotemConfigModal";
+import TotemConfigModal from "../../components/Modal/TotemConfigModal/TotemConfigModal";
 import { RefreshCcw, LogOut, Lock, Eye, EyeOff } from "lucide-react";
-import PaymentMethodBadge from "../../components/PaymentMethodBadge/PaymentMethodBadge";
+import PaymentMethodBadge from "../../components/Payment/PaymentMethodBadge/PaymentMethodBadge";
 import toast from "react-hot-toast";
 import { asset } from "../../utils/asset";
 

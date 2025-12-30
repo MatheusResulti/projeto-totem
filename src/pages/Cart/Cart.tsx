@@ -2,8 +2,8 @@
 import { useNavigate } from "react-router-dom";
 import { useUserData, useOrder } from "../../utils/store.ts";
 import { formatToBRL } from "../../utils/helpers.ts";
-import CartItem from "../../components/CartItem/CartItem.tsx";
-import PaymentMethodSelector from "../../components/PaymentMethodSelector/PaymentMethodSelector.tsx";
+import CartItem from "../../components/Cart/CartItem/CartItem.tsx";
+import PaymentMethodSelector from "../../components/Payment/PaymentMethodSelector/PaymentMethodSelector.tsx";
 import { useState } from "react";
 import { useTotemColor } from "../../utils/useTotemColor.ts";
 import { asset } from "../../utils/asset.ts";

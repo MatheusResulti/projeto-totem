@@ -1,10 +1,10 @@
-import ProductCard from "../../components/ProductCard/ProductCard";
-import ProductModal from "../../components/ProductModal/ProductModal";
+import ProductCard from "../../components/Product/ProductCard/ProductCard";
+import ProductModal from "../../components/Product/ProductModal/ProductModal";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import MenuSideBar from "../../components/MenuSideBar/MenuSideBar";
+import MenuSideBar from "../../components/Layout/MenuSideBar/MenuSideBar";
 import type { ProductType } from "../../types/types";
-import ProductInfo from "../../components/ProductInfo/ProductInfo";
+import ProductInfo from "../../components/Product/ProductInfo/ProductInfo";
 import {
   useGroup,
   useOrder,

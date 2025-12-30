@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import LoginForm from "../../components/LoginForm/LoginForm";
+import LoginForm from "../../components/Form/LoginForm/LoginForm";
 import { asset } from "../../utils/asset";
 
 export default function Login() {

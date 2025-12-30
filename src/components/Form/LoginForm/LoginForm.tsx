@@ -4,10 +4,10 @@ import InputField from "../InputField/InputField";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import PasswordInput from "../PasswordInput/PasswordInput";
-import { Api, setAuthToken } from "../../api/Api";
-import { useUserData } from "../../utils/store";
+import { Api, setAuthToken } from "../../../api/Api";
+import { useUserData } from "../../../utils/store";
 import { useNavigate } from "react-router-dom";
-import { asset } from "../../utils/asset";
+import { asset } from "../../../utils/asset";
 
 export default function LoginForm() {
   const navigate = useNavigate();

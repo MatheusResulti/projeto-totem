@@ -2,18 +2,18 @@
 import { useEffect, useMemo, useState } from "react";
 import { ShoppingBasket } from "lucide-react";
 import toast from "react-hot-toast";
-import { formatToBRL } from "../../utils/helpers";
+import { formatToBRL } from "../../../utils/helpers";
 import {
   useComplements,
   useOrder,
   useSizes,
   useUserData,
   useCount,
-} from "../../utils/store";
-import QuantityCounter from "../QuantityCounter/QuantityCounter";
-import AditionalItem from "../AditionalItem/AditionalItem";
-import type { ItemType, ProductType } from "../../types/types";
-import { useTotemColor } from "../../utils/useTotemColor";
+} from "../../../utils/store";
+import QuantityCounter from "../../Cart/QuantityCounter/QuantityCounter";
+import AditionalItem from "../../Cart/AditionalItem/AditionalItem";
+import type { ItemType, ProductType } from "../../../types/types";
+import { useTotemColor } from "../../../utils/useTotemColor";
 
 type ProductInfoProps = {
   product: ProductType;
@@ -161,7 +161,10 @@ export default function ProductInfo({
         </div>
       </div>
 
-      <div className="px-3 py-2 scrollbar-none flex flex-col gap-1 flex-1 overflow-y-auto pb-20" style={{ paddingBottom: keyboardOpen ? 260 : 80 }}>
+      <div
+        className="px-3 py-2 scrollbar-none flex flex-col gap-1 flex-1 overflow-y-auto pb-20"
+        style={{ paddingBottom: keyboardOpen ? 260 : 80 }}
+      >
         {hasSizes && (
           <>
             <div className="w-full bg-card-color p-2 rounded-lg flex flex-col">
@@ -206,29 +209,29 @@ export default function ProductInfo({
           </>
         )}
         <div className="flex flex-col gap-3">
-        <div className="flex flex-row justify-between px-1">
-          <span className="text-sm text-gray-600/70 font-semibold">
-            Observação
-          </span>
-          <span
-            className={`text-sm ${
-              obs.length >= maxChars ? "text-error" : "text-gray-600/70"
-            }`}
-          >
-            {obs.length}/{maxChars}
-          </span>
+          <div className="flex flex-row justify-between px-1">
+            <span className="text-sm text-gray-600/70 font-semibold">
+              Observação
+            </span>
+            <span
+              className={`text-sm ${
+                obs.length >= maxChars ? "text-error" : "text-gray-600/70"
+              }`}
+            >
+              {obs.length}/{maxChars}
+            </span>
+          </div>
+          <textarea
+            value={obs}
+            onChange={(e) => setObs(e.target.value.slice(0, maxChars))}
+            onFocus={() => setKeyboardOpen(true)}
+            onBlur={() => setKeyboardOpen(false)}
+            maxLength={maxChars}
+            placeholder="Ex: remover alface e tomate"
+            className="border border-gray-300 rounded-lg pl-2 pt-2.5 text-text-color w-full resize-none overflow-hidden h-12"
+            data-enter-action="close-keyboard"
+          />
         </div>
-        <textarea
-          value={obs}
-          onChange={(e) => setObs(e.target.value.slice(0, maxChars))}
-          onFocus={() => setKeyboardOpen(true)}
-          onBlur={() => setKeyboardOpen(false)}
-          maxLength={maxChars}
-          placeholder="Ex: remover alface e tomate"
-          className="border border-gray-300 rounded-lg pl-2 pt-2.5 text-text-color w-full resize-none overflow-hidden h-12"
-          data-enter-action="close-keyboard"
-        />
-      </div>
       </div>
 
       <div className="absolute left-0 right-0 bottom-0 flex justify-between items-center h-20 p-4">

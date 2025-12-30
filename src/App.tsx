@@ -2,7 +2,7 @@ import { Toaster } from "react-hot-toast";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { HashRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
 import { useInactivityTimer } from "./utils/useInactivityTimer";
-import { VirtualKeyboard } from "./components/VirtualKeyboard/VirtualKeyboard";
+import { VirtualKeyboard } from "./components/Keyboard/VirtualKeyboard/VirtualKeyboard";
 
 const Home = lazy(() => import("./pages/Home/Home"));
 const Menu = lazy(() => import("./pages/Menu/Menu"));
@@ -10,10 +10,10 @@ const Cart = lazy(() => import("./pages/Cart/Cart"));
 const Splash = lazy(() => import("./pages/Splash/Splash"));
 const Login = lazy(() => import("./pages/Login/Login"));
 const PixPayment = lazy(() => import("./pages/PixPayment/PixPayment"));
-const CardPayment = lazy(() => import("./pages/CardPayment/CardPayment"));
+const CardPayment = lazy(() => import("./pages/Cardpayment/CardPayment"));
 const NameEntry = lazy(() => import("./pages/NameEntry/NameEntry"));
 const TimeExceeded = lazy(
-  () => import("./components/TimeExceeded/TimeExceeded")
+  () => import("./components/Feedback/TimeExceeded/TimeExceeded")
 );
 
 function RootLayout() {

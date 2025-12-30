@@ -10,7 +10,7 @@ import {
   useUserData,
 } from "../../utils/store";
 import { useNavigate } from "react-router-dom";
-import ProgressBar from "../../components/ProgressBar/ProgressBar";
+import ProgressBar from "../../components/Feedback/ProgressBar/ProgressBar";
 import { Api } from "../../api/Api";
 import { asset } from "../../utils/asset";
 
