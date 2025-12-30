@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import Keyboard from "react-simple-keyboard";
+import Keyboard, { type KeyboardReactInterface } from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
 
 type Props = {
@@ -20,7 +20,7 @@ export function VirtualKeyboard({
   onClose,
 }: Props) {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
-  const keyboardRef = useRef<any>(null);
+  const keyboardRef = useRef<KeyboardReactInterface | null>(null);
   const [layoutName, setLayoutName] = useState<
     "default" | "shift" | "accent" | "numeric"
   >("default");

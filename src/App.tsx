@@ -1,7 +1,6 @@
 import { Toaster } from "react-hot-toast";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { HashRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
-import { useInactivityTimer } from "./utils/useInactivityTimer";
 import { VirtualKeyboard } from "./components/Keyboard/VirtualKeyboard/VirtualKeyboard";
 
 const Home = lazy(() => import("./pages/Home/Home"));
@@ -30,39 +29,41 @@ function RootLayout() {
 
   useEffect(() => {
     const handleFocusIn = (event: FocusEvent) => {
-      const target = event.target as HTMLElement;
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
 
       if (
         target.tagName === "INPUT" ||
         target.tagName === "TEXTAREA" ||
-        (target as any).isContentEditable
+        target.isContentEditable
       ) {
         setActiveElement(target as HTMLInputElement | HTMLTextAreaElement);
         setKeyboardVisible(true);
         const modeAttr =
-          (target as HTMLElement).getAttribute("data-kb-mode") ?? "alpha";
+          target.getAttribute("data-kb-mode") ?? "alpha";
         setKeyboardMode(modeAttr === "numeric" ? "numeric" : "alpha");
       }
     };
 
     const handleFocusOut = (event: FocusEvent) => {
-      const target = event.target as HTMLElement;
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
 
       if (
         target.tagName === "INPUT" ||
         target.tagName === "TEXTAREA" ||
-        (target as any).isContentEditable
+        target.isContentEditable
       ) {
         setKeyboardVisible(false);
       }
     };
 
-    window.addEventListener("focusin", handleFocusIn as any);
-    window.addEventListener("focusout", handleFocusOut as any);
+    window.addEventListener("focusin", handleFocusIn);
+    window.addEventListener("focusout", handleFocusOut);
 
     return () => {
-      window.removeEventListener("focusin", handleFocusIn as any);
-      window.removeEventListener("focusout", handleFocusOut as any);
+      window.removeEventListener("focusin", handleFocusIn);
+      window.removeEventListener("focusout", handleFocusOut);
     };
   }, []);
 
