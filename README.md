@@ -1,4 +1,4 @@
-🧾 Totem de Autoatendimento — Resulti Sistemas
+🧾 ControlChef Totem — Resulti Sistemas
 
 Totem interativo desenvolvido pela Resulti Sistemas para uso em restaurantes, lanchonetes e estabelecimentos que utilizam os sistemas ControlChef, ControlStore e demais soluções da Resulti.
 O projeto foi construído com React + Vite + TypeScript, empacotado com Electron para execução em modo desktop kiosk, e estilizado com TailwindCSS para garantir uma interface moderna, fluida e responsiva.

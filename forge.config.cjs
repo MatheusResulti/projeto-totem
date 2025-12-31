@@ -19,8 +19,8 @@ module.exports = {
           name: "ControlChefTotem", 
           setupIcon: path.join(__dirname, "public", "assets", "expoIcon.ico"),
           iconUrl:
-            "https://raw.githubusercontent.com/MatheusResulti/projeto-totem/main/public/assets/expoIcon.ico",
-          shortcutName: "Control Chef Totem",
+            "https://raw.githubusercontent.com/MatheusResulti/controlcheftotem/main/public/assets/expoIcon.ico",
+          shortcutName: "ControlChef Totem",
           noDesktopShortcut: false,
           noStartMenuShortcut: false,
         },
